@@ -21,7 +21,7 @@ return new class extends Migration {
                 ->constrained('training_packages')
                 ->onDelete('cascade');
 
-            $table->enum('payment_method', ['momo', 'vnpay', 'cash']);
+            $table->enum('payment_method', ['momo', 'vnpay', 'card']);
             $table->date('valid_until')->nullable();
             $table->timestamps(); // created_at & updated_at
         });

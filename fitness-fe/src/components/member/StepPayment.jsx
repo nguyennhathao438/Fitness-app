@@ -3,6 +3,8 @@ import vnpayimg from "../../assets/vnpay.png";
 import cardimg from "../../assets/creditcard.png";
 import { toast } from "react-toastify";
 import { register } from "../../services/member/MemberService.js";
+import { useDispatch } from "react-redux";
+import { login } from "../../storages/authSlice.js";
 const paymentMethods = [
   {
     id: "momo",
@@ -34,6 +36,7 @@ const paymentMethods = [
 ];
 
 export default function StepPayment({ data, setData, next, prev }) {
+  const dispatch = useDispatch();
   const choosePayment = (methodId) => {
     setData((prevData) => ({
       ...prevData,
@@ -49,17 +52,12 @@ export default function StepPayment({ data, setData, next, prev }) {
     //Gọi api thanh toán ở đây
     //Nếu thanh toán thành công
     try {
-      console.log("Register data:", data);
       const res = await register(data);
-
-      if (res.data.success) {
-        toast.success("Đăng ký thành công");
-        next(); // sang step 3 (hoàn tất)
-      } else {
-        toast.error(res.data.message || "Đăng ký thất bại");
-      }
+      dispatch(login(res.data));
+      toast.success("Đăng ký thành công");
+      next(); // sang step 3 (hoàn tất)
     } catch (error) {
-      toast.error("Lỗi kết nối server");
+      toast.error("Đăng ký thất bại");
       console.error(error);
     }
   };

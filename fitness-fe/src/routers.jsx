@@ -3,6 +3,7 @@ import DefaultMember from "./layouts/DefaultMember";
 import Home from "./pages/member/Home";
 import PricingPackages from "./pages/member/PricingPackage";
 import RegisterPage from "./pages/member/RegisterPage";
+import Login from "./pages/member/Login";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
       {
         path: "/register/:packageId",
         element: <RegisterPage />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
       },
     ],
   },
