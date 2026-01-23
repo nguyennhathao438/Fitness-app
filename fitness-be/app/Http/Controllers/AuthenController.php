@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Member;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Invoice;
 class AuthenController extends Controller
 {
     public function login(Request $request)
@@ -31,10 +32,17 @@ class AuthenController extends Controller
         //         'message' => 'Tài khoản đã hết hạn sử dụng'
         //     ], 403);
         // }
+
+        //Trả về gói mua gần nhất 
+        $latestInvoice = Invoice::with('package')
+            ->where('member_id', $member->id)
+            ->latest() // mặc định là created_at
+            ->first();
         $token = $member->createToken('member-token')->plainTextToken;
 
         return response()->json([
             'member' => $member,
+            'latest_invoice' => $latestInvoice,
             'token' => $token
         ]);
     }

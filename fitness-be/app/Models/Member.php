@@ -16,14 +16,12 @@ class Member extends Authenticatable
         'gender',
         'avatar',
         'is_deleted',
-        'valid_until'
     ];
 
     protected $hidden = ['password'];
 
     protected $casts = [
         'birthday' => 'date',
-        'valid_until' => 'date',
         'is_deleted' => 'boolean',
     ];
 }

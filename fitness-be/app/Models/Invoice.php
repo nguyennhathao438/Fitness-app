@@ -13,11 +13,13 @@ class Invoice extends Model
     protected $fillable = [
         'member_id',
         'package_id',
-        'payment_method'
+        'payment_method',
+        'valid_until',
     ];
 
     protected $casts = [
         'member_id' => 'integer',
+        'valid_until' => 'date',
         'package_id' => 'integer',
     ];
 

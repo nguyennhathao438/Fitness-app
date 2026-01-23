@@ -10,16 +10,16 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('members', function (Blueprint $table) {
+        Schema::create('training_packages', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->string('phone')->nullable();
-            $table->date('birthday')->nullable();
-            $table->enum('gender', ['male', 'female', 'other'])->nullable();
-            $table->string('avatar')->nullable();
+            $table->text('description')->nullable();
+            $table->decimal('price', 10, 2);
+            $table->integer('duration_days');
             $table->boolean('is_deleted')->default(false);
+            $table->foreignId('package_type_id')
+                ->constrained('package_types')
+                ->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('members');
+        Schema::dropIfExists('training_pakages');
     }
 };

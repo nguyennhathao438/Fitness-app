@@ -15,13 +15,16 @@ class TrainingPackage extends Model
         'description',
         'price',
         'duration_days',
-        'has_pt',
+        'package_type_id',
         'is_deleted',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
-        'has_pt' => 'boolean',
         'is_deleted' => 'boolean',
     ];
+    public function packageType()
+    {
+        return $this->belongsTo(PackageType::class);
+    }
 }

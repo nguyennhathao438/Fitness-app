@@ -10,14 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('training_packages', function (Blueprint $table) {
+        Schema::create('package_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('description')->nullable();
-            $table->decimal('price', 10, 2);
-            $table->integer('duration_days');
-            $table->boolean('has_pt')->default(false);
-            $table->boolean('is_deleted')->default(false);
             $table->timestamps();
         });
     }
@@ -27,6 +22,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('training_pakages');
+        Schema::dropIfExists('package_types');
     }
 };
