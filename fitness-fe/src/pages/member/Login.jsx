@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { login } from "../../storages/authSlice.js";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -115,12 +115,12 @@ export default function Login() {
 
             {/* Forgot Password Link */}
             <div className="text-right">
-              <a
-                href="#"
+              <Link
+                to="/forgot-password"
                 className="text-yellow-400 text-sm hover:text-yellow-300 transition-colors"
               >
                 Quen mat khau?
-              </a>
+              </Link>
             </div>
 
             {/* Login Button */}
