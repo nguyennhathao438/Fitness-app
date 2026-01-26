@@ -122,7 +122,7 @@ export default function Header() {
                   Gioi thieu
                 </Link>
                 <Link
-                  href="/pricing-packages"
+                  to="/pricing-packages"
                   className="text-gray-300 hover:text-white hover:bg-gray-800 transition-colors text-sm py-2 px-3 rounded-lg"
                   onClick={() => setIsMenuOpen(false)}
                 >

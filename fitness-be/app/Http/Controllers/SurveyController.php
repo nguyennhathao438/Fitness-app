@@ -15,7 +15,7 @@ class SurveyController extends Controller
 
             'training_times' => 'required|array|min:1',
             'training_times.*.day_of_week' => 'required|in:mon,tue,wed,thu,fri,sat,sun',
-            'training_times.*.time_slot' => 'required|in:early_morning,morning,afternoon,evening',
+            'training_times.*.time_slot' => 'required|in:early_morning,morning,afternoon,evening,all',
         ]);
 
         $member = $request->user(); // lấy từ token
@@ -40,7 +40,6 @@ class SurveyController extends Controller
             $survey = Survey::create([
                 'member_id' => $member->id,
                 'target_type' => $request->target_type,
-                'has_trained' => $request->has_trained,
             ]);
 
             foreach ($request->training_times as $time) {
