@@ -20,6 +20,10 @@ const router = createBrowserRouter([
         path: "/register/:packageId",
         element: <RegisterPage />,
       },
+      {
+        path: "/bmi",
+        element:<Home/>,
+      }
     ],
   },
 ]);

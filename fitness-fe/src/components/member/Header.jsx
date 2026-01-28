@@ -5,32 +5,29 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
     <>
-      <header className="bg-[#1a1625] border-b border-[#2a2435]">
+      <header className="bg-[#000000] border-b border-[#2a2435]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex-shrink-0">
-              <span className="text-2xl font-bold tracking-tight">
-                <span className="text-white">FIGHT</span>
-                <span className="text-[#a78bfa]">I</span>
-                <span className="text-[#c4b5fd]">CO</span>
-              </span>
+            <Link href="/" className="shrink-0">
+              <img className="w-40 h-16" src="https://fight100.vn/wp-content/uploads/2024/02/logo.png" alt="" />
             </Link>
 
             {/* Desktop Navigation - hidden below lg (1024px) */}
-            <nav className="hidden lg:flex items-center gap-8">
-              <Link
-                href="/gioi-thieu"
-                className="text-gray-300 hover:text-white transition-colors text-sm"
-              >
+            <nav className="hidden lg:flex items-center gap-10">
+              <Link href="/gioi-thieu" className="text-gray-300 font-bold hover:text-white transition-colors text-md">
                 Giới thiệu
               </Link>
-              <Link
-                to="/pricing-packages"
-                className="text-gray-300 hover:text-white transition-colors text-sm"
-              >
+
+              <Link to="/pricing-packages" className="text-gray-300 font-bold hover:text-white transition-colors text-md">
                 Đăng ký gói tập
               </Link>
+
+              <Link to="/bmi" className="text-gray-300 hover:text-white transition-colors font-bold text-md ">
+                BMI
+              </Link>
+
+              
             </nav>
 
             {/* Desktop Right Section - hidden below lg (1024px) */}
@@ -67,7 +64,7 @@ export default function Header() {
                   className="text-gray-300 hover:text-white transition-colors text-sm"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Giới thi ệu
+                  Giới thiệu
                 </Link>
                 <Link
                   href="/dang-ky-goi-tap"

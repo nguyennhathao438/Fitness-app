@@ -1,6 +1,6 @@
-import momoimg from "../../assets/momo.png";
-import vnpayimg from "../../assets/vnpay.png";
-import cardimg from "../../assets/creditcard.png";
+import momoimg from "../../assets/img/momo.png";
+import vnpayimg from "../../assets/img/vnpay.png";
+import cardimg from "../../assets/img/creditcard.png";
 import { toast } from "react-toastify";
 import { register } from "../../services/member/MemberService.js";
 const paymentMethods = [

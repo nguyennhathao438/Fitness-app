@@ -115,7 +115,7 @@ export default function PricingPackages() {
             {packages.map((pkg) => (
               <div
                 key={pkg.id}
-                className="flex-shrink-0 w-[calc(50%-12px)] sm:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] min-w-[225px] snap-start"
+                className="shrink-0 w-[calc(50%-12px)] sm:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] min-w-[225px] snap-start"
               >
                 <PricingCard package={pkg} />
               </div>
