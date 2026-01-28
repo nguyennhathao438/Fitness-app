@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 Route::get('/', function () {
-    return view('welcome');
+    $detail = (object)[
+        'body' => 'Nội dung demo'
+    ];
+
+    return view('welcome', compact('detail'));
 });

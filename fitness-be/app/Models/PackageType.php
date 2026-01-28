@@ -3,8 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory; 
+use App\Models\TrainingPackage;
+use App\Models\Service;
+
 class PackageType extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['name'];
 
     public function trainingPackages()
