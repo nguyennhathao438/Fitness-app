@@ -9,6 +9,8 @@ use App\Models\TrainingPackage;
 use App\Models\Invoice;
 use DB;
 use Throwable;
+use App\Models\PasswordOtp;
+use Illuminate\Support\Facades\Mail;
 class MemberController extends Controller
 {
     /*

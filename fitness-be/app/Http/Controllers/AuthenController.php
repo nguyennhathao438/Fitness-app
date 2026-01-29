@@ -16,9 +16,14 @@ class AuthenController extends Controller
         ]);
 
         $member = Member::where('email', $request->email)->first();
-        if (!$member || !Hash::check($request->password, $member->password)) {
+        if (!$member) {
             return response()->json([
-                'message' => 'Email hoặc mật khẩu không đúng'
+                'message' => 'Tài khoản không tồn tại'
+            ], 404);
+        }
+        if (!Hash::check($request->password, $member->password)) {
+            return response()->json([
+                'message' => 'Mật khẩu không chính xác'
             ], 401);
         }
         //Kiểm tra role nếu là admin và pt thì k cần 2 cái if đó
@@ -34,15 +39,32 @@ class AuthenController extends Controller
         // }
 
         //Trả về gói mua gần nhất 
-        $latestInvoice = Invoice::with('package')
+        $latestInvoice = Invoice::with('package.packageType.services')
             ->where('member_id', $member->id)
-            ->latest() // mặc định là created_at
+            ->latest()
             ->first();
+
+        $serviceIds = [];
+        $validUntil = null;
+        $package = null;
+
+        if ($latestInvoice && $latestInvoice->package) {
+            $validUntil = $latestInvoice->valid_until;
+            $package = $latestInvoice->package;
+
+            if ($package->packageType) {
+                $serviceIds = $package
+                    ->packageType
+                    ->services
+                    ->pluck('id');
+            }
+        }
         $token = $member->createToken('member-token')->plainTextToken;
 
         return response()->json([
             'member' => $member,
-            'latest_invoice' => $latestInvoice,
+            'valid_until' => $validUntil,
+            'service_ids' => $serviceIds,
             'token' => $token
         ]);
     }

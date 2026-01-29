@@ -10,20 +10,20 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('invoices', function (Blueprint $table) {
-            $table->id();
+        Schema::create('body_metrics', function (Blueprint $table) {
+            $table->id(); // id
 
             $table->foreignId('member_id')
                 ->constrained('members')
                 ->onDelete('cascade');
 
-            $table->foreignId('package_id')
-                ->constrained('training_packages')
-                ->onDelete('cascade');
-
-            $table->enum('payment_method', ['momo', 'vnpay', 'card']);
-            $table->date('valid_until')->nullable();
-            $table->timestamps(); // created_at & updated_at
+            $table->float('weight')->nullable();
+            $table->float('height')->nullable();
+            $table->float('muscle')->nullable();
+            $table->float('body_fat')->nullable();
+            $table->float('visceral_fat')->nullable();
+            $table->float('body_water')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -32,6 +32,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('invoices');
+        Schema::dropIfExists('body_metrics');
     }
 };
