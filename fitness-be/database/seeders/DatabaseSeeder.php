@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             ServiceSeeder::class,
             PackageTypeSeeder::class,
             TrainingPackageSeeder::class,
+            RoleSeeder::class,
+            PermissionSeeder::class,
         ]);
     }
 }

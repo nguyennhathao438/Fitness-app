@@ -24,4 +24,16 @@ class Member extends Authenticatable
         'birthday' => 'date',
         'is_deleted' => 'boolean',
     ];
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'member_role');
+    }
+
+    public function hasPermission($permission)
+    {
+        return $this->roles()
+            ->whereHas('permissions', function ($q) use ($permission) {
+                $q->where('code', $permission);
+            })->exists();
+    }
 }
