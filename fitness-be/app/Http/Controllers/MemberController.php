@@ -68,4 +68,104 @@ class MemberController extends Controller
             ], 500);
         }
     }
+    // Thống kê progressbar giới tính
+    public function memberStats(Request $request)
+    {
+        $baseQuery = Member::where('is_deleted', false);
+
+        $male = (clone $baseQuery)->where('gender', 'male')->count();
+        $female = (clone $baseQuery)->where('gender', 'female')->count();
+        $total = $male + $female;
+
+        return response()->json([
+            'success' => true,
+            'total' => $total,
+            'gender' => [
+            'male' => $male,
+            'female' => $female
+            ]
+        ]);
+    }
+    //thống kê biểu đồ tròn theo độ tuổi
+    public function AgeStats()
+    {
+    $stats = Member::where('is_deleted', false)
+        ->whereNotNull('birthday')
+        ->selectRaw("
+            SUM(TIMESTAMPDIFF(YEAR, birthday, CURDATE()) < 18) AS under_18,
+            SUM(TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 18 AND 24) AS from_18_24,
+            SUM(TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 25 AND 34) AS from_25_34,
+            SUM(TIMESTAMPDIFF(YEAR, birthday, CURDATE()) >= 35) AS over_35
+        ")
+        ->first();
+
+    return response()->json([
+        'success' => true,
+        'data' => [
+            ['label' => '< 18', 'value' => (int) $stats->under_18],
+            ['label' => '18 - 24', 'value' => (int) $stats->from_18_24],
+            ['label' => '25 - 34', 'value' => (int) $stats->from_25_34],
+            ['label' => '≥ 35', 'value' => (int) $stats->over_35],
+        ]
+    ]);
+    }
+    // xóa người dùng
+    public function deletedUser($memberId){
+    $member = Member::find($memberId);
+
+    if (!$member) {
+        return response()->json(['message' => 'User không tồn tại'], 404);
+    }
+
+    $member->update([
+        'is_deleted' => true
+    ]);
+
+    return response()->json([
+        'message' => 'Xóa user thành công'
+    ]);
+    }
+
+    // sửa thông tin người dùng
+    public function editUser(Request $request, $memberId)
+    {
+        $member = Member::where('id', $memberId)
+            ->where('is_deleted', false)
+            ->first();
+
+        if (!$member) {
+            return response()->json([
+                'message' => 'User không tồn tại hoặc đã bị xóa'
+            ], 404);
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:members,email,' . $memberId,
+            'phone' => 'nullable|string|max:15',
+            'gender' => 'nullable|in:male,female,other',
+            'birthday' => 'nullable|date',
+        ]);
+
+        try {
+            $member->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'gender' => $request->gender,
+                'birthday' => $request->birthday,
+            ]);
+
+            return response()->json([
+                'message' => 'Cập nhật user thành công',
+                'member' => $member
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => 'Cập nhật thất bại',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 }
