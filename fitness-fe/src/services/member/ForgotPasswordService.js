@@ -9,3 +9,4 @@ export const verifyOtp = (data) => {
 export const resetPassword = (data) => {
   return api.post(`/reset-password`, data);
 };
+

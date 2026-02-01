@@ -30,3 +30,6 @@ export const getBodyMetric = () =>{
 export const getLatestBodyMetric = () => {
   return api.get("/body-metrics/latest");
 };
+export const changePassword = (data) => {
+    return api.put("change-password", data);
+};

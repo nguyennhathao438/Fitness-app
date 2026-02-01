@@ -1,4 +1,4 @@
-import backgroundImage from "../../assets/img/background.jpg";
+import backgroundImage from "../../assets/background.jpg";
 import { loginService } from "../../services/member/MemberService.js";
 import { useState } from "react";
 import { toast } from "react-toastify";

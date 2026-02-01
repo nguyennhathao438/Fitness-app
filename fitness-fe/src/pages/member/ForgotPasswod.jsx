@@ -2,7 +2,7 @@ import { useState } from "react";
 import StepForgotPassword from "../../components/member/StepForgotPassword.jsx";
 import StepOtp from "../../components/member/StepOtp.jsx";
 import StepNewPassword from "../../components/member/StepNewPassword.jsx";
-import backgroundImage from "../../assets/img/background.jpg";
+import backgroundImage from "../../assets/background.jpg";
 import { resetPassword } from "../../services/member/ForgotPasswordService.js";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";

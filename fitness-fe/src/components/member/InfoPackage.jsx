@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import gymImg from "../../assets/img/gym.jpg"
+import gymImg from "../../assets/gym.jpg"
 import { User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getAllTrainingPackages } from "../../services/member/TraningPakageService";
@@ -67,15 +67,23 @@ export default function InfoPackage() {
                     ref={scrollRef}
                     className="flex gap-10 overflow-x-auto scroll-smooth md:overflow-hidden ">
                     {packages.map((item) => (
-                        <li key={item.id} className="group relative shrink-0 w-[220px] py-6 px-4 rounded-xl border border-gray-400 bg-[#474274] shadow hover:shadow-lg transition-shadow">
-                            <h3 className="text-center text-white text-lg font-semibold">{item.name}</h3>
-                            <p className="text-center text-amber-400 my-2 font-bold text-2xl">{formatVND(item.price)}</p>
-                            <p className="text-center text-white text-sm">{item.duration_days} ngày</p>
+                        <li key={item.id} className="group shrink-0 w-[220px] h-[220px] px-2">
+                          <div className="w-full h-full [perspective:1000px]">
+                            <div className="relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+                              {/* Front */}
+                              <div className="absolute inset-0 rounded-xl bg-[#474274] flex flex-col items-center justify-center text-center p-4 shadow-sm border border-gray-400 [backface-visibility:hidden]">
+                                <h3 className="text-center text-white text-lg font-semibold">{item.name}</h3>
+                                <p className="text-center text-amber-400 my-2 font-bold text-2xl">{formatVND(item.price)}</p>
+                                <p className="text-center text-white text-sm">{item.duration_days} ngày</p>
+                              </div>
 
-                            {/* Description hover */}
-                            <div className="absolute top-0 left-0 w-full h-full bg-white p-4 rounded-xl shadow-lg flex flex-col items-center justify-center text-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <p className="text-gray-700 text-sm">{item.description}</p>
+                              {/* Back */}
+                              <div className="absolute inset-0 rounded-xl bg-white p-4 flex flex-col gap-3 items-center justify-center [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                                <span className="font-bold text-xl">Chi tiết gói tập</span>
+                                <p className="text-gray-700 text-sm font-bold">{item.description}</p>
+                              </div>
                             </div>
+                          </div>
                         </li>
                     ))}
                 </ul>
