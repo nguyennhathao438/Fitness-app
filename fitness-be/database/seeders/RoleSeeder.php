@@ -13,44 +13,19 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // ===== ROLES =====
-        $admin = Role::firstOrCreate(
-            ['name' => 'admin'],
+        Role::updateOrCreate(
+            ['name' => 'Admin'],
             ['description' => 'Quản trị hệ thống']
         );
 
-        $pt = Role::firstOrCreate(
-            ['name' => 'pt'],
+        Role::updateOrCreate(
+            ['name' => 'PT'],
             ['description' => 'Huấn luyện viên']
         );
 
-        $receptionist = Role::firstOrCreate(
-            ['name' => 'receptionist'],
+        Role::updateOrCreate(
+            ['name' => 'Receptionist'],
             ['description' => 'Lễ tân']
-        );
-
-        // ===== GÁN PERMISSION =====
-        // Admin: full quyền
-        $admin->permissions()->sync(
-            Permission::pluck('id')
-        );
-
-        // PT
-        $pt->permissions()->sync(
-            Permission::whereIn('code', [
-                'member.view',
-                'PT',
-                'schedule.update'
-            ])->pluck('id')
-        );
-
-        // Lễ tân
-        $receptionist->permissions()->sync(
-            Permission::whereIn('code', [
-                'member.view',
-                'member.create',
-                'payment.create'
-            ])->pluck('id')
         );
     }
 }

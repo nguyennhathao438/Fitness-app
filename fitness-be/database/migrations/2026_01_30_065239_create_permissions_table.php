@@ -12,11 +12,18 @@ return new class extends Migration {
     {
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique();
-            $table->string('description')->nullable();
+            $table->enum('action', [
+                'create',
+                'read',
+                'update',
+                'delete'
+            ]);
+
+            $table->string('code')->unique(); // product.create
+            $table->string('name');           // Tạo sản phẩm
+
             $table->timestamps();
         });
-
     }
 
     /**

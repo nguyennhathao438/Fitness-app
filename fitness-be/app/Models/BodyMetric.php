@@ -23,4 +23,5 @@ class BodyMetric extends Model
     {
         return $this->belongsTo(Member::class);
     }
+
 }

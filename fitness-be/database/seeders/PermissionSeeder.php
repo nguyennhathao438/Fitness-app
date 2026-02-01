@@ -1,7 +1,7 @@
 <?php
 
 namespace Database\Seeders;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Permission;
@@ -13,36 +13,89 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            ['code' => 'PT', 'description' => 'Tạo hóa đơn'],
-            ['code' => 'ADMIN', 'description' => 'Tạo hóa đơn'],
-            // User
-            ['code' => 'user.view', 'description' => 'Xem người dùng'],
-            ['code' => 'user.create', 'description' => 'Thêm người dùng'],
-            ['code' => 'user.update', 'description' => 'Sửa người dùng'],
-            ['code' => 'user.delete', 'description' => 'Xóa người dùng'],
+            // ===== USER =====
+            [
+                'action' => 'read',
+                'code' => 'user.read',
+                'name' => 'Quản lý người dùng',
+            ],
+            [
+                'action' => 'create',
+                'code' => 'user.create',
+                'name' => 'Quản lý người dùng',
+            ],
+            [
+                'action' => 'update',
+                'code' => 'user.update',
+                'name' => 'Quản lý người dùng',
+            ],
+            [
+                'action' => 'delete',
+                'code' => 'user.delete',
+                'name' => 'Quản lý người dùng',
+            ],
 
-            // Member
-            ['code' => 'member.view', 'description' => 'Xem hội viên'],
-            ['code' => 'member.create', 'description' => 'Thêm hội viên'],
-            ['code' => 'member.update', 'description' => 'Sửa hội viên'],
+            // ===== SERVICE =====
+            [
+                'action' => 'read',
+                'code' => 'service.read',
+                'name' => 'Quản lý dịch vụ',
+            ],
+            [
+                'action' => 'create',
+                'code' => 'service.create',
+                'name' => 'Quản lý dịch vụ',
+            ],
+            [
+                'action' => 'update',
+                'code' => 'service.update',
+                'name' => 'Quản lý dịch vụ',
+            ],
+            [
+                'action' => 'delete',
+                'code' => 'service.delete',
+                'name' => 'Quản lý dịch vụ',
+            ],
 
-            // Package
-            ['code' => 'package.create', 'description' => 'Thêm gói tập'],
-            ['code' => 'package.update', 'description' => 'Sửa gói tập'],
-            ['code' => 'package.delete', 'description' => 'Xóa gói tập'],
-
-            // Schedule & Payment
-            ['code' => 'schedule.update', 'description' => 'Cập nhật lịch tập'],
-            ['code' => 'payment.create', 'description' => 'Tạo hóa đơn'],
-
-
+            // ===== INVOICE =====
+            [
+                'action' => 'read',
+                'code' => 'invoice.read',
+                'name' => 'Quản lý hóa đơn',
+            ],
+            [
+                'action' => 'create',
+                'code' => 'invoice.create',
+                'name' => 'Quản lý hóa đơn',
+            ],
+            [
+                'action' => 'update',
+                'code' => 'invoice.update',
+                'name' => 'Quản lý hóa đơn',
+            ],
+            [
+                'action' => 'delete',
+                'code' => 'invoice.delete',
+                'name' => 'Quản lý hóa đơn',
+            ],
+            // ===== SCHEDULE =====
+            [
+                'action' => 'read',
+                'code' => 'schedule.read',
+                'name' => 'Lịch làm việc',
+            ],
+            [
+                'action' => 'create',
+                'code' => 'schedule.create',
+                'name' => 'Lịch làm việc',
+            ],
+            [
+                'action' => 'delete',
+                'code' => 'schedule.delete',
+                'name' => 'Lịch làm việc',
+            ],
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate(
-                ['code' => $permission['code']],
-                ['description' => $permission['description']]
-            );
-        }
+        DB::table('permissions')->insert($permissions);
     }
 }
