@@ -4,6 +4,7 @@ import StepPayment from "../../components/member/StepPayment";
 import StepSurvey from "../../components/member/StepSurvey";
 import backgroundImage from "../../assets/background.jpg";
 import { useParams } from "react-router-dom";
+import StepBodyMetrics from "../../components/member/StepBodyMetrics.jsx";
 import { getTrainingPackageById } from "../../services/member/TraningPakageService.js";
 export default function RegisterForm() {
   const [step, setStep] = useState(1);
@@ -42,10 +43,17 @@ export default function RegisterForm() {
       />
       <div className="absolute inset-0 bg-purple-900/70 -z-10" />
 
-      <div className="relative z-10 w-full max-w-lg">
+      <div
+        className={`relative z-10 w-full transition-all duration-300
+    ${
+      step === 3
+        ? "max-w-5xl" // StepSurvey rộng hơn
+        : "max-w-lg" // Step 1,2 gọn hơn
+    }`}
+      >
         {/* TAB INDICATOR */}
         <div className="flex justify-center gap-4 mb-6">
-          {[1, 2, 3].map((i) => (
+          {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
               className={`w-10 h-10 rounded-full flex items-center justify-center font-bold
@@ -80,7 +88,8 @@ export default function RegisterForm() {
               prev={prev}
             />
           )}
-          {step === 3 && <StepSurvey prev={prev} />}
+          {step === 3 && <StepSurvey next={next} />}
+          {step === 4 && <StepBodyMetrics />}
         </div>
       </div>
     </div>

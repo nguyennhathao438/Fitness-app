@@ -10,6 +10,8 @@ use App\Models\Invoice;
 use Cloudinary\Cloudinary;
 use DB;
 use Throwable;
+use App\Models\PasswordOtp;
+use Illuminate\Support\Facades\Mail;
 class MemberController extends Controller
 {
     /*

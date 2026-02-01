@@ -1,4 +1,13 @@
-import {CircleUserRoundIcon, HouseIcon, MessageCircleIcon, PackageIcon, ShieldCheckIcon, ShoppingCartIcon, StarIcon, TextAlignJustifyIcon } from "lucide-react";
+import {
+  CircleUserRoundIcon,
+  HouseIcon,
+  MessageCircleIcon,
+  PackageIcon,
+  ShieldCheckIcon,
+  ShoppingCartIcon,
+  StarIcon,
+  TextAlignJustifyIcon,
+} from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 export default function SideBar({collapsed, setCollapsed}) {
@@ -27,28 +36,51 @@ export default function SideBar({collapsed, setCollapsed}) {
                             hover:bg-purple-500
                             ${isActive ? "bg-purple-600" : ""}`
                         }
-                        >
-                            <CircleUserRoundIcon className="mr-2 size-5" />
-                            {!collapsed && <span className="text-lg">Users</span>}
-                    </NavLink>
-                    <li className="px-4 py-2 cursor-pointer rounded-md hover:bg-purple-500">
-                        <PackageIcon className="text-white inline-block mr-2 size-5"></PackageIcon>
-                        <span className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}>Packages</span>
-                    </li>
-                    <li className="px-4 py-2 cursor-pointer rounded-md hover:bg-purple-500">
-                        <MessageCircleIcon className=" text-white inline-block mr-2 size-5"></MessageCircleIcon>
-                        <span className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}>Messages</span>
-                    </li>
-                    <li className="px-4 py-2 cursor-pointer rounded-md hover:bg-purple-500">
-                        <ShoppingCartIcon className=" text-white inline-block mr-2 size-5"></ShoppingCartIcon>
-                        <span className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}>Orders</span>
-                    </li>
-                    <li className="px-4 py-2 cursor-pointer rounded-md hover:bg-purple-500">
-                        <ShieldCheckIcon className=" text-white inline-block mr-2 size-5"></ShieldCheckIcon>
-                        <span className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}  >RoleSet</span>
-                    </li>
-                </ul>
+                >
+                  <CircleUserRoundIcon className="mr-2 size-5" />
+                  {!collapsed && <span className="text-lg">Users</span>}
+                </NavLink>
+                <li className="px-4 py-2 cursor-pointer rounded-md hover:bg-purple-500">
+                  <PackageIcon className="text-white inline-block mr-2 size-5"></PackageIcon>
+                  <span
+                    className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+                  >
+                    Packages
+                  </span>
+                </li>
+                <li className="px-4 py-2 cursor-pointer rounded-md hover:bg-purple-500">
+                  <MessageCircleIcon className=" text-white inline-block mr-2 size-5"></MessageCircleIcon>
+                  <span
+                    className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+                  >
+                    Messages
+                  </span>
+                </li>
+                <li className="px-4 py-2 cursor-pointer rounded-md hover:bg-purple-500">
+                  <ShoppingCartIcon className=" text-white inline-block mr-2 size-5"></ShoppingCartIcon>
+                  <span
+                    className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+                  >
+                    Orders
+                  </span>
+                </li>
+                <NavLink
+                  to="/admin/role"
+                  className={({ isActive }) =>
+                    `flex items-center px-4 py-2 rounded-md cursor-pointer transition
+                                  hover:bg-purple-500
+                                  ${isActive ? "bg-purple-600" : ""}`
+                  }
+                >
+                  <ShieldCheckIcon className=" text-white inline-block mr-2 size-5"></ShieldCheckIcon>
+                  <span
+                    className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+                  >
+                    RoleSet
+                  </span>
+                </NavLink>
+              </ul>
             </nav>
-        </div>
-    );
+          </div>
+  );
 }

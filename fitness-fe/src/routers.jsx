@@ -3,9 +3,12 @@ import DefaultMember from "./layouts/DefaultMember";
 import Home from "./pages/member/Home";
 import PricingPackages from "./pages/member/PricingPackage";
 import RegisterPage from "./pages/member/RegisterPage";
+import Login from "./pages/member/Login";
+import ForgotPassword from "./pages/member/ForgotPasswod";
 import DefaultAdmin from "./layouts/DefaultAdmin";
 import User from "./pages/Admin/User";
 import Dashboard from "./pages/Admin/Dashboard";
+import RoleManagement from "./pages/admin/Role";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -23,6 +26,14 @@ const router = createBrowserRouter([
         path: "/register/:packageId",
         element: <RegisterPage />,
       },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPassword />,
+      },
     ],
   },
   {
@@ -31,11 +42,15 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Dashboard/>,
+        element: <Dashboard />,
       },
       {
         path: "user",
-        element: <User/>,
+        element: <User />,
+      },
+      {
+        path: "role",
+        element: <RoleManagement />,
       },
     ],
   },

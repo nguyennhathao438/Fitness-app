@@ -3,6 +3,9 @@ import vnpayimg from "../../assets/vnpay.png";
 import cardimg from "../../assets/creditcard.png";
 import { toast } from "react-toastify";
 import { register } from "../../services/member/MemberService.js";
+import { useDispatch } from "react-redux";
+import { login } from "../../storages/authSlice.js";
+import { useState } from "react";
 const paymentMethods = [
   {
     id: "momo",
@@ -34,6 +37,8 @@ const paymentMethods = [
 ];
 
 export default function StepPayment({ data, setData, next, prev }) {
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const choosePayment = (methodId) => {
     setData((prevData) => ({
       ...prevData,
@@ -46,21 +51,20 @@ export default function StepPayment({ data, setData, next, prev }) {
       alert("Vui lòng chọn phương thức thanh toán!");
       return;
     }
+    setLoading(true);
     //Gọi api thanh toán ở đây
     //Nếu thanh toán thành công
     try {
-      console.log("Register data:", data);
       const res = await register(data);
-
-      if (res.data.success) {
-        toast.success("Đăng ký thành công");
-        next(); // sang step 3 (hoàn tất)
-      } else {
-        toast.error(res.data.message || "Đăng ký thất bại");
-      }
+      dispatch(login(res.data));
+      localStorage.setItem("token", res.data.token);
+      toast.success("Đăng ký thành công");
+      next(); // sang step 3 (hoàn tất)
     } catch (error) {
-      toast.error("Lỗi kết nối server");
+      toast.error("Đăng ký thất bại");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -139,22 +143,27 @@ export default function StepPayment({ data, setData, next, prev }) {
         <button
           onClick={prev}
           className="flex-1 py-3 rounded-full border-2 border-yellow-400 text-yellow-400 
-      hover:bg-yellow-400 hover:text-gray-900 transition-all duration-300"
+      hover:bg-yellow-400 hover:scale-105 hover:text-gray-900 hover:font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-yellow-400/30"
         >
           Quay lai
         </button>
 
         <button
           onClick={handlePayment}
-          disabled={!data.payment_method}
-          className={`flex-1 py-3 rounded-full font-semibold transition-all duration-300
-      ${
-        data.payment_method
-          ? "bg-yellow-400 text-gray-900 hover:bg-yellow-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-400/30"
-          : "bg-gray-600 text-gray-400 cursor-not-allowed"
-      }`}
+          disabled={!data.payment_method || loading}
+          className={`flex-1 py-3 rounded-full font-semibold
+  transition-all duration-300 flex items-center justify-center gap-2
+  ${
+    data.payment_method && !loading
+      ? "bg-yellow-400 text-gray-900 hover:bg-yellow-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-400/30"
+      : "bg-gray-600 text-gray-400 cursor-not-allowed"
+  }`}
         >
-          Thanh toan
+          {loading && (
+            <span className="w-5 h-5 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
+          )}
+
+          {loading ? "Đang xử lý..." : "Thanh toán & Đăng ký"}
         </button>
       </div>
     </div>
