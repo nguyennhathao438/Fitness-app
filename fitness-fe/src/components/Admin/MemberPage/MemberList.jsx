@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 
 export default function MemberList() {
     const [page, setPage] = useState(1);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [keyword, setKeyword] = useState("");
     const [gender, setGender] = useState("");
     const [sort, setSort] = useState("desc");
@@ -39,18 +40,29 @@ export default function MemberList() {
         .finally(() => setLoading(false));
     };
     // Sửa thông tin member
-    const handleupdated = async(data) => {
+    const handleupdated = async (formData) => {
+      if (isSubmitting) return;
       try {
-        await updatedUser(selectedMember.id,data);
+        setIsSubmitting(true);
+        const res = await updatedUser(selectedMember.id, formData);
+
+        const updatedMember = res.data.member;
+
+        setMemberList(prev =>
+          prev.map(m =>
+            m.id === updatedMember.id ? updatedMember : m
+          )
+        );
+
         toast.success("Updated Success");
         setOpenForm(false);
         setSelectedMember(null);
-        fetchMembers();
       } catch (error) {
-        toast.error("Fail to updated")
-      }
+        toast.error("Fail to updated");
+      } finally {
+      setIsSubmitting(false);
     }
-
+    };
     useEffect(() => {
       fetchMembers();
     }, [page, debouncedSearch, gender, sort]);
@@ -189,6 +201,7 @@ export default function MemberList() {
                 onSubmit={handleupdated}
                 onClose={() => setOpenForm(false)}
                 pt={selectedMember}
+                loading={isSubmitting}
                 />)}
             </Dialog>
     {/* Delete Dialog */}
@@ -213,6 +226,7 @@ export default function MemberList() {
         {selectedMember && (
             <DetailDialog
                 title={selectedMember.name}
+                avatar={selectedMember.avatar}
                 tabs={[
                     {
                     id: "info",

@@ -22,5 +22,5 @@ Route::get('/BirthStat',[MemberController::class,'AgeStats']);
 Route::get('/body-metrics/latest/{memberId}',[BodyMetricController::class, 'getLastUpdated']);
 Route::get('/body-metrics/{memberID}', [BodyMetricController::class, 'getAll']);
 Route::put('/deleted/{memberID}',[MemberController::class,'deletedUser']);
-Route::put('/update/{memberID}',[MemberController::class,'editUser']);
+Route::put('/update/{memberID}', [MemberController::class, 'editUser']);
 Route::post('/personal-trainers', [PersonalTrainerController::class, 'createPT']);

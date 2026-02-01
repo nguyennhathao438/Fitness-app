@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Member;
 use App\Models\TrainingPackage;
 use App\Models\Invoice;
+use Cloudinary\Cloudinary;
 use DB;
 use Throwable;
 class MemberController extends Controller
@@ -134,9 +135,7 @@ class MemberController extends Controller
             ->first();
 
         if (!$member) {
-            return response()->json([
-                'message' => 'User không tồn tại hoặc đã bị xóa'
-            ], 404);
+            return response()->json(['message' => 'User không tồn tại'], 404);
         }
 
         $request->validate([
@@ -145,23 +144,47 @@ class MemberController extends Controller
             'phone' => 'nullable|string|max:15',
             'gender' => 'nullable|in:male,female,other',
             'birthday' => 'nullable|date',
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         try {
-            $member->update([
+            $data = [
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'gender' => $request->gender,
                 'birthday' => $request->birthday,
-            ]);
+            ];
+
+            if ($request->hasFile('avatar')) {
+
+                $cloudinary = new Cloudinary([
+                    'cloud' => [
+                        'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                        'api_key'    => env('CLOUDINARY_API_KEY'),
+                        'api_secret' => env('CLOUDINARY_API_SECRET'),
+                    ],
+                ]);
+
+                $result = $cloudinary->uploadApi()->upload(
+                    $request->file('avatar')->getRealPath(),
+                    ['folder' => 'members/avatar']
+                );
+
+                $data['avatar'] = $result['secure_url'];
+            }
+
+            $member->update($data);
 
             return response()->json([
+                'success' => true,
                 'message' => 'Cập nhật user thành công',
                 'member' => $member
             ]);
+
         } catch (\Throwable $e) {
             return response()->json([
+                'success' => false,
                 'message' => 'Cập nhật thất bại',
                 'error' => $e->getMessage()
             ], 500);

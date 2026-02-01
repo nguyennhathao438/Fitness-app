@@ -59,6 +59,7 @@ export default function PTCard({pt,onDeleteClick,onEditClick}) {
         {/* View PT Dialog */}
         <Dialog open={openView} onClose={() => setOpenView(false)}>
             <DetailDialog
+            avatar={pt.avatar}
             title={pt.name}
             tabs={[
                 {

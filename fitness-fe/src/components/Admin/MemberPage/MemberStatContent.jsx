@@ -6,7 +6,7 @@ export default function MemberStatContent({ genderStats , ageStats }) {
 
   return (
     <div className="space-y-2">
-      <div className="bg-gray-50 p-3 flex justify-between items-center w-full md:w-[560px] lg:w-[900px] xl:w-[1200px] gap-5 rounded-xl">
+      <div className="bg-gray-50 p-3 flex justify-between items-center w-full md:w-[560px] lg:w-[900px] xl:w-auto gap-5 rounded-xl">
             <div className="bg-white w-[200px] lg:w-[400px] xl:w-[550px] rounded-xl">
               <MemberStat
               icon={<TransgenderIcon/>}

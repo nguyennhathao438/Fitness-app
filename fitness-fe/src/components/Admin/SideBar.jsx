@@ -4,9 +4,9 @@ import { NavLink } from "react-router-dom";
 export default function SideBar({collapsed, setCollapsed}) {
     return(
         <div className={`fixed top-0 left-0 h-full bg-gray-800 text-white transition-all duration-300 ${collapsed ? "w-24" : "w-64"}`}>
-            <div className="p-4 flex gap-2">
+            <div className={`p-4 ${!collapsed ? "flex" : "items-center w-max space-y-2"} gap-2`}>
                 <div className="max-sm:w-6 h-3 sm:w-9 h-8 bg-purple-700 rounded-lg justify-center">
-                    <StarIcon className={`max-sm:size-3 ml-1 text-white size-4 fill-white md:ml-2.5 mt-1.5 ${collapsed ? "mr-2" : "inline"}`}></StarIcon>
+                    <StarIcon className={`max-sm:size-3 ml-1 text-white size-4 fill-white md:ml-2.5 mt-1.5 ${collapsed ? "mr-2 " : "inline"}`}></StarIcon>
                 </div>
                 <h2 className={`max-sm:hidden text-xl font-bold ${collapsed ? "hidden" : "inline"}`}>Admin Panel</h2>
                 <div className="bg-fuchsia-100 p-1 rounded-lg max-sm:hidden h-6 sm:h-8"

@@ -13,7 +13,7 @@ class PersonalTrainerController extends Controller
     // Lấy danh sách member (PT) cho trang Admin: phân trang + tìm kiếm + lọc + sắp xếp
     public function getPT(Request $request)
     {
-        $query = Member::select('id', 'name', 'email', 'phone','birthday', 'gender')->where('is_deleted', false);
+        $query = Member::select('id', 'name', 'email', 'phone','birthday', 'gender','avatar','updated_at')->where('is_deleted', false);
         // TÌM KIẾM (theo tên hoặc SĐT)
 
         if ($request->filled('keyword')) {

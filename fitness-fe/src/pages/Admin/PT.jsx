@@ -21,6 +21,7 @@ export default function PT({ refreshKey }){
     const [openDelete, setOpenDelete] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
     const [selectedPT, setSelectedPT] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     useEffect(() => {
         setLoading(true);
         // Fetch PT data from API
@@ -66,7 +67,10 @@ export default function PT({ refreshKey }){
     };
     // sửa thông tin
     const handleUpdatePT = async (data) => {
+      if (isSubmitting) return;
         try {
+            setIsSubmitting(true);
+
             await updatedUser(selectedPT.id, data);
 
             toast.success("Cập nhật PT thành công");
@@ -82,6 +86,8 @@ export default function PT({ refreshKey }){
             });
         } catch (err) {
             toast.error("Cập nhật thất bại");
+        }   finally {
+      setIsSubmitting(false);
         }
     };
 
@@ -176,6 +182,7 @@ export default function PT({ refreshKey }){
                     pt={selectedPT}
                     onSubmit={handleUpdatePT}
                     onClose={() => setOpenEdit(false)}
+                    loading={isSubmitting}
                     />
                 )}
             </Dialog>

@@ -7,8 +7,12 @@ export default function DetailDialog({ title, avatar, tabs }) {
     <div className="w-[full] sm:w-[520px] lg:w-[600px] xl:w-[720px] bg-white rounded-xl overflow-hidden">
       {/* Header */}
       <div className="bg-purple-600 text-white p-4 flex items-center gap-4">
-        <div className="w-14 h-14 bg-white/30 rounded-full">
-          {avatar}
+        <div className="w-14 h-14 rounded-full overflow-hidden bg-white/30 flex items-center justify-center">
+          <img
+            src={avatar || "/avatar-default.png"}
+            alt="Avatar"
+            className="w-full h-full object-cover"
+          />
         </div>
         <h2 className="text-xl font-bold">{title}</h2>
       </div>
