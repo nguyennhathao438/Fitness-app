@@ -28,7 +28,7 @@ class MemberController extends Controller
 
             //Lịch sử thanh toán 
             'package_id' => 'required|exists:training_packages,id',
-            'payment_method' => 'required|in:momo,vnpay,card',
+            'payment_method' => 'required|in:momo,vnpay,cash',
         ]);
         $member = null;
         $invoice = null;
@@ -37,12 +37,19 @@ class MemberController extends Controller
             DB::transaction(function () use ($request, &$member, &$invoice, &$package) {
                 //Lấy thông tin gói 
                 $package = TrainingPackage::findOrFail($request->package_id);
+                $isValid = true;
+                $status = "paid";
+                if ($request->payment_method == 'cash') {
+                    $isValid = false;
+                    $status = 'pending';
+                }
                 //Tạo người dùng 
                 $member = Member::create([
                     'name' => $request->name,
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
                     'is_deleted' => false,
+                    'is_valid' => $isValid,
                 ]);
                 //Tạo lịch sử mua gói 
                 $invoice = Invoice::create([
@@ -50,12 +57,18 @@ class MemberController extends Controller
                     'package_id' => $package->id,
                     'payment_method' => $request->payment_method,
                     'valid_until' => now()->addDays($package->duration_days),
+                    'status' => $status,
                 ]);
             });
             $serviceIds = $package->packageType->services->pluck('id');
+            $waiting = false;
+            if ($request->payment_method == 'cash') {
+                $waiting = true;
+            }
             // Tạo token luôn sau khi đăng ký (tùy chọn)
             $token = $member->createToken('member-token')->plainTextToken;
             return response()->json([
+                'waiting' => $waiting,
                 'message' => 'Đăng ký thành công',
                 'member' => $member,
                 'valid_until' => $invoice->valid_until,
@@ -83,49 +96,50 @@ class MemberController extends Controller
             'success' => true,
             'total' => $total,
             'gender' => [
-            'male' => $male,
-            'female' => $female
+                'male' => $male,
+                'female' => $female
             ]
         ]);
     }
     //thống kê biểu đồ tròn theo độ tuổi
     public function AgeStats()
     {
-    $stats = Member::where('is_deleted', false)
-        ->whereNotNull('birthday')
-        ->selectRaw("
+        $stats = Member::where('is_deleted', false)
+            ->whereNotNull('birthday')
+            ->selectRaw("
             SUM(TIMESTAMPDIFF(YEAR, birthday, CURDATE()) < 18) AS under_18,
             SUM(TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 18 AND 24) AS from_18_24,
             SUM(TIMESTAMPDIFF(YEAR, birthday, CURDATE()) BETWEEN 25 AND 34) AS from_25_34,
             SUM(TIMESTAMPDIFF(YEAR, birthday, CURDATE()) >= 35) AS over_35
         ")
-        ->first();
+            ->first();
 
-    return response()->json([
-        'success' => true,
-        'data' => [
-            ['label' => '< 18', 'value' => (int) $stats->under_18],
-            ['label' => '18 - 24', 'value' => (int) $stats->from_18_24],
-            ['label' => '25 - 34', 'value' => (int) $stats->from_25_34],
-            ['label' => '≥ 35', 'value' => (int) $stats->over_35],
-        ]
-    ]);
+        return response()->json([
+            'success' => true,
+            'data' => [
+                ['label' => '< 18', 'value' => (int) $stats->under_18],
+                ['label' => '18 - 24', 'value' => (int) $stats->from_18_24],
+                ['label' => '25 - 34', 'value' => (int) $stats->from_25_34],
+                ['label' => '≥ 35', 'value' => (int) $stats->over_35],
+            ]
+        ]);
     }
     // xóa người dùng
-    public function deletedUser($memberId){
-    $member = Member::find($memberId);
+    public function deletedUser($memberId)
+    {
+        $member = Member::find($memberId);
 
-    if (!$member) {
-        return response()->json(['message' => 'User không tồn tại'], 404);
-    }
+        if (!$member) {
+            return response()->json(['message' => 'User không tồn tại'], 404);
+        }
 
-    $member->update([
-        'is_deleted' => true
-    ]);
+        $member->update([
+            'is_deleted' => true
+        ]);
 
-    return response()->json([
-        'message' => 'Xóa user thành công'
-    ]);
+        return response()->json([
+            'message' => 'Xóa user thành công'
+        ]);
     }
 
     // sửa thông tin người dùng

@@ -26,9 +26,9 @@ const paymentMethods = [
     accentColor: "from-blue-500 to-blue-600",
   },
   {
-    id: "card",
-    name: "Thẻ tín dụng",
-    description: "Visa / MasterCard",
+    id: "cash",
+    name: "Tiền mặt",
+    description: "Bạn sẽ được admin xác nhận",
     logo: cardimg,
     bgColor: "bg-yellow-50",
     borderColor: "border-yellow-400",
@@ -36,7 +36,7 @@ const paymentMethods = [
   },
 ];
 
-export default function StepPayment({ data, setData, next, prev }) {
+export default function StepPayment({ data, setData, next, prev, setWaiting }) {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const choosePayment = (methodId) => {
@@ -59,6 +59,9 @@ export default function StepPayment({ data, setData, next, prev }) {
       dispatch(login(res.data));
       localStorage.setItem("token", res.data.token);
       toast.success("Đăng ký thành công");
+      if (res.data.waiting) {
+        setWaiting(true);
+      }
       next(); // sang step 3 (hoàn tất)
     } catch (error) {
       toast.error("Đăng ký thất bại");

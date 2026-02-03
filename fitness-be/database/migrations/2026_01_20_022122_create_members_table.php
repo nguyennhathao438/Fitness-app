@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->enum('gender', ['male', 'female', 'other'])->nullable();
             $table->string('avatar')->nullable();
             $table->boolean('is_deleted')->default(false);
+            $table->boolean('is_valid')->default(true);
             $table->timestamps();
         });
     }

@@ -9,6 +9,7 @@ import DefaultAdmin from "./layouts/DefaultAdmin";
 import User from "./pages/Admin/User";
 import Dashboard from "./pages/Admin/Dashboard";
 import RoleManagement from "./pages/admin/Role";
+import WaitingForRegister from "./pages/member/WaitingForRegister";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "/forgot-password",
         element: <ForgotPassword />,
+      },
+      {
+        path: "/waiting",
+        element: <WaitingForRegister />,
       },
     ],
   },

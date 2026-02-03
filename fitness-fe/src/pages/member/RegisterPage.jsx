@@ -16,6 +16,7 @@ export default function RegisterForm() {
     payment_method: "",
     package_id: packageId,
   });
+  const [waiting, setWaiting] = useState(false); // Chờ nếu thanh toán bằng tiền mặt
   const [packageInfo, setPackageInfo] = useState(null);
 
   useEffect(() => {
@@ -86,10 +87,11 @@ export default function RegisterForm() {
               setData={setData}
               next={next}
               prev={prev}
+              setWaiting={setWaiting}
             />
           )}
           {step === 3 && <StepSurvey next={next} />}
-          {step === 4 && <StepBodyMetrics />}
+          {step === 4 && <StepBodyMetrics waiting={waiting} />}
         </div>
       </div>
     </div>

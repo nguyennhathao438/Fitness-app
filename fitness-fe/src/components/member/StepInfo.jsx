@@ -1,4 +1,6 @@
 import { toast } from "react-toastify";
+import { checkEmail } from "../../services/member/MemberService.js";
+import { useState } from "react";
 export default function StepInfo({ data, setData, next, pkg }) {
   const handleChange = (e) => {
     setData((prev) => ({
@@ -6,11 +8,28 @@ export default function StepInfo({ data, setData, next, pkg }) {
       [e.target.name]: e.target.value,
     }));
   };
-
-  const handleNext = () => {
+  const [loading, setLoading] = useState(false);
+  const handleNext = async () => {
     if (!data.name || !data.email || !data.password) {
       toast.error("Vui lòng nhập đầy đủ thông tin cá nhân");
       return;
+    }
+    if (data.password.length < 6) {
+      toast.error("Mật khẩu phải từ 6 ký tự trở lên");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await checkEmail(data.email);
+      if (response.data.exists) {
+        toast.error("Email đã tồn tại");
+        return;
+      }
+    } catch (error) {
+      toast.error("Lỗi hệ thống", error);
+      return;
+    } finally {
+      setLoading(false);
     }
     next();
   };
@@ -83,12 +102,16 @@ export default function StepInfo({ data, setData, next, pkg }) {
         <button
           type="button"
           onClick={handleNext}
-          className="w-full py-3 rounded-full
-            bg-yellow-400 text-purple-900
-            font-bold text-base
-            hover:bg-yellow-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-400/30 transition-all"
+          disabled={loading}
+          className={`w-full py-3 rounded-full font-bold text-base transition-all
+    ${
+      loading
+        ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+        : "bg-yellow-400 text-purple-900 hover:bg-yellow-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-400/30"
+    }
+  `}
         >
-          TIẾP TỤC
+          {loading ? "Đang kiểm tra ..." : "Tiếp tục"}
         </button>
       </div>
     </div>

@@ -11,6 +11,7 @@ use App\Http\Controllers\TrainingPackageController;
 use App\Http\Controllers\RoleController;
 Route::post('/login', [AuthenController::class, 'login']);
 Route::post('/register', [MemberController::class, 'register']);
+Route::post('/check-email', [AuthenController::class, 'checkEmail']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/surveys', [SurveyController::class, 'store']);
     Route::post('/logout', [AuthenController::class, 'logout']);

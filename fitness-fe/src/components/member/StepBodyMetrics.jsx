@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createBodyMetric } from "../../services/member/MemberService.js";
 import { toast } from "react-toastify";
-export default function StepBodyMetrics() {
+export default function StepBodyMetrics({ waiting }) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -24,9 +24,15 @@ export default function StepBodyMetrics() {
     try {
       await createBodyMetric(form);
       toast.success("Lưu chỉ số cơ thể thành công");
-      setTimeout(() => {
-        navigate("/");
-      }, 500);
+      if (waiting) {
+        setTimeout(() => {
+          navigate("/waiting");
+        }, 500);
+      } else {
+        setTimeout(() => {
+          navigate("/");
+        }, 500);
+      }
     } catch (err) {
       console.error(err);
       toast.error("Lưu chỉ số cơ thể thất bại");
@@ -36,7 +42,15 @@ export default function StepBodyMetrics() {
   };
 
   const handleSkip = () => {
-    navigate("/"); // về trang chủ luôn
+    if (waiting) {
+      setTimeout(() => {
+        navigate("/waiting");
+      }, 500);
+    } else {
+      setTimeout(() => {
+        navigate("/");
+      }, 500);
+    }
   };
 
   return (

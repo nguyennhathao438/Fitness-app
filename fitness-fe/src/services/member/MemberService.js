@@ -21,3 +21,6 @@ export const submitSurvey = async (surveyData) => {
 export const createBodyMetric = (data) => {
   return api.post("/body-metrics", data);
 };
+export const checkEmail = (email) => {
+  return api.post("/check-email", { email });
+};
