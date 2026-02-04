@@ -3,9 +3,11 @@ import vnpayimg from "../../assets/vnpay.png";
 import cardimg from "../../assets/creditcard.png";
 import { toast } from "react-toastify";
 import { register } from "../../services/member/MemberService.js";
+import { createPaymentUrl } from "../../services/member/PaymentService.js";
 import { useDispatch } from "react-redux";
 import { login } from "../../storages/authSlice.js";
 import { useState } from "react";
+
 const paymentMethods = [
   {
     id: "momo",
@@ -26,7 +28,7 @@ const paymentMethods = [
     accentColor: "from-blue-500 to-blue-600",
   },
   {
-    id: "card",
+    id: "credit_card",
     name: "Thẻ tín dụng",
     description: "Visa / MasterCard",
     logo: cardimg,
@@ -39,6 +41,7 @@ const paymentMethods = [
 export default function StepPayment({ data, setData, next, prev }) {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+
   const choosePayment = (methodId) => {
     setData((prevData) => ({
       ...prevData,
@@ -52,18 +55,43 @@ export default function StepPayment({ data, setData, next, prev }) {
       return;
     }
     setLoading(true);
-    //Gọi api thanh toán ở đây
-    //Nếu thanh toán thành công
+
     try {
-      const res = await register(data);
-      dispatch(login(res.data));
-      localStorage.setItem("token", res.data.token);
-      toast.success("Đăng ký thành công");
-      next(); // sang step 3 (hoàn tất)
+      if (['momo', 'vnpay', 'credit_card'].includes(data.payment_method)) {
+        
+        localStorage.setItem('temp_register_data', JSON.stringify(data));
+
+        let bankCode = '';
+        if (data.payment_method === 'vnpay') {
+            bankCode = 'NCB'; 
+        } else if (data.payment_method === 'credit_card') {
+            bankCode = '';
+        }
+
+        const res = await createPaymentUrl(data.payment_method, data.package_id, bankCode);
+        
+        if (res.data && res.data.payUrl) {
+           window.location.href = res.data.payUrl;
+           return; 
+        } else {
+           toast.error("Không lấy được link thanh toán");
+           setLoading(false);
+        }
+      } 
+      
+      else {
+        const res = await register(data);
+        dispatch(login(res.data));
+        localStorage.setItem("token", res.data.token);
+        
+        toast.success("Đăng ký thành công");
+        setLoading(false);
+        next(); 
+      }
+
     } catch (error) {
-      toast.error("Đăng ký thất bại");
+      toast.error("Có lỗi xảy ra khi xử lý thanh toán");
       console.error(error);
-    } finally {
       setLoading(false);
     }
   };
@@ -81,15 +109,15 @@ export default function StepPayment({ data, setData, next, prev }) {
             type="button"
             onClick={() => choosePayment(method.id)}
             className={`
-        relative p-5 rounded-2xl border-2 transition-all duration-300
-        flex flex-col items-center gap-3
-        hover:scale-105
-        ${
-          data.payment_method === method.id
-            ? `${method.borderColor} ${method.bgColor}`
-            : "border-gray-600 bg-gray-800/50 hover:border-gray-400"
-        }
-      `}
+                relative p-5 rounded-2xl border-2 transition-all duration-300
+                flex flex-col items-center gap-3
+                hover:scale-105
+                ${
+                  data.payment_method === method.id
+                    ? `${method.borderColor} ${method.bgColor}`
+                    : "border-gray-600 bg-gray-800/50 hover:border-gray-400"
+                }
+            `}
           >
             {/* Check */}
             {data.payment_method === method.id && (
@@ -145,7 +173,7 @@ export default function StepPayment({ data, setData, next, prev }) {
           className="flex-1 py-3 rounded-full border-2 border-yellow-400 text-yellow-400 
       hover:bg-yellow-400 hover:scale-105 hover:text-gray-900 hover:font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-yellow-400/30"
         >
-          Quay lai
+          Quay lại
         </button>
 
         <button

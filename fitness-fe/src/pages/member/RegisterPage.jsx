@@ -1,36 +1,97 @@
 import { useState, useEffect } from "react";
+import { useSearchParams, useNavigate, useParams } from "react-router-dom"; 
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+
 import StepInfo from "../../components/member/StepInfo";
 import StepPayment from "../../components/member/StepPayment";
 import StepSurvey from "../../components/member/StepSurvey";
-import backgroundImage from "../../assets/background.jpg";
-import { useParams } from "react-router-dom";
 import StepBodyMetrics from "../../components/member/StepBodyMetrics.jsx";
+import backgroundImage from "../../assets/background.jpg";
+
 import { getTrainingPackageById } from "../../services/member/TraningPakageService.js";
+import { register } from "../../services/member/MemberService.js";
+import { login } from "../../storages/authSlice";
+
 export default function RegisterForm() {
-  const [step, setStep] = useState(1);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { packageId } = useParams();
-  const [data, setData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    payment_method: "",
-    package_id: packageId,
-  });
+
+  const [step, setStep] = useState(1);
   const [packageInfo, setPackageInfo] = useState(null);
+
+  const [data, setData] = useState(() => {
+    const saved = localStorage.getItem('temp_register_data');
+    if (saved) return JSON.parse(saved);
+    return {
+      name: "",
+      email: "",
+      password: "",
+      payment_method: "",
+      package_id: packageId,
+    };
+  });
+
+  //
 
   useEffect(() => {
     if (!data.package_id) return;
-
     getTrainingPackageById(data.package_id)
       .then((res) => {
         if (res.data.success) {
           setPackageInfo(res.data.data);
+          setData(prev => ({ ...prev, total_price: res.data.data.price }));
         }
       })
-      .catch((err) => {
-        console.error("Lỗi lấy gói tập:", err);
-      });
+      .catch((err) => console.error("Lỗi lấy gói tập:", err));
   }, [data.package_id]);
+
+  // 
+
+  useEffect(() => {
+    const momoResult = searchParams.get("resultCode");
+    const vnpResult = searchParams.get("vnp_ResponseCode");
+
+    if (momoResult === "0" || vnpResult === "00") {
+      
+      const savedData = localStorage.getItem('temp_register_data');
+
+      if (savedData) {
+        let parsedData = JSON.parse(savedData);
+        
+        if (parsedData.payment_method === 'credit_card') {
+             parsedData.payment_method = 'vnpay'; 
+        }
+
+        register(parsedData)
+          .then((res) => {
+            dispatch(login(res.data));
+            localStorage.setItem("token", res.data.token);
+            
+            toast.success("Thanh toán thành công!");
+            setStep(3); 
+
+            localStorage.removeItem('temp_register_data'); 
+            navigate(window.location.pathname, { replace: true });
+          })
+          .catch((err) => {
+            console.error("Lỗi đăng ký:", err); 
+            
+            if (err.response && err.response.data && err.response.data.message) {
+                toast.error(err.response.data.message);
+            } else {
+                toast.error("Lỗi kích hoạt tài khoản.");
+            }
+          });
+      }
+    } else if (momoResult && momoResult !== "0") {
+      toast.error("Giao dịch thất bại hoặc bị hủy.");
+      localStorage.removeItem('temp_register_data'); 
+    }
+  }, [searchParams]);
+
   const next = () => setStep((s) => s + 1);
   const prev = () => setStep((s) => s - 1);
 
@@ -47,8 +108,8 @@ export default function RegisterForm() {
         className={`relative z-10 w-full transition-all duration-300
     ${
       step === 3
-        ? "max-w-5xl" // StepSurvey rộng hơn
-        : "max-w-lg" // Step 1,2 gọn hơn
+        ? "max-w-5xl" 
+        : "max-w-lg" 
     }`}
       >
         {/* TAB INDICATOR */}

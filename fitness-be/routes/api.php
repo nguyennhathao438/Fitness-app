@@ -7,6 +7,7 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\OtpController;
 use App\Http\Controllers\TrainingPackageController;
 use App\Http\Controllers\BodyMetricController;
+use App\Http\Controllers\PaymentController;
 Route::post('/login', [AuthenController::class, 'login']);
 Route::post('/register', [MemberController::class, 'register']);
 Route::middleware('auth:sanctum')->group(function () {
@@ -22,3 +23,7 @@ Route::get('/training-packages/{id}', [TrainingPackageController::class, 'show']
 Route::post('/send-otp', [OtpController::class, 'sendOtp']);
 Route::post('/verify-otp', [OtpController::class, 'verifyOtp']);
 Route::post('/reset-password', [OtpController::class, 'resetPassword']);
+
+//payment
+Route::post('/momo_payment', [PaymentController::class, 'momo_payment']);
+Route::post('/vnpay_payment', [PaymentController::class, 'vnpay_payment']);
