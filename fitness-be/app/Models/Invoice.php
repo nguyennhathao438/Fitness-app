@@ -14,13 +14,16 @@ class Invoice extends Model
         'member_id',
         'package_id',
         'payment_method',
+        'status',
         'valid_until',
+        'is_deleted',
     ];
 
     protected $casts = [
         'member_id' => 'integer',
         'valid_until' => 'date',
         'package_id' => 'integer',
+        'is_deleted' => 'boolean',
     ];
 
     /* =====================

@@ -11,6 +11,7 @@ use Cloudinary\Cloudinary;
 use DB;
 use Throwable;
 use App\Models\PasswordOtp;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 class MemberController extends Controller
 {
@@ -72,7 +73,7 @@ class MemberController extends Controller
         }
     }
     // Thống kê progressbar giới tính
-    public function memberStats(Request $request)
+    public function memberStats()
     {
         $baseQuery = Member::where('is_deleted', false);
 
@@ -191,6 +192,124 @@ class MemberController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+    // lấy số lượng người hội viên dùng tháng này
+    public function getUserThisMonth()
+    {
+        $memberThisMonth = Member::where('is_deleted', false)
+            ->whereHas('roles', function ($q) {
+                $q->where('name', 'Member');
+            })
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->count();
+        $memberLastMonth = Member::where('is_deleted', false)
+            ->whereHas('roles', function ($q) {
+                $q->where('name', 'Member');
+            })
+            ->whereMonth('created_at', Carbon::now()->subMonth()->month)
+            ->whereYear('created_at', Carbon::now()->subMonth()->year)
+            ->count();
+        if ($memberLastMonth > 0) {
+            $percentChange = (($memberThisMonth - $memberLastMonth) / $memberLastMonth) * 100;
+        } else {
+            // tháng trước = 0
+            $percentChange = $memberThisMonth > 0 ? 100 : 0;
+        }
+        $percentChange = round($percentChange, 2);
+        return response()->json([
+            'success' => true,
+            'data' => [
+            'this_month' => $memberThisMonth,
+            'last_month' => $memberLastMonth,
+            'percent_change' => $percentChange,
+        ],
+        ]);
+    }
+    // Thống kê biểu đồ cột theo vai trò và tổng người dùng
+    public function getMemberChart(Request $request)
+    {
+        $type  = $request->type ?? 'yearly';
+        $year  = $request->year ?? now()->year;
+        $month = $request->month ?? now()->month;
+
+        $labels = [];
+        $memberData = [];
+        $ptData = [];
+        $allData = [];
+        // month
+        if ($type === 'monthly') {
+            $daysInMonth = Carbon::create($year, $month)->daysInMonth;
+            for ($day = 1; $day <= $daysInMonth; $day++) {
+                $start = Carbon::create($year, $month, $day)->startOfDay();
+                $end   = Carbon::create($year, $month, $day)->endOfDay();
+                $labels[] = (string)$day;
+                $memberData[] = Member::where('is_deleted', false)
+                    ->whereBetween('created_at', [$start, $end])
+                    ->whereHas('roles', fn($q) => $q->where('name', 'Member'))
+                    ->count();
+                $ptData[] = Member::where('is_deleted', false)
+                    ->whereBetween('created_at', [$start, $end])
+                    ->whereHas('roles', fn($q) => $q->where('name', 'PT'))
+                    ->count();
+                $allData[] = Member::where('is_deleted', false)
+                    ->whereBetween('created_at', [$start, $end])
+                    ->count();
+            }
+        }
+        // quaterly
+        elseif ($type === 'quarterly') {
+            $quarters = [
+                ['Q1', 1, 3],
+                ['Q2', 4, 6],
+                ['Q3', 7, 9],
+                ['Q4', 10, 12],
+            ];
+            foreach ($quarters as [$label, $startMonth, $endMonth]) {
+                $start = Carbon::create($year, $startMonth, 1)->startOfMonth();
+                $end   = Carbon::create($year, $endMonth, 1)->endOfMonth();
+                $labels[] = $label;
+                $memberData[] = Member::where('is_deleted', false)
+                    ->whereBetween('created_at', [$start, $end])
+                    ->whereHas('roles', fn($q) => $q->where('name', 'Member'))
+                    ->count();
+                $ptData[] = Member::where('is_deleted', false)
+                    ->whereBetween('created_at', [$start, $end])
+                    ->whereHas('roles', fn($q) => $q->where('name', 'PT'))
+                    ->count();
+                $allData[] = Member::where('is_deleted', false)
+                    ->whereBetween('created_at', [$start, $end])
+                    ->count();
+            }
+        }
+        // Year
+        else {
+            for ($m = 1; $m <= 12; $m++) {
+                $start = Carbon::create($year, $m, 1)->startOfMonth();
+                $end   = Carbon::create($year, $m, 1)->endOfMonth();
+                $labels[] = 'T' . $m;
+                $memberData[] = Member::where('is_deleted', false)
+                    ->whereBetween('created_at', [$start, $end])
+                    ->whereHas('roles', fn($q) => $q->where('name', 'Member'))
+                    ->count();
+                $ptData[] = Member::where('is_deleted', false)
+                    ->whereBetween('created_at', [$start, $end])
+                    ->whereHas('roles', fn($q) => $q->where('name', 'PT'))
+                    ->count();
+                $allData[] = Member::where('is_deleted', false)
+                    ->whereBetween('created_at', [$start, $end])
+                    ->count();
+            }
+        }
+        return response()->json([
+            'success' => true,
+            'labels' => $labels,
+            'data' => [
+                'member' => $memberData,
+                'pt' => $ptData,
+                'all' => $allData,
+            ],
+        ]);
     }
 
 }

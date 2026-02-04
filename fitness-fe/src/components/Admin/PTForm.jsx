@@ -32,6 +32,9 @@ export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,
   formData.append("phone", data.phone || "");
   formData.append("gender", data.gender || "");
   formData.append("birthday", data.birthday || "");
+  if (mode === "add") {
+    formData.append("password", data.password);
+  }
   if (selectedFile) {
     formData.append("avatar", selectedFile);
   }
@@ -84,7 +87,7 @@ export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,
       "
     >
       {/* Header */}
-      <div className="bg-purple-600 px-6 py-4 text-white">
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 text-white">
         <h2 className="text-xl font-semibold">
           {mode === "add" ? "Add New PT" : "Edit PT"}
         </h2>
@@ -226,7 +229,7 @@ export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,
         disabled={loading}
         className={`
           w-32 rounded-lg text-white
-          ${loading ? "bg-purple-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-300"}
+          ${loading ? "bg-purple-400 cursor-not-allowed" : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"}
         `}
       >
         {loading ? (

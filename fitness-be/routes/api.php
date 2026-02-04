@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthenController;
 use App\Http\Controllers\BodyMetricController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PersonalTrainerController;
 use App\Http\Controllers\SurveyController;
@@ -21,12 +22,20 @@ Route::middleware('auth:sanctum')->group(function () {
     //member
     Route::put('/deleted/{memberID}', [MemberController::class, 'deletedUser']);
     Route::put('/update/{memberID}', [MemberController::class, 'editUser']);
+    Route::get('member-thismonth',[MemberController::class,'getUserThisMonth']);
+    Route::get('/userchart', [MemberController::class, 'getMemberChart']);
     //PT
     Route::get('/personal-trainers', [PersonalTrainerController::class, 'getPT']);
     Route::get('/genderStat', [MemberController::class, 'memberStats']);
     Route::get('/BirthStat', [MemberController::class, 'AgeStats']);
     Route::post('/personal-trainers', [PersonalTrainerController::class, 'createPT']);
-
+    //invoice
+    Route::get('/invoice',[InvoiceController::class,'getInvoice']);
+    Route::get('/invoice-thismonth',[InvoiceController::class,'getInvoiceThisMonth']);
+    Route::get('/paymentstat', [InvoiceController::class, 'getPayment']);
+    Route::get('/invoice-permonth', [InvoiceController::class, 'getInvoicePerMonth']);
+    Route::get('/invoice-moneystat', [InvoiceController::class, 'getInvoiceMoney']);
+    Route::put('/invoice_delete/{invoiceID}',[InvoiceController::class,'deleteInvoice']);
 });
 //package
 Route::get('/training-packages', [TrainingPackageController::class, 'index']);

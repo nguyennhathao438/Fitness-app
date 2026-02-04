@@ -9,6 +9,8 @@ import DefaultAdmin from "./layouts/DefaultAdmin";
 import User from "./pages/Admin/User";
 import Dashboard from "./pages/Admin/Dashboard";
 import RoleManagement from "./pages/admin/Role";
+import Invoice from "./pages/Admin/Invoice";
+import PageError from "./pages/Admin/PageError";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -41,7 +43,11 @@ const router = createBrowserRouter([
     element: <DefaultAdmin />,
     children: [
       {
-        path: "",
+        path:"",
+        element: <PageError/>
+      },
+      {
+        path: "dashboard",
         element: <Dashboard />,
       },
       {
@@ -52,6 +58,10 @@ const router = createBrowserRouter([
         path: "role",
         element: <RoleManagement />,
       },
+      {
+        path: "order",
+        element: <Invoice/>
+      }
     ],
   },
 ]);

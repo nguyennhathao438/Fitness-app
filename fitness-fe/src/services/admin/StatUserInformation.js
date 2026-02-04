@@ -6,3 +6,9 @@ export const getGenderUser = (params) => {
 export const getAgeUser = () => {
     return api.get("/BirthStat");
 }
+export const getMemberThisMonth = () => {
+    return api.get("/member-thismonth");
+}
+export const getUserChart = (params) => {
+    return api.get("/userchart",{params});
+}

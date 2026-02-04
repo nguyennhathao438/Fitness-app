@@ -1,4 +1,4 @@
-import { SearchIcon } from "lucide-react";
+import { FilterIcon, SearchIcon } from "lucide-react";
 import {useEffect, useState } from "react";
 import PTCard from "../../components/Admin/PTPage/PTCard";
 import { deletedUser, getPersonalTrainers, updatedUser } from "../../services/admin/PersonalTrainerService";
@@ -8,7 +8,7 @@ import DeletedDialog from "../../components/Admin/DeletedDialog";
 import PTForm from "../../components/Admin/PTForm";
 import Dialog from "../../components/Admin/Dialog";
 
-export default function PT({ refreshKey }){
+export default function PT({ refreshKey,onChanged }){
     //state loadpage
     const [page, setPage] = useState(1);
     const [keyword, setKeyword] = useState("");
@@ -59,7 +59,7 @@ export default function PT({ refreshKey }){
                 setPts(res.data.data.data);
                 setMeta(res.data.data);
             });
-
+        onChanged?.();
         } catch (err) {
             console.error(err);
             toast.error("Xóa thất bại");
@@ -84,6 +84,7 @@ export default function PT({ refreshKey }){
                 setPts(res.data.data.data);
                 setMeta(res.data.data);
             });
+            onChanged?.();
         } catch (err) {
             toast.error("Cập nhật thất bại");
         }   finally {
@@ -94,46 +95,61 @@ export default function PT({ refreshKey }){
     return(
         <>
         <div className="">
-            <div className="p-3 m-1 border-2 border-[#e0d8d8] px-3 rounded-lg grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* Search PT */}
-                <div className="relative">
-                    <SearchIcon className="size-5 text-gray-400 absolute top-3 left-3"/>
-                    <input
-                    value={keyword} 
+            {/* FILTER BAR */}
+            <div className="mb-2">
+            <div className="bg-white rounded-xl shadow-sm p-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+
+                {/* Search */}
+                <div className="relative w-full lg:max-w-md">
+                <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
+                <input
+                    value={keyword}
                     type="text"
                     placeholder="Search trainers by name..."
-                    className="w-full p-2 pl-10 bg-[#E2E8F0] text-[#929292] border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none"
                     onChange={(e) => setKeyword(e.target.value)}
-                    />
+                    className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg
+                            focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
+                />
                 </div>
-                <div>
+
+                {/* Filters */}
+                <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+
+                {/* Gender */}
+                <div className="relative w-full sm:w-[180px]">
+                    <FilterIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
                     <select
-                        value={gender}
-                        className="w-full py-2 px-3 bg-[#E2E8F0] border text-[#524848] border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                        onChange={(e) => {
-                            setGender(e.target.value);
-                        }}
+                    value={gender}
+                    onChange={(e) => setGender(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg
+                                focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
                     >
-                        <option value="">Filter by</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
+                    <option value="">All Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
                     </select>
                 </div>
 
-                <div>
+                {/* Sort */}
+                <div className="relative w-full sm:w-[160px]">
+                    <FilterIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
                     <select
-                        className="w-full py-2 px-3 bg-[#E2E8F0] text-[#524848] border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                        value={sort}
-                        onChange={(e) => setSort(e.target.value)}
+                    value={sort}
+                    onChange={(e) => setSort(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg
+                                focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
                     >
-                        <option value="desc">Newest</option>
-                        <option value="asc">Oldest</option>
+                    <option value="desc">Newest</option>
+                    <option value="asc">Oldest</option>
                     </select>
                 </div>
+
+                </div>
             </div>
-            <div className="p-2 bg-[#F6F5F5] mx-2 gap-12 lg:gap-10 xl:gap-10  grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {/* Card PT */}
+            </div>
+            {/* Card PT */}
+            <div className="p-1 bg-[#F6F5F5] mx-2 gap-12 lg:gap-10 xl:gap-10  grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 rounded-lg">
                 {loading && <p>Đang tải PT...</p>}
 
                 {!loading && pts.length === 0 && (

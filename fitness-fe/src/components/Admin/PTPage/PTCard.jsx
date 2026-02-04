@@ -20,11 +20,11 @@ export default function PTCard({pt,onDeleteClick,onEditClick}) {
     // Hiển thị Thẻ thông tin PT 
     return(
         <>
-        <div className="w-[140px] sm:w-11/12 lg:w-[260px] h-auto sm:full md:54 shadow-lg rounded-xl overflow-hidden transform
+        <div className="w-[140px] sm:w-11/12 lg:w-[260px] h-auto sm:full shadow-lg rounded-xl overflow-hidden transform
          transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl">
-            <div className="bg-[#9333EA] rounded-t-xl flex justify-between p-3">
+            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-t-xl flex justify-between p-2">
                 <div className="">
-                    <div className="bg-[#A870FF] p-2 sm:p-3 rounded-2xl mb-2 w-max"><p className="text-sm sm:text-lg">{getInitials(pt.name)}</p></div>
+                    <div className="bg-[#A870FF] p-2 sm:p-3 rounded-2xl mb-2 w-max"><p className="text-sm sm:text-lg text-white">{getInitials(pt.name)}</p></div>
                     <p className="text-white max-sm:hidden">{pt.name}</p>
                 </div>
                 <div className="text-white mr-3 grid grid-cols-1">
