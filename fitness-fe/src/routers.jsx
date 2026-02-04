@@ -7,6 +7,12 @@ import Login from "./pages/member/Login";
 import ForgotPassword from "./pages/member/ForgotPasswod";
 import Profile from "./pages/member/Profile";
 import BodyMetric from "./pages/member/BodyMetric";
+import DefaultAdmin from "./layouts/DefaultAdmin";
+import User from "./pages/Admin/User";
+import Dashboard from "./pages/Admin/Dashboard";
+import RoleManagement from "./pages/admin/Role";
+import Exercise from "./pages/Admin/Exercise";
+import MuscleGroup from "./pages/Admin/MuscleGroup";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -39,6 +45,32 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         element: <Profile />,
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    element: <DefaultAdmin />,
+    children: [
+      {
+        path: "",
+        element: <Dashboard />,
+      },
+      {
+        path: "user",
+        element: <User />,
+      },
+      {
+        path: "role",
+        element: <RoleManagement />,
+      },
+      {
+        path: "exercise",
+        element: <Exercise/>,
+      },
+      {
+        path: "muscle",
+        element: <MuscleGroup/>,
       },
     ],
   },
