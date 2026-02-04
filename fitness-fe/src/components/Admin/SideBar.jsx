@@ -93,6 +93,38 @@ export default function SideBar({ collapsed, setCollapsed }) {
               RoleSet
             </span>
           </NavLink>
+
+          <NavLink
+            to="/admin/exercise"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
+                            hover:bg-purple-500
+                            ${isActive ? "bg-purple-600" : ""}`
+            }
+          >
+            <ShieldCheckIcon className=" text-white inline-block mr-2 size-5"></ShieldCheckIcon>
+            <span
+              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+            >
+              Exercise
+            </span>
+          </NavLink>
+
+          <NavLink
+            to="/admin/muscle"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
+                            hover:bg-purple-500
+                            ${isActive ? "bg-purple-600" : ""}`
+            }
+          >
+            <ShieldCheckIcon className=" text-white inline-block mr-2 size-5"></ShieldCheckIcon>
+            <span
+              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+            >
+              MuscleGroup
+            </span>
+          </NavLink>
         </ul>
       </nav>
     </div>

@@ -13,32 +13,29 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
     <>
-      <header className="bg-[#1a1625] border-b border-[#2a2435]">
+      <header className="bg-[#000000] border-b border-[#2a2435]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex-shrink-0">
-              <span className="text-2xl font-bold tracking-tight">
-                <span className="text-white">FIGHT</span>
-                <span className="text-[#a78bfa]">I</span>
-                <span className="text-[#c4b5fd]">CO</span>
-              </span>
+            <Link href="/" className="shrink-0">
+              <img className="w-40 h-16" src="https://fight100.vn/wp-content/uploads/2024/02/logo.png" alt="" />
             </Link>
 
             {/* Desktop Navigation - hidden below lg (1024px) */}
-            <nav className="hidden lg:flex items-center gap-8">
-              <Link
-                href="/gioi-thieu"
-                className="text-gray-300 hover:text-white transition-colors text-sm"
-              >
+            <nav className="hidden lg:flex items-center gap-10">
+              <Link href="/gioi-thieu" className="text-gray-300 font-bold hover:text-white transition-colors text-md">
                 Giới thiệu
               </Link>
-              <Link
-                to="/pricing-packages"
-                className="text-gray-300 hover:text-white transition-colors text-sm"
-              >
+
+              <Link to="/pricing-packages" className="text-gray-300 font-bold hover:text-white transition-colors text-md">
                 Đăng ký gói tập
               </Link>
+
+              <Link to="/bmi" className="text-gray-300 hover:text-white transition-colors font-bold text-md ">
+                BMI
+              </Link>
+
+
             </nav>
 
             {/* Desktop Right Section - hidden below lg (1024px) */}
@@ -48,14 +45,18 @@ export default function Header() {
                   {/* User Info - Da dang nhap */}
                   <div className="flex items-center gap-3">
                     {member?.avatar ? (
-                      <img
-                        src={member.avatar || defaultAvatar}
-                        alt="avatar"
-                        className="w-9 h-9 rounded-full object-cover border-2 border-purple-400"
-                      />
+                      <Link to="/profile">
+                        <img
+                          src={member.avatar || defaultAvatar}
+                          alt="avatar"
+                          className="w-9 h-9 rounded-full object-cover border-2 border-purple-400"
+                        />
+                      </Link>
                     ) : (
                       <div className="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center border-2 border-purple-400">
-                        <User className="w-5 h-5 text-gray-300" />
+                        <Link to="/profile">
+                          <User className="w-5 h-5 text-gray-300" />
+                        </Link>
                       </div>
                     )}
                     <span className="text-sm text-gray-200 font-medium">
@@ -108,9 +109,8 @@ export default function Header() {
 
           {/* Mobile Navigation - visible below lg (1024px) */}
           <div
-            className={`lg:hidden overflow-hidden transition-all duration-300 ${
-              isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-            }`}
+            className={`lg:hidden overflow-hidden transition-all duration-300 ${isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+              }`}
           >
             <div className="pb-4 border-t border-[#2a2435] mt-2 pt-4">
               <nav className="flex flex-col gap-2">
@@ -119,7 +119,7 @@ export default function Header() {
                   className="text-gray-300 hover:text-white hover:bg-gray-800 transition-colors text-sm py-2 px-3 rounded-lg"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Gioi thieu
+                  Giới thiệu
                 </Link>
                 <Link
                   to="/pricing-packages"

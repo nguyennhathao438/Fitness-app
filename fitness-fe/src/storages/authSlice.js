@@ -28,8 +28,11 @@ const authSlice = createSlice({
 
       localStorage.clear();
     },
+    updateMember: (state, action) => {
+      state.member = action.payload;
+    },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, updateMember } = authSlice.actions;
 export default authSlice.reducer;

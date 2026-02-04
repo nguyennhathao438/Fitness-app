@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { MoveRight } from "lucide-react";
 import { getAllRoles } from "../../services/admin/Role.js";
-import RolePermissionModal from "@/components/admin/RolePermissionModal.jsx";
-import AddRoleModal from "@/components/admin/AddRoleModal.jsx";
+import RolePermissionModal from "../../components/Admin/RolePermissionModal.jsx"
+import AddRoleModal from "../../components/Admin/AddRoleModal.jsx"
 // ================= MAIN PAGE =================
 export default function RoleAccessPage() {
   const [roles, setRoles] = useState([]);

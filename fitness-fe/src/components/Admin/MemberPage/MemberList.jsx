@@ -8,7 +8,7 @@ import MemberInfoTab from "./MemberInfoTab";
 import PTForm from "../PTForm";
 import BodyMetricInfoTab from "./BodyMetricInfoTab";
 import DeletedDialog from "../DeletedDialog";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 
 export default function MemberList() {
     const [page, setPage] = useState(1);

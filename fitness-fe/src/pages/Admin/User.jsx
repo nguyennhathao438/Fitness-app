@@ -22,7 +22,7 @@ import {
   getGenderUser,
 } from "../../services/admin/StatUserInformation";
 import MemberList from "../../components/Admin/MemberPage/MemberList";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 
 export default function User() {
   const [activeTab, setActiveTab] = useState("stats");

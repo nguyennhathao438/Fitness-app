@@ -11,6 +11,7 @@ use DB;
 use Throwable;
 use App\Models\PasswordOtp;
 use Illuminate\Support\Facades\Mail;
+
 class MemberController extends Controller
 {
     /*
@@ -83,6 +84,42 @@ class MemberController extends Controller
             ], 500);
         }
     }
+
+    public function updateProfile(Request $request)
+    {
+        $member = $request->user(); // member đang đăng nhập
+
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:members,email,' . $member->id,
+            'phone'    => 'required|string|max:20',
+            'gender'   => 'nullable|string|in:male,female,other'
+        ]);
+
+        try {
+            // Lấy dữ liệu hợp lệ từ request
+            $data = $request->only([
+                'name',
+                'email',
+                'phone',
+                'gender',
+            ]);
+
+            // Update
+            $member->update($data);
+
+            return response()->json([
+                'message' => 'Cập nhật thông tin thành công',
+                'member'  => $member,
+            ], 200);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => 'Cập nhật thất bại',
+                'error'   => $e->getMessage(),
+                ], 500);
+        }
+    }
+
     // Thống kê progressbar giới tính
     public function memberStats(Request $request)
     {
@@ -184,4 +221,36 @@ class MemberController extends Controller
         }
     }
 
+    public function changePassword(Request $request)
+    {
+        $member = $request->user();
+
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:6|confirmed',
+        ]);
+
+        // Kiểm tra mật khẩu hiện tại
+        if (!Hash::check($request->current_password, $member->password)) {
+            return response()->json([
+                'message' => 'Mật khẩu hiện tại không đúng'
+            ], 400);
+        }
+
+        // Không cho trùng mật khẩu cũ
+        if (Hash::check($request->new_password, $member->password)) {
+            return response()->json([
+                'message' => 'Mật khẩu mới không được trùng mật khẩu cũ'
+            ], 400);
+        }
+
+        // Cập nhật mật khẩu
+        $member->update([
+            'password' => Hash::make($request->new_password),
+        ]);
+
+        return response()->json([
+            'message' => 'Đổi mật khẩu thành công'
+        ], 200);
+    }
 }

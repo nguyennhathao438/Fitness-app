@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import StepInfo from "../../components/member/StepInfo";
 import StepPayment from "../../components/member/StepPayment";
 import StepSurvey from "../../components/member/StepSurvey";
-import backgroundImage from "../../assets/background.jpg";
+import backgroundImage from "../../assets/background.jpg"
 import { useParams } from "react-router-dom";
 import StepBodyMetrics from "../../components/member/StepBodyMetrics.jsx";
 import { getTrainingPackageById } from "../../services/member/TraningPakageService.js";

@@ -3,7 +3,7 @@ import {useEffect, useState } from "react";
 import PTCard from "../../components/Admin/PTPage/PTCard";
 import { deletedUser, getPersonalTrainers, updatedUser } from "../../services/admin/PersonalTrainerService";
 import Pagination from "../../components/Admin/Pagination";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import DeletedDialog from "../../components/Admin/DeletedDialog";
 import PTForm from "../../components/Admin/PTForm";
 import Dialog from "../../components/Admin/Dialog";

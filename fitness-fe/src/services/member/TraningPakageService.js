@@ -13,6 +13,10 @@ export const getTrainingPackages = (packageTypeId) => {
     },
   });
 };
+//Lấy tất cả gói
+export const getAllTrainingPackages = ()=>{
+  return api.get("/training-packages");
+}
 //Lấy loại gói + dịch vụ
 export const getCompareFeatures = async () => {
   return api.get("/package-compare");
