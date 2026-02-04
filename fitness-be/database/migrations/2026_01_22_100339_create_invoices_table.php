@@ -22,9 +22,9 @@ return new class extends Migration {
                 ->onDelete('cascade');
 
             $table->enum('payment_method', ['momo', 'vnpay', 'cash']);
+            $table->enum('status', ['pending', 'paid', 'reject']);
             $table->date('valid_until')->nullable();
             $table->boolean('is_deleted')->default(false);
-            $table->enum('status', ['pending', 'paid', 'reject']);
             $table->timestamps(); // created_at & updated_at
         });
     }

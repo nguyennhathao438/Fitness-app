@@ -14,6 +14,7 @@ import RoleManagement from "./pages/admin/Role";
 import WaitingForRegister from "./pages/member/WaitingForRegister";
 import Exercise from "./pages/Admin/Exercise";
 import MuscleGroup from "./pages/Admin/MuscleGroup";
+import Invoice from "./pages/Admin/Invoice";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -47,7 +48,10 @@ const router = createBrowserRouter([
         path: "/waiting",
         element: <WaitingForRegister />,
       },
-      { path: "/profile", element: <Profile /> },
+      {
+        path: "/profile",
+        element: <Profile />,
+      },
     ],
   },
   {
@@ -73,6 +77,10 @@ const router = createBrowserRouter([
       {
         path: "muscle",
         element: <MuscleGroup />,
+      },
+      {
+        path: "order",
+        element: <Invoice />,
       },
     ],
   },

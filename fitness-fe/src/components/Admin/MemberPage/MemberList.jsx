@@ -1,4 +1,4 @@
-import { SearchIcon, EyeIcon, PencilIcon, TrashIcon } from "lucide-react";
+import { SearchIcon, EyeIcon, PencilIcon, TrashIcon, FilterIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { deletedUser, getPersonalTrainers, updatedUser } from "../../../services/admin/PersonalTrainerService";
 import Pagination from "../Pagination";
@@ -10,8 +10,9 @@ import BodyMetricInfoTab from "./BodyMetricInfoTab";
 import DeletedDialog from "../DeletedDialog";
 import { toast } from "react-toastify";
 
-export default function MemberList() {
+export default function MemberList({onChanged}) {
     const [page, setPage] = useState(1);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [keyword, setKeyword] = useState("");
     const [gender, setGender] = useState("");
     const [sort, setSort] = useState("desc");
@@ -39,18 +40,30 @@ export default function MemberList() {
         .finally(() => setLoading(false));
     };
     // Sửa thông tin member
-    const handleupdated = async(data) => {
+    const handleupdated = async (formData) => {
+      if (isSubmitting) return;
       try {
-        await updatedUser(selectedMember.id,data);
+        setIsSubmitting(true);
+        const res = await updatedUser(selectedMember.id, formData);
+
+        const updatedMember = res.data.member;
+
+        setMemberList(prev =>
+          prev.map(m =>
+            m.id === updatedMember.id ? updatedMember : m
+          )
+        );
+
         toast.success("Updated Success");
         setOpenForm(false);
         setSelectedMember(null);
-        fetchMembers();
+        onChanged?.();
       } catch (error) {
-        toast.error("Fail to updated")
-      }
+        toast.error("Fail to updated");
+      } finally {
+      setIsSubmitting(false);
     }
-
+    };
     useEffect(() => {
       fetchMembers();
     }, [page, debouncedSearch, gender, sort]);
@@ -70,41 +83,62 @@ export default function MemberList() {
     <>
     <div className="space-y-4">
       {/* FILTER BAR */}
-      <div className="p-3 border-2 border-[#e0d8d8] rounded-lg grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="relative">
-          <SearchIcon className="size-5 text-gray-400 absolute left-3 top-3" />
-          <input
-            value={keyword}
-            type="text"
-            placeholder="Search Members by name..."
-            className="w-full p-2 pl-10 bg-[#E2E8F0] text-[#929292] border border-gray-300 border rounded-lg focus:ring-2 focus:ring-purple-500"
-            onChange={(e) => setKeyword(e.target.value)}
-          />
+      <div className="">
+        <div className="bg-white rounded-xl shadow-sm p-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+
+          {/* Search */}
+          <div className="relative w-full lg:max-w-md">
+            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
+            <input
+              value={keyword}
+              type="text"
+              placeholder="Search members by name..."
+              onChange={(e) => setKeyword(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg
+                        focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
+            />
+          </div>
+
+          {/* Filters */}
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+
+            {/* Gender filter */}
+            <div className="relative w-full sm:w-[180px]">
+              <FilterIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
+              <select
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg
+                          focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
+              >
+                <option value="">All Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            {/* Sort */}
+            <div className="relative w-full sm:w-[160px]">
+              <FilterIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg
+                          focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
+              >
+                <option value="desc">Newest</option>
+                <option value="asc">Oldest</option>
+              </select>
+            </div>
+
+          </div>
         </div>
-
-        <select
-          value={gender}
-          className="w-full py-2 px-3 bg-[#E2E8F0] border text-[#524848] border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-          onChange={(e) => setGender(e.target.value)}
-        >
-          <option value="">Filter by gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
-        </select>
-
-        <select
-          className="w-full py-2 px-3 bg-[#E2E8F0] text-[#524848] border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-          value={sort}
-          onChange={(e) => setSort(e.target.value)}
-        >
-          <option value="desc">Newest</option>
-          <option value="asc">Oldest</option>
-        </select>
       </div>
 
+
       {/* TABLE */}
-      <div className="overflow-x-auto rounded-lg border">
+      <div className="sm:overflow-x-hidden rounded-lg border bg-white ">
         <table className="w-full text-sm">
           <thead className="bg-gray-100 text-gray-700">
             <tr>
@@ -116,63 +150,91 @@ export default function MemberList() {
 
           <tbody>
             {loading ? (
-                <tr>
+              <tr>
                 <td colSpan={3} className="text-center py-6 text-gray-500">
-                    Loading...
+                  Loading...
                 </td>
-                </tr>
+              </tr>
             ) : memberList.length === 0 ? (
-                <tr>
+              <tr>
                 <td colSpan={3} className="text-center py-6 text-gray-500">
-                    No members found
+                  No members found
                 </td>
-                </tr>
+              </tr>
             ) : (
-            memberList.map((m) => (
-            <tr key={m.id} className="border-t hover:bg-gray-50">
-                <td className="px-4 py-3 flex items-center gap-3">
-                <img
-                    src={m.avatar || "/avatar-default.png"}
-                    className="size-10 rounded-full object-cover"
-                />
-                <span className="font-medium">{m.name}</span>
-                </td>
+              memberList.map((m) => (
+                <tr
+                  key={m.id}
+                  className="
+                    border-t
+                    transition-all duration-200
+                    bg-white
+                    hover:bg-gray-50
+                    hover:translate-x-2  
+                  "
+                >
+                  {/* Member */}
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={m.avatar || "/avatar-default.png"}
+                        className="size-10 rounded-full object-cover"
+                      />
+                      <span className="font-medium text-md text-gray-800">
+                        {m.name}
+                      </span>
+                    </div>
+                  </td>
 
-                <td className="px-4 py-3 text-gray-600">{m.email}</td>
+                  {/* Email */}
+                  <td className="px-4 py-3 text-gray-600 font-medium">
+                    {m.email}
+                  </td>
 
-                <td className="px-4 py-3">
-                <div className="flex justify-center gap-3 lg:gap:9">
-                    <button className="p-2 rounded-lg bg-blue-100 text-blue-600 w-8 flex justify-center lg:w-30 hover:opacity-40"
-                    onClick={() => {
-                        setSelectedMember(m);
-                        setOpenView(true);
-                    }}
-                    >
-                    <EyeIcon size={16} />
-                    </button>
-                    <button className="p-2 rounded-lg bg-yellow-100 text-yellow-600 w-8 flex justify-center lg:w-30 hover:opacity-40"
-                    onClick={() => {
-                      setSelectedMember(m);
-                      setOpenForm(true);
-                    }}>
-                    <PencilIcon size={16} />
-                    </button>
-                    <button className="p-2 rounded-lg bg-red-100 text-red-600 w-8 flex justify-center lg:w-30 hover:opacity-40"
-                    onClick={() => {
-                      setSelectedMember(m);
-                      setOpenDelete(true);
-                    }}>
-                    <TrashIcon size={16} />
-                    </button>
-                </div>
-                </td>
-            </tr>
-            ))
-        )}
-        </tbody>
+                  {/* Actions */}
+                  <td className="px-4 py-3">
+                    <div className="flex justify-center gap-3">
+                      <button
+                        className="p-2 rounded-lg bg-blue-100 text-blue-600
+                                  hover:bg-blue-200 transition"
+                        onClick={() => {
+                          setSelectedMember(m);
+                          setOpenView(true);
+                        }}
+                      >
+                        <EyeIcon size={16} />
+                      </button>
 
+                      <button
+                        className="p-2 rounded-lg bg-yellow-100 text-yellow-600
+                                  hover:bg-yellow-200 transition"
+                        onClick={() => {
+                          setSelectedMember(m);
+                          setOpenForm(true);
+                        }}
+                      >
+                        <PencilIcon size={16} />
+                      </button>
+
+                      <button
+                        className="p-2 rounded-lg bg-red-100 text-red-600
+                                  hover:bg-red-200 transition"
+                        onClick={() => {
+                          setSelectedMember(m);
+                          setOpenDelete(true);
+                        }}
+                      >
+                        <TrashIcon size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
         </table>
       </div>
+
 
       {/* Pagination */}
         <div className="">
@@ -189,6 +251,7 @@ export default function MemberList() {
                 onSubmit={handleupdated}
                 onClose={() => setOpenForm(false)}
                 pt={selectedMember}
+                loading={isSubmitting}
                 />)}
             </Dialog>
     {/* Delete Dialog */}
@@ -203,16 +266,19 @@ export default function MemberList() {
 
                   setOpenDelete(false);
                   fetchMembers();
+                  onChanged?.();
                 } catch (err) {
                   toast.error("Xóa thất bại");
                 }
               }}
+              name="người dùng"
             />
     {/* View Dialog */}
             <Dialog open={openView} onClose={() => setOpenView(false)}>
         {selectedMember && (
             <DetailDialog
                 title={selectedMember.name}
+                avatar={selectedMember.avatar}
                 tabs={[
                     {
                     id: "info",

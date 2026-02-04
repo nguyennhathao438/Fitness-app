@@ -1,14 +1,14 @@
 import AgePieChart from "./AgePieChart";
 import AgeStatCards from "./AgeStatCard";
-import MemberStat from "./MemberStat";
 import { TransgenderIcon, UserCheck } from "lucide-react";
+import ProgressBarStat from "../ProgressBarStat";
 export default function MemberStatContent({ genderStats , ageStats }) {
 
   return (
     <div className="space-y-2">
-      <div className="bg-gray-50 p-3 flex justify-between items-center w-full md:w-[560px] lg:w-[900px] xl:w-[1200px] gap-5 rounded-xl">
+      <div className="bg-gray-50 p-3 flex justify-between items-center w-full md:w-[560px] lg:w-[900px] xl:w-auto gap-5 rounded-xl">
             <div className="bg-white w-[200px] lg:w-[400px] xl:w-[550px] rounded-xl">
-              <MemberStat
+              <ProgressBarStat
               icon={<TransgenderIcon/>}
               title="Phân bố theo giới tính"
               items={[
@@ -18,7 +18,7 @@ export default function MemberStatContent({ genderStats , ageStats }) {
             />
             </div>
             <div className="bg-white w-[200px] lg:w-[400px] xl:w-[550px] rounded-xl">
-              <MemberStat
+              <ProgressBarStat
               icon={<UserCheck/>}
               title="Phân bố theo hội viên"
               items={[
