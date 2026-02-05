@@ -15,6 +15,7 @@ import WaitingForRegister from "./pages/member/WaitingForRegister";
 import Exercise from "./pages/Admin/Exercise";
 import MuscleGroup from "./pages/Admin/MuscleGroup";
 import Invoice from "./pages/Admin/Invoice";
+import WorkoutPage from "./pages/member/WorkoutPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         element: <Profile />,
+      },
+      {
+        path: "/workout",
+        element: <WorkoutPage />,
       },
     ],
   },

@@ -37,20 +37,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/genderStat', [MemberController::class, 'memberStats']);
     Route::get('/BirthStat', [MemberController::class, 'AgeStats']);
     Route::post('/personal-trainers', [PersonalTrainerController::class, 'createPT']);
-    //exercise
-    Route::get('/exercises', [ExerciseController::class, 'index']);
-    Route::post('/exercises', [ExerciseController::class, 'store']);
-    Route::get('/exercises/{id}', [ExerciseController::class, 'show']);
-    Route::put('/exercises/{id}', [ExerciseController::class, 'update']);
-    Route::delete('/exercises/{id}', [ExerciseController::class, 'destroy']);
-    Route::get('/exercises/by-muscle-group/{muscleGroupId}', [ExerciseController::class, 'getByMuscleGroup']);
 
-    // Muscle Group
-    Route::get('/muscle-groups', [MuscleGroupController::class, 'index']);
-    Route::post('/muscle-groups', [MuscleGroupController::class, 'store']);
-    Route::get('/muscle-groups/{id}', [MuscleGroupController::class, 'show']);
-    Route::put('/muscle-groups/{id}', [MuscleGroupController::class, 'update']);
-    Route::delete('/muscle-groups/{id}', [MuscleGroupController::class, 'destroy']);
+
     //invoice
     Route::get('/invoice', [InvoiceController::class, 'getInvoice']);
     Route::get('/invoice-thismonth', [InvoiceController::class, 'getInvoiceThisMonth']);
@@ -59,6 +47,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/invoice-moneystat', [InvoiceController::class, 'getInvoiceMoney']);
     Route::put('/invoice_delete/{invoiceID}', [InvoiceController::class, 'deleteInvoice']);
 });
+
+// Muscle Group
+Route::get('/muscle-groups', [MuscleGroupController::class, 'index']);
+Route::post('/muscle-groups', [MuscleGroupController::class, 'store']);
+Route::get('/muscle-groups/{id}', [MuscleGroupController::class, 'show']);
+Route::put('/muscle-groups/{id}', [MuscleGroupController::class, 'update']);
+Route::delete('/muscle-groups/{id}', [MuscleGroupController::class, 'destroy']);
+//exercise
+Route::get('/exercises', [ExerciseController::class, 'index']);
+Route::post('/exercises', [ExerciseController::class, 'store']);
+Route::get('/exercises/{id}', [ExerciseController::class, 'show']);
+Route::put('/exercises/{id}', [ExerciseController::class, 'update']);
+Route::delete('/exercises/{id}', [ExerciseController::class, 'destroy']);
+Route::get('/exercises/by-muscle-group/{muscleGroupId}', [ExerciseController::class, 'getByMuscleGroup']);
 //package
 Route::get('/training-packages', [TrainingPackageController::class, 'index']);
 Route::get('/package-compare', [TrainingPackageController::class, 'getPackageCompare']);

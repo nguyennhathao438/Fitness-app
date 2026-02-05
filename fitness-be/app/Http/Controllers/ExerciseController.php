@@ -11,9 +11,27 @@ class ExerciseController extends Controller
      * GET /exercises
      * Lấy danh sách exercise
      */
-    public function index()
+    public function index(Request $request)
     {
-        $exercises = Exercise::with('muscleGroups')->get();
+        $query = Exercise::query()
+            ->with('muscleGroups');
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('muscles')) {
+
+            $muscleIds = explode(',', $request->muscles);
+
+            $query->whereHas('muscleGroups', function ($q) use ($muscleIds) {
+                $q->whereIn('muscle_groups.id', $muscleIds);
+            });
+        }
+
+        $perPage = $request->input('per_page', 8);
+
+        $exercises = $query->paginate($perPage);
 
         return response()->json($exercises);
     }

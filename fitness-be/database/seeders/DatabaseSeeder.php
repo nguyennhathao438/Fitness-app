@@ -24,6 +24,9 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             RolePermissionSeeder::class,
             InvoiceSeeder::class,
+            MuscleGroupSeeder::class,
+            ExerciseSeeder::class,
+            ExerciseMuscleGroupSeeder::class,
         ]);
     }
 }
