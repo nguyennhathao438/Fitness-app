@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserIcon, UploadIcon, ShieldIcon } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const baseSchema = {
   name: z.string().min(3).regex(/^[A-Za-zÀ-ỹ\s]+$/),
@@ -20,7 +20,28 @@ const addSchema = z.object({
 const editSchema = z.object(baseSchema);
 
 
-export default function PTForm({ mode = "add", onSubmit, onClose ,pt}) {
+export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,pt,loading = false,}) {
+  const [preview, setPreview] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFormSubmit = (data) => {
+  const formData = new FormData();
+
+  formData.append("name", data.name);
+  formData.append("email", data.email);
+  formData.append("phone", data.phone || "");
+  formData.append("gender", data.gender || "");
+  formData.append("birthday", data.birthday || "");
+  if (mode === "add") {
+    formData.append("password", data.password);
+  }
+  if (selectedFile) {
+    formData.append("avatar", selectedFile);
+  }
+  onSubmitForm(formData);
+  };
+
+
   const schema = mode === "add" ? addSchema : editSchema;
   const { register, handleSubmit,reset,formState:{errors} } = useForm({
     resolver: zodResolver(schema),
@@ -57,7 +78,7 @@ export default function PTForm({ mode = "add", onSubmit, onClose ,pt}) {
   }, [pt, mode, reset]);
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(handleFormSubmit)}
       className="
         sm:max-w-xl lg:min-w-4xl
         h-[100dvh] sm:h-[90dvh] md:h-[90dvh]
@@ -66,7 +87,7 @@ export default function PTForm({ mode = "add", onSubmit, onClose ,pt}) {
       "
     >
       {/* Header */}
-      <div className="bg-purple-600 px-6 py-4 text-white">
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 text-white">
         <h2 className="text-xl font-semibold">
           {mode === "add" ? "Add New PT" : "Edit PT"}
         </h2>
@@ -84,7 +105,9 @@ export default function PTForm({ mode = "add", onSubmit, onClose ,pt}) {
             <h3 className="font-semibold text-lg">Basic Information</h3>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className={`grid grid-cols-1 gap-6 ${
+                mode === "edit" ? "lg:grid-cols-3" : "lg:grid-cols-2"
+              }`}>
             {/* Left form */}
             <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input 
@@ -125,16 +148,43 @@ export default function PTForm({ mode = "add", onSubmit, onClose ,pt}) {
             </div>
 
             {/* Avatar */}
+            {mode === "edit" && (
             <div className="flex flex-col items-center gap-3">
-              <div className="w-full aspect-square bg-gray-200 rounded-lg" />
+              <div className="w-full aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                {preview ? (
+                  <img src={preview} className="w-full h-full object-cover" />
+                ) : pt?.avatar ? (
+                  <img src={pt.avatar} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-400">
+                    No image
+                  </div>
+                )}
+              </div>
+
+              <input
+                type="file"
+                accept="image/*"
+                id="avatarInput"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    setSelectedFile(file);
+                    setPreview(URL.createObjectURL(file));
+                  }
+                }}
+              />
               <button
                 type="button"
+                onClick={() => document.getElementById("avatarInput").click()}
                 className="flex items-center gap-2 px-3 py-2 text-sm border rounded-lg"
               >
                 <UploadIcon className="size-4" />
-                Choose image
+                Change image
               </button>
             </div>
+          )}
           </div>
         </div>
 
@@ -174,8 +224,22 @@ export default function PTForm({ mode = "add", onSubmit, onClose ,pt}) {
       <button className="w-32 px-4 py-3 border rounded-lg hover:bg-gray-200" onClick={onClose}>
         Huỷ
       </button>
-      <button className="w-32 bg-purple-600 text-white rounded-lg hover:bg-purple-300">
-        Xác nhận
+      <button
+        type="submit"
+        disabled={loading}
+        className={`
+          w-32 rounded-lg text-white
+          ${loading ? "bg-purple-400 cursor-not-allowed" : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"}
+        `}
+      >
+        {loading ? (
+          <div className="flex items-center justify-center gap-2">
+            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            Saving...
+          </div>
+        ) : (
+          "Xác nhận"
+        )}
       </button>
       </div>
     </form>

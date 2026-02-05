@@ -18,24 +18,41 @@ export default function Header() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link href="/" className="shrink-0">
-              <img className="w-40 h-16" src="https://fight100.vn/wp-content/uploads/2024/02/logo.png" alt="" />
+              <img
+                className="w-40 h-16"
+                src="https://fight100.vn/wp-content/uploads/2024/02/logo.png"
+                alt=""
+              />
             </Link>
 
             {/* Desktop Navigation - hidden below lg (1024px) */}
             <nav className="hidden lg:flex items-center gap-10">
-              <Link href="/gioi-thieu" className="text-gray-300 font-bold hover:text-white transition-colors text-md">
+              <Link
+                href="/gioi-thieu"
+                className="text-gray-300 font-bold hover:text-white transition-colors text-md"
+              >
                 Giới thiệu
               </Link>
 
-              <Link to="/pricing-packages" className="text-gray-300 font-bold hover:text-white transition-colors text-md">
+              <Link
+                to="/pricing-packages"
+                className="text-gray-300 font-bold hover:text-white transition-colors text-md"
+              >
                 Đăng ký gói tập
               </Link>
 
-              <Link to="/bmi" className="text-gray-300 hover:text-white transition-colors font-bold text-md ">
+              <Link
+                to="/bmi"
+                className="text-gray-300 hover:text-white transition-colors font-bold text-md "
+              >
                 BMI
               </Link>
-
-
+              <Link
+                to="/workout"
+                className="text-gray-300 hover:text-white transition-colors font-bold text-md "
+              >
+                Workout
+              </Link>
             </nav>
 
             {/* Desktop Right Section - hidden below lg (1024px) */}
@@ -109,8 +126,9 @@ export default function Header() {
 
           {/* Mobile Navigation - visible below lg (1024px) */}
           <div
-            className={`lg:hidden overflow-hidden transition-all duration-300 ${isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-              }`}
+            className={`lg:hidden overflow-hidden transition-all duration-300 ${
+              isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+            }`}
           >
             <div className="pb-4 border-t border-[#2a2435] mt-2 pt-4">
               <nav className="flex flex-col gap-2">

@@ -6,9 +6,13 @@ export const getPersonalTrainers = (params) => {
 export const deletedUser = (memberID) => {
     return api.put(`/deleted/${memberID}`);
 }
-export const updatedUser = (memberID,data) => {
-    return api.put(`/update/${memberID}`,data);
-}
+export const updatedUser = (memberID, formData) => {
+  return api.put(`/update/${memberID}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
 export const createdUser = (data) => {
     return api.post(`/personal-trainers`,data);
 }

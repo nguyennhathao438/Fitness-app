@@ -11,8 +11,11 @@ import DefaultAdmin from "./layouts/DefaultAdmin";
 import User from "./pages/Admin/User";
 import Dashboard from "./pages/Admin/Dashboard";
 import RoleManagement from "./pages/admin/Role";
+import WaitingForRegister from "./pages/member/WaitingForRegister";
 import Exercise from "./pages/Admin/Exercise";
 import MuscleGroup from "./pages/Admin/MuscleGroup";
+import Invoice from "./pages/Admin/Invoice";
+import WorkoutPage from "./pages/member/WorkoutPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -43,8 +46,16 @@ const router = createBrowserRouter([
         element: <ForgotPassword />,
       },
       {
+        path: "/waiting",
+        element: <WaitingForRegister />,
+      },
+      {
         path: "/profile",
         element: <Profile />,
+      },
+      {
+        path: "/workout",
+        element: <WorkoutPage />,
       },
     ],
   },
@@ -66,11 +77,15 @@ const router = createBrowserRouter([
       },
       {
         path: "exercise",
-        element: <Exercise/>,
+        element: <Exercise />,
       },
       {
         path: "muscle",
-        element: <MuscleGroup/>,
+        element: <MuscleGroup />,
+      },
+      {
+        path: "order",
+        element: <Invoice />,
       },
     ],
   },

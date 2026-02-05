@@ -31,13 +31,19 @@ export default function User() {
   const [memberGender, setmemberGender] = useState(null);
   const [memberAge, setMemberAge] = useState(null);
   const [refreshPT, setRefreshPT] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [refreshStats, setRefreshStats] = useState(0);
+
 
   // Tạo PT
   const handleCreatePT = async (data) => {
+    if (isSubmitting) return;
     try {
+      setIsSubmitting(true);
       await createdUser(data);
       toast.success("Thêm PT thành công");
       setOpenForm(false);
+      setRefreshStats((prev) => prev + 1);
       getPersonalTrainers().then((res) => {
         setFull(res.data.full);
       });
@@ -52,45 +58,38 @@ export default function User() {
         });
       } else {
         toast.error("Có lỗi hệ thống, vui lòng thử lại");
-      }
+      } 
       console.error(error);
-    }
+    } finally {
+      setIsSubmitting(false);
+        }
   };
 
   useEffect(() => {
-    // Fetch Header data from API
-    getPersonalTrainers()
-      .then((res) => {
-        setFull(res.data.full);
-      })
-      .catch((err) => {
-        console.error("Error fetching PT data:", err);
-      });
-    // fetch stat gender content
-    getGenderUser()
-      .then((res) => {
-        setmemberGender(res.data);
-      })
-      .catch((err) => {
-        console.error("Error fetching gender stats:", err);
-      });
-    // fetch stat age content
-    getAgeUser()
-      .then((res) => {
-        setMemberAge(res.data);
-      })
-      .catch((err) => {
-        console.error("Error fetching gender stats:", err);
-      });
-  }, []);
+  getPersonalTrainers()
+    .then((res) => {
+      setFull(res.data.full);
+    });
+
+  getGenderUser()
+    .then((res) => {
+      setmemberGender(res.data);
+    });
+
+  getAgeUser()
+    .then((res) => {
+      setMemberAge(res.data);
+    });
+  }, [refreshStats]);
+
   return (
     <>
-      <div>
+      <div className="">
         {/* Header */}
         <div className="flex items-center justify-between gap-4 p-2">
-          <div>
-            <h1 className="text-lg sm:text-xl font-bold">User Management</h1>
-            <p className="text-gray-500 text-sm sm:text-base">
+          <div className="">
+            <h1 className="text-lg sm:text-3xl font-bold ml-4 mt-3">User Management</h1>
+            <p className="text-gray-500 text-sm sm:text-base ml-5">
               Manage all Users in the system
             </p>
           </div>
@@ -212,8 +211,14 @@ export default function User() {
                 ageStats={memberAge}
               />
             )}
-            {activeTab === "members" && <MemberList />}
-            {activeTab === "PersonalTrainer" && <PT refreshKey={refreshPT} />}
+            {activeTab === "members" && <MemberList onChanged={() => {
+            setRefreshStats(prev => prev + 1);
+            }} />}
+            {activeTab === "PersonalTrainer" && <PT refreshKey={refreshPT}
+            onChanged={() => {
+              setRefreshPT(prev => prev + 1);
+              setRefreshStats(prev => prev + 1);
+            }}/>}
           </div>
         </div>
       </div>
@@ -222,6 +227,7 @@ export default function User() {
           mode="add"
           onClose={() => setOpenForm(false)}
           onSubmit={handleCreatePT}
+          loading={isSubmitting}
         />
       </Dialog>
     </>

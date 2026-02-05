@@ -75,5 +75,17 @@ class AuthenController extends Controller
             'message' => 'Đã đăng xuất'
         ]);
     }
+    //Check email tồn tại 
+    public function checkEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $exists = Member::where('email', $request->email)->exists();
+        return response()->json([
+            'exists' => $exists
+        ], 200);
+    }
 
 }

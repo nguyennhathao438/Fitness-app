@@ -24,12 +24,15 @@ export const submitSurvey = async (surveyData) => {
 export const createBodyMetric = (data) => {
   return api.post("/body-metrics", data);
 };
-export const getBodyMetric = () =>{
+export const checkEmail = (email) => {
+  return api.post("/check-email", { email });
+};
+export const getBodyMetric = () => {
   return api.get("/body-metrics");
-}
+};
 export const getLatestBodyMetric = () => {
   return api.get("/body-metrics/latest");
 };
 export const changePassword = (data) => {
-    return api.put("change-password", data);
+  return api.put("change-password", data);
 };

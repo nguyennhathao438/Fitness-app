@@ -1,6 +1,6 @@
 import { AlertTriangleIcon } from "lucide-react";
 
-export default function DeletedDialog({ open, onClose, onConfirm }) {
+export default function DeletedDialog({ open, onClose, onConfirm,name}) {
   if (!open) return null;
 
   return (
@@ -22,12 +22,12 @@ export default function DeletedDialog({ open, onClose, onConfirm }) {
 
         {/* Title */}
         <h3 className="text-lg font-semibold text-center mb-2">
-          Xóa người dùng
+          Xóa {name}
         </h3>
 
         {/* Content */}
         <p className="text-sm text-gray-500 text-center mb-6">
-          Bạn có chắc chắn muốn xóa người dùng này không?  
+          Bạn có chắc chắn muốn xóa {name} này không?  
           Hành động này có thể hoàn tác.
         </p>
 

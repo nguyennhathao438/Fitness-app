@@ -20,7 +20,6 @@ export default function Login() {
     }));
   };
   const handleSubmit = async (e) => {
-    setLoading(true);
     e.preventDefault();
 
     // Validate email (email)
@@ -44,7 +43,7 @@ export default function Login() {
       toast.error("Mật khẩu phải có ít nhất 6 ký tự");
       return;
     }
-
+    setLoading(true);
     try {
       const res = await loginService(formData);
       localStorage.setItem("token", res.data.token);

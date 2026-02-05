@@ -7,7 +7,7 @@ import { createExercise, getAllExcercise, getExercisesByMuscleGroup, updateExerc
 import { getAllMuscleGroup } from "@/services/admin/MuscleGroup";
 import { toast } from "react-toastify";
 
-export default function TabbarExercise() {
+export default function Exercise() {
     /* ================= ZOD (GIỮ NGUYÊN) ================= */
     const exerciseSchema = z.object({
         name: z.string().min(2),
@@ -38,7 +38,7 @@ export default function TabbarExercise() {
         setIsLoading(true)
         try {
             const response = await getAllExcercise();
-            setListExercise(response.data);
+            setListExercise(response.data.data || []);
         } catch (error) {
             console.error(error);
             toast.error("Lỗi không thể lấy dữ liệu bài tập");
@@ -46,6 +46,7 @@ export default function TabbarExercise() {
             setIsLoading(false)
         }
     };
+    console.log("exercises",listExercise)
 
 
     const fetchExerciseByMuscleGroupId = async (muscleGroupId) => {
