@@ -33,6 +33,7 @@ export default function TabbarExercise() {
 
     const [exercise, setExercise] = useState(null)
     const [title, setTitle] = useState("")
+    const [isLoadingMuscle, setIsLoadingMuscle] = useState(false)
     const fetchAllExercise = async () => {
         setIsLoading(true)
         try {
@@ -62,11 +63,14 @@ export default function TabbarExercise() {
 
 
     const fetchMusleGroups = async () => {
+        setIsLoadingMuscle(true)
         try {
             const reponse = await getAllMuscleGroup()
             setListMuscle(reponse.data)
         } catch (error) {
             toast.error("Lỗi không thể lấy dữ liệu", error)
+        } finally {
+            setIsLoadingMuscle(false)
         }
     }
 
@@ -81,10 +85,9 @@ export default function TabbarExercise() {
         fetchAllExercise();
         fetchMusleGroups()
     }, []);
+
     /* ================= SUBMIT (GIỮ NGUYÊN) ================= */
     const onSubmit = async (data) => {
-        console.log("ĐÃ VÀO onSubmit", data);
-
         setIsLoading(true);
 
         const dataObject = {
@@ -98,7 +101,7 @@ export default function TabbarExercise() {
                 toast.success("Thêm bài tập thành công");
             } else {
                 await updateExercise(exercise.id, dataObject);
-                toast.success("Cập nhật bài tập thành công ✅");
+                toast.success("Cập nhật bài tập thành công ");
             }
             fetchAllExercise();
             handleReset()
@@ -110,6 +113,24 @@ export default function TabbarExercise() {
         }
     };
 
+    const [openMuscleSelect, setOpenMuscleSelect] = useState(false);
+
+    const selectedMuscleIds = watch("muscle") || [];
+
+    const addMuscle = (id) => {
+        if (selectedMuscleIds.includes(id)) return;
+        reset(
+            { ...watch(), muscle: [...selectedMuscleIds, id] },
+            { keepErrors: true }
+        );
+    };
+
+    const removeMuscle = (id) => {
+        reset(
+            { ...watch(), muscle: selectedMuscleIds.filter(m => m !== id) },
+            { keepErrors: true }
+        );
+    };
 
 
     const getYoutubeThumbnail = (url) => {
@@ -136,7 +157,7 @@ export default function TabbarExercise() {
     const handleDefaultValue = (item) => {
         reset({
             name: item.name,
-            muscle: item.muscle_groups.map(m => String(m.id)),
+            muscle: item.muscle_groups.map(m => m.id),
             description: item.description,
             rep_base: item.rep_base,
             set_base: item.set_base,
@@ -145,12 +166,12 @@ export default function TabbarExercise() {
         });
     }
     return (
-        <div className="p-6 bg-gray-50 min-h-screen">
+        <div className="p-6 bg-purple-50 min-h-screen">
             {/* HEADER */}
             <div className="flex justify-between items-center mb-6">
                 <div>
-                    <h1 className="text-2xl font-bold">Exercise Management</h1>
-                    <p className="text-sm text-gray-500">
+                    <h1 className="text-3xl text-purple-800 font-bold">Exercise Management</h1>
+                    <p className="text-md text-purple-500">
                         Manage exercises and workout details
                     </p>
                 </div>
@@ -165,7 +186,8 @@ export default function TabbarExercise() {
 
             {/* TAB MUSCLE */}
             <div className="flex gap-3 mb-6">
-                <button onClick={() => { fetchAllExercise(), setActiveTab("Tất cả") }} className={`px-4 py-2 rounded-full text-sm border ${activeTab === "Tất cả" ? "bg-purple-600 text white" : "bg-white text-gray-600"}`}>Tất cả</button>
+                {!isLoadingMuscle && (<button onClick={() => { fetchAllExercise(), setActiveTab("Tất cả") }} className={`px-4 py-2 rounded-full text-sm border ${activeTab === "Tất cả" ? "bg-purple-600 text white" : "bg-white text-gray-600"}`}>Tất cả</button>
+                )}
                 {listMuscle.map((m, i) => (
                     <button
                         onClick={() => { fetchExerciseByMuscleGroupId(m.id), setActiveTab(m.name) }}
@@ -182,7 +204,11 @@ export default function TabbarExercise() {
 
             {/* ===== MOCK CARD (UI DEMO) ===== */}
             {isLoading ? (
-                <div className="w-full text-center text-xl">{"Đang tải dữ liệu ..."}</div>
+                <div className="w-full flex items-center justify-center border border-gray-200 rounded-xl h-[50vh] text-center text-xl">{"Đang tải dữ liệu ..."}</div>
+            ) : listExercise.length === 0 ? (
+                <div className="w-full flex items-center justify-center border border-gray-200 rounded-xl h-[50vh] text-center text-xl">
+                    Không có bài tập
+                </div>
             ) : (
                 listExercise.map((item) => (
                     <div className="bg-white rounded-xl p-4 flex justify-between items-center shadow-sm">
@@ -347,25 +373,77 @@ export default function TabbarExercise() {
                                     <label className="block text-sm text-gray-600 mb-2">
                                         Nhóm cơ
                                     </label>
-                                    <div className="grid grid-cols-3 gap-3">
-                                        {listMuscle.map((item) => (
-                                            <label
-                                                key={item.id}
-                                                className="flex items-center gap-2 border rounded px-3 py-2 cursor-pointer hover:bg-gray-50"
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {/* LEFT: DROPDOWN */}
+                                        <div className="relative">
+                                            <button
+                                                type="button"
+                                                onClick={() => setOpenMuscleSelect(!openMuscleSelect)}
+                                                className="w-full flex justify-between items-center border rounded px-3 py-2 bg-white"
                                             >
-                                                <input
-                                                    type="checkbox"
-                                                    value={item.id}
-                                                    {...register("muscle")}
+                                                <span className="text-sm text-gray-600">
+                                                    Chọn nhóm cơ
+                                                </span>
+                                                <HiPlus
+                                                    className={`transition ${openMuscleSelect ? "rotate-45" : ""}`}
                                                 />
-                                                <span className="text-sm">{item.name}</span>
-                                            </label>
-                                        ))}
+                                            </button>
+
+                                            {openMuscleSelect && (
+                                                <div className="absolute z-20 mt-2 w-full bg-white border rounded shadow max-h-56 overflow-y-auto">
+                                                    {listMuscle.map((item) => {
+                                                        const isSelected = selectedMuscleIds.includes(item.id);
+                                                        return (
+                                                            <button
+                                                                key={item.id}
+                                                                type="button"
+                                                                disabled={isSelected}
+                                                                onClick={() => addMuscle(item.id)}
+                                                                className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-100
+                                    ${isSelected ? "text-gray-400 cursor-not-allowed" : ""}
+                                `}
+                                                            >
+                                                                {item.name}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* RIGHT: SELECTED TAGS */}
+                                        <div className="min-h-[42px] border rounded p-2 flex flex-wrap gap-2">
+                                            {selectedMuscleIds.length === 0 && (
+                                                <span className="text-sm text-gray-400">
+                                                    Chưa chọn nhóm cơ
+                                                </span>
+                                            )}
+
+                                            {listMuscle
+                                                .filter(m => selectedMuscleIds.includes(m.id))
+                                                .map(m => (
+                                                    <span
+                                                        key={m.id}
+                                                        className="flex items-center gap-1 bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-sm"
+                                                    >
+                                                        {m.name}
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => removeMuscle(m.id)}
+                                                        >
+                                                            <HiX size={14} />
+                                                        </button>
+                                                    </span>
+                                                ))}
+                                        </div>
                                     </div>
+
                                     <p className="text-red-500 text-sm mt-1">
                                         {errors.muscle?.message}
                                     </p>
                                 </div>
+
                                 <div>
                                     <label className="block text-sm text-gray-600 mb-1 font-semibold">
                                         Upload Video
