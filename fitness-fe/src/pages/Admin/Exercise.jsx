@@ -123,7 +123,7 @@ export default function Exercise() {
             </div>
 
             {/* TAB MUSCLE */}
-            <div className="flex gap-3 mb-6">
+            <div className="grid grid-cols-4 md:grid-cols-8 gap-3 mb-6">
                 {!loadingMuscle && (<button onClick={() => { fetchAllExercises(), setActiveTab("Tất cả") }} className={`px-4 py-2 rounded-full text-sm border ${activeTab === "Tất cả" ? "bg-purple-600 text white" : "bg-white text-gray-600"}`}>Tất cả</button>
                 )}
                 {muscleList.map((m, i) => (
@@ -172,25 +172,25 @@ export default function Exercise() {
                                 <p className="text-xs text-gray-400">TÊN BÀI TẬP</p>
                                 <h3 className="font-semibold">{item.name}</h3>
 
-                                <p className="text-xs text-gray-400 mt-2">MÔ TẢ</p>
-                                <p className="text-sm text-gray-600">
+                                <p className="text-xs hidden md:block text-gray-400 mt-2">MÔ TẢ</p>
+                                <p className="text-sm hidden md:block text-gray-600">
                                     {item.description}
                                 </p>
                             </div>
                         </div>
 
-                        <div className="flex gap-10 text-center">
+                        <div className="flex gap-5 md:gap-10 text-center">
                             <div>
-                                <p className="text-xs text-gray-400">SỐ SET</p>
-                                <p className="font-semibold text-purple-600">{item.set_base}</p>
+                                <p className="text-xs text-gray-400 md:text-lg">SỐ SET</p>
+                                <p className="text-xs md:text-lg font-semibold text-purple-600">{item.set_base}</p>
                             </div>
                             <div>
-                                <p className="text-xs text-gray-400">SỐ REP</p>
-                                <p className="font-semibold text-purple-600">{item.rep_base}</p>
+                                <p className=" text-xs md:text-lg text-gray-400">SỐ REP</p>
+                                <p className="text-xs md:text-lg font-semibold text-purple-600">{item.rep_base}</p>
                             </div>
                             <div>
-                                <p className="text-xs text-gray-400">THỜI GIAN</p>
-                                <p className="font-semibold">{item.time_action}</p>
+                                <p className=" text-xs md:text-lg text-gray-400">THỜI GIAN</p>
+                                <p className="text-xs md:text-lg font-semibold">{item.time_action}</p>
                             </div>
                         </div>
 
@@ -206,7 +206,7 @@ export default function Exercise() {
                                 }}
                                 className="flex items-center gap-2 px-3 py-1 bg-[#BEE3F8] text-[#2563EB] rounded"
                             >
-                                <HiEye /> Xem video
+                                <HiEye /> Video
                             </button>
 
                             <button onClick={() => { setTitle("Sửa bài tập"), setOpenForm(true), handleDefaultValue(item), setExercise(item) }} className="flex justify-center items-center gap-2 px-3 py-1 bg-[#DCFCE7] text-[#16A34A] rounded">

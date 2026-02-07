@@ -1,7 +1,7 @@
-import FoodComparison from "../../components/member/FoodComparison";
-import Banner from "../../components/member/Banner";
-import InfoPackage from "../../components/member/InfoPackage";
-import BenefitsSection from "../../components/member/BenefitSection";
+import FoodComparison from "@/components/member/Home/FoodComparison";
+import Banner from "@/components/member/Home/Banner";
+import InfoPackage from "@/components/member/Home/InfoPackage";
+import BenefitsSection from "@/components/member/Home/BenefitSection";
 export default function Home() {
   return (
     <div>

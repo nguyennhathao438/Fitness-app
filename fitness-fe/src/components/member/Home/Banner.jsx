@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import banner1 from "../../assets/banner1.jpg";
-import banner2 from "../../assets/banner2.jpg";
-import banner3 from "../../assets/banner3.png";
+import banner1 from "../../../assets/banner1.jpg";
+import banner2 from "../../../assets/banner2.jpg";
+import banner3 from "../../../assets/banner3.png";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 
 export default function Banner() {

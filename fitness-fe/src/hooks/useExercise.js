@@ -7,7 +7,6 @@ const useExercise = () => {
   const [muscleList, setMuscleList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMuscle, setLoadingMuscle] = useState(true);
-  // const [exerciseMuscle, setExerciseMuscle] = useState([])
 
   const fetchAllExercises = async () => {
     setLoading(true);
