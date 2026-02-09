@@ -80,7 +80,7 @@ export default function ResetPassModal({ open, onClose }) {
     }
 
     return (
-        <Modal title={"Đổi mật khẩu"} bgColor={"bg-gray-900"} open={open} onClose={onClose}>
+        <Modal title={"Đổi mật khẩu"} bgColor={"bg-gray-900"} open={open} txtColor={"text-white"} onClose={onClose}>
             <form onSubmit={handleSubmitPass(onSubmitPass, onErrorPass)} className="flex flex-col gap-4">
                 <div>
                     <label className="text-white" >Mật khẩu hiện tại</label>

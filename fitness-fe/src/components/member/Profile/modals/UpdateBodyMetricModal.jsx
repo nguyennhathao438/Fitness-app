@@ -71,7 +71,7 @@ export default function UpdateBodyMetricModal({open,onClose,onSuccess}) {
             toast.error(firstErr.message)
     };
     return (
-        <Modal open={open} onClose={onClose} title={"Cập nhật chỉ số cơ thể"} bgColor={"bg-gray-900"}>
+        <Modal open={open} onClose={onClose} title={"Cập nhật chỉ số cơ thể"} txtColor={"text-white"} bgColor={"bg-gray-900"}>
             <form onSubmit={handleSubmit(onSubmit, onError)}>
                 <div className="space-y-8 text-center">
 

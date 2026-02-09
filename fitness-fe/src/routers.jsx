@@ -6,7 +6,6 @@ import RegisterPage from "./pages/member/RegisterPage";
 import Login from "./pages/member/Login";
 import ForgotPassword from "./pages/member/ForgotPasswod";
 import Profile from "./pages/member/Profile";
-import BodyMetric from "./pages/member/BodyMetric";
 import DefaultAdmin from "./layouts/DefaultAdmin";
 import User from "./pages/Admin/User";
 import Dashboard from "./pages/Admin/Dashboard";
@@ -16,6 +15,7 @@ import Exercise from "./pages/Admin/Exercise";
 import MuscleGroup from "./pages/Admin/MuscleGroup";
 import Invoice from "./pages/Admin/Invoice";
 import WorkoutPage from "./pages/member/WorkoutPage";
+import BodyMaxIndex from "./pages/member/BodyMaxIndex";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -35,7 +35,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/bmi",
-        element: <BodyMetric />,
+        element: <BodyMaxIndex/>,
       },
       {
         path: "/login",

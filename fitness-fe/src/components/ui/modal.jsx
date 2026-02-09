@@ -6,6 +6,7 @@ export default function Modal({
     title,
     children,
     bgColor,
+    txtColor,
     width = "max-w-md",
 }) {
     if (!open) return null;
@@ -25,7 +26,7 @@ export default function Modal({
             >
                 {title && (
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-semibold text-white">{title}</h2>
+                        <h2 className={`text-xl font-semibold ${txtColor}`}>{title}</h2>
                         <button
                             onClick={onClose}
                             className="text-gray-400 hover:text-white"

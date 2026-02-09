@@ -14,7 +14,7 @@ export default function ProfileTabBar() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex flex-col">
       {/* TabBar */}
       <div className="bg-white border-b border-gray-200 shadow-lg">
         <div className="flex justify-around items-center h-20">

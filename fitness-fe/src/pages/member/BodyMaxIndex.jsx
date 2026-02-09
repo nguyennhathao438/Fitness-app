@@ -4,7 +4,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { useState } from "react";
-export default function BodyMetric() {
+export default function BodyMaxIndex() {
   const [flagBMI, setFlagBMI] = useState(false)
   const [bmi, setBMI] = useState(null)
   const bmiSchema = z.object({
