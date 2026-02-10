@@ -395,4 +395,87 @@ class MemberController extends Controller
             'message' => 'Đổi mật khẩu thành công'
         ], 200);
     }
+
+    //Nâng cấp (Upgrade) hoặc Gia hạn (Extend) gói tập
+
+    public function upgrade(Request $request)
+    {
+        $member = $request->user(); // Lấy user từ token
+
+        $request->validate([
+            'package_id' => 'required|exists:training_packages,id',
+            'payment_method' => 'required|in:momo,vnpay,cash',
+            'is_extend' => 'boolean', 
+        ]);
+
+        $invoice = null;
+        $newPackage = null;
+        
+        $isExtend = $request->input('is_extend', false);
+
+        try {
+            DB::transaction(function () use ($request, $member, &$invoice, &$newPackage, $isExtend) {
+                //  Lấy thông tin gói muốn mua
+                $newPackage = TrainingPackage::findOrFail($request->package_id);
+
+                //  Xác định trạng thái thanh toán
+                $status = 'paid';
+                if ($request->payment_method == 'cash') {
+                    $status = 'pending'; 
+                }
+
+                //  TÍNH TOÁN NGÀY BẮT ĐẦU (
+                $startDate = Carbon::now(); 
+
+                if ($isExtend) {
+                    $currentInvoice = Invoice::where('member_id', $member->id)
+                        ->where('status', 'paid')
+                        ->where('valid_until', '>', Carbon::now())
+                        ->orderBy('valid_until', 'desc')
+                        ->first();
+                    
+                    if ($currentInvoice) {
+                        $startDate = Carbon::parse($currentInvoice->valid_until);
+                    }
+                } 
+
+                // TẠO HÓA ĐƠN MỚI
+                $invoice = Invoice::create([
+                    'member_id' => $member->id,
+                    'package_id' => $newPackage->id,
+                    'payment_method' => $request->payment_method,
+                    'total_amount' => $newPackage->price,
+                    
+                    'valid_until' => $startDate->copy()->addDays($newPackage->duration_days),
+                    'status' => $status,
+                    'type' => $isExtend ? 'extend' : 'upgrade', 
+                    'description' => ($isExtend ? "Gia hạn gói " : "Nâng cấp lên gói ") . $newPackage->name
+                ]);
+
+                if ($status == 'paid') {
+                    if (!$member->valid_until || Carbon::parse($invoice->valid_until)->gt(Carbon::parse($member->valid_until))) {
+                        $member->update([
+                           'valid_until' => $invoice->valid_until
+                        ]);
+                    }
+                }
+            });
+
+            $waiting = ($request->payment_method == 'cash');
+
+            return response()->json([
+                'success' => true,
+                'waiting' => $waiting,
+                'message' => $isExtend ? 'Gia hạn thành công!' : 'Nâng cấp thành công!',
+                'invoice' => $invoice,
+            ], 200);
+
+        } catch (Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

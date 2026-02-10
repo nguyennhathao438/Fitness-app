@@ -25,3 +25,33 @@ export const getCompareFeatures = async () => {
 export const getTrainingPackageById = (id) => {
   return api.get(`/training-packages/${id}`);
 };
+
+export const getUpgradablePackages = async (memberId) => {
+  const res = await api.get("/packages/upgrade", {
+    params: {
+      member_id: memberId
+    }
+  });
+  return res.data.data;
+}
+// Lấy danh sách Tabs 
+export const getUpgradableTypes = async (memberId) => {
+  const res = await api.get("/packages/upgrade-types", {
+    params: { member_id: memberId }
+  });
+  return res.data.data; 
+};
+
+// Lấy danh sách Gói theo Tab ID
+export const getUpgradablePackagesByType = async (memberId, typeId) => {
+  const res = await api.get("/packages/upgrade-list", {
+    params: { 
+      member_id: memberId,
+      package_type_id: typeId
+    }
+  });
+  return res.data.data; 
+};
+export const getCurrentPackageInfo = () => {
+  return api.get("/member/current-package");
+};

@@ -36,3 +36,6 @@ export const getLatestBodyMetric = () => {
 export const changePassword = (data) => {
   return api.put("change-password", data);
 };
+export const upgradePackage = (data) => {
+  return api.post("/member/upgrade", data);
+};

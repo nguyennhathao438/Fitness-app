@@ -63,14 +63,23 @@ export default function SideBar({ collapsed, setCollapsed }) {
             <CircleUserRoundIcon className="mr-2 size-5" />
             {!collapsed && <span className="text-lg">Users</span>}
           </NavLink>
-          <li className="px-4 py-2 cursor-pointer rounded-md hover:bg-purple-500 hover:translate-x-1">
+          <NavLink
+            to="/admin/packages"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
+                            hover:bg-purple-500 hover:translate-x-1
+                            ${isActive ? "bg-purple-600" : ""}`
+            }
+          >
             <PackageIcon className="text-white inline-block mr-2 size-5"></PackageIcon>
             <span
-              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+              className={`${
+                collapsed ? "hidden" : "inline"
+              } max-sm:hidden text-lg`}
             >
               Packages
             </span>
-          </li>
+          </NavLink>
           <li className="px-4 py-2 cursor-pointer rounded-md hover:bg-purple-500 hover:translate-x-1">
             <MessageCircleIcon className=" text-white inline-block mr-2 size-5"></MessageCircleIcon>
             <span

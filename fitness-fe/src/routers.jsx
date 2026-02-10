@@ -15,6 +15,9 @@ import WaitingForRegister from "./pages/member/WaitingForRegister";
 import Exercise from "./pages/Admin/Exercise";
 import MuscleGroup from "./pages/Admin/MuscleGroup";
 import Invoice from "./pages/Admin/Invoice";
+import Package from "./pages/Admin/package";
+import UpgradePackagePage from "./pages/member/UpgradePackagePage"; 
+import UpgradePaymentPage from "./pages/member/UpgradePaymentPage"; 
 const router = createBrowserRouter([
   {
     path: "/",
@@ -27,6 +30,14 @@ const router = createBrowserRouter([
       {
         path: "/pricing-packages",
         element: <PricingPackages />,
+      },
+      {
+        path: "/upgrade",
+        element: <UpgradePackagePage />,
+      },
+      {
+        path: "/member/payment/:packageId", 
+        element: <UpgradePaymentPage />,
       },
       {
         path: "/register/:packageId",
@@ -81,6 +92,10 @@ const router = createBrowserRouter([
       {
         path: "order",
         element: <Invoice />,
+      },
+      {
+        path: "packages",
+        element: <Package />,
       },
     ],
   },
