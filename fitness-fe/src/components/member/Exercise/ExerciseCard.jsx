@@ -1,14 +1,13 @@
 import { Timer, Repeat, Dumbbell, Plus } from "lucide-react";
 
-export default function ExerciseGridCard({ exercise, onSelectExercise }) {
+export default function ExerciseGridCard({ exercise, onSelectExercise, onAddExercise }) {
+  
   const getYoutubeThumbnail = (url) => {
     if (!url) return "/placeholder.jpg";
-
     const regExp =
       /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
     const videoId = match && match[2].length === 11 ? match[2] : null;
-
     return videoId
       ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
       : "/placeholder.jpg";
@@ -63,6 +62,7 @@ export default function ExerciseGridCard({ exercise, onSelectExercise }) {
           onClick={(e) => {
             e.stopPropagation(); // 👈 tránh click mở overlay
             console.log("Add exercise");
+            onAddExercise(exercise)
           }}
           className="w-full py-3 rounded-full font-bold text-sm transition-all
           bg-yellow-400 text-purple-900

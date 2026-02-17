@@ -4,12 +4,23 @@ import useExercise from "../../hooks/useExercise";
 import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
 import ExerciseDetailModal from "@/components/member/Exercise/ExerciseDetailModal";
+import ExerciseCart from "@/components/member/Exercise/ExerciseCart";
+import { toast } from "react-toastify";
 
 export default function WorkoutPage() {
   const [selectedMuscles, setSelectedMuscles] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [selectedExercise, setSelectedExercise] = useState(null);
+  const [exerciseAdd, setExerciseAdd] = useState([])
+
+  const handleAddExercise = (item) => {
+    if (exerciseAdd.some(ex => ex.id == item.id)){
+      toast.error("Bài tập đã được thêm")
+      return
+    }
+    setExerciseAdd([...exerciseAdd, item])
+  }
 
   const PER_PAGE = 8;
 
@@ -93,6 +104,7 @@ export default function WorkoutPage() {
               key={ex.id}
               exercise={ex}
               onSelectExercise={setSelectedExercise}
+              onAddExercise={handleAddExercise}
             />
           ))}
         </div>
@@ -105,11 +117,10 @@ export default function WorkoutPage() {
             <button
               key={i}
               onClick={() => setPage(i + 1)}
-              className={`px-4 py-2 rounded-lg font-semibold ${
-                page === i + 1
-                  ? "bg-purple-600 text-white"
-                  : "bg-gray-200 hover:bg-gray-300"
-              }`}
+              className={`px-4 py-2 rounded-lg font-semibold ${page === i + 1
+                ? "bg-purple-600 text-white"
+                : "bg-gray-200 hover:bg-gray-300"
+                }`}
             >
               {i + 1}
             </button>
@@ -122,6 +133,16 @@ export default function WorkoutPage() {
         <ExerciseDetailModal
           exercise={selectedExercise}
           onClose={() => setSelectedExercise(null)}
+        />
+      )}
+      {exerciseAdd.length > 0 && (
+        <ExerciseCart
+          listExerciseAdd={exerciseAdd}
+          onRemove={(exercise) =>
+            setExerciseAdd((prev) =>
+              prev.filter((e) => e.id != exercise.id)
+            )
+          }
         />
       )}
     </div>

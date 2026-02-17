@@ -8,7 +8,6 @@ import { HiX, HiPlus } from "react-icons/hi";
 import { toast } from "react-toastify";
 import { z } from "zod"
 export default function ExerciseModal({ open, onClose, title, item, onSuccess }) {
-    console.log("item",item)
     const [isLoading, setIsLoading] = useState(false)
     const exerciseSchema = z.object({
         name: z.string().min(2),
