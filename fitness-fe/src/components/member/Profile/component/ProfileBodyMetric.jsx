@@ -32,8 +32,6 @@ export default function ProfileBodyMetric() {
             body_fat: item.body_fat,
         }));
 
-console.log("chi so co the moi nhat la",bodyMetricNew)
-    console.log("danh sach body-metric list", bodyMetricList)
     return (
         <div>
             {isLoading ? (<div className="text-center text-2xl py-20 border font-bold">{"Đang tải dữ liệu ..."}</div>) : (<div>

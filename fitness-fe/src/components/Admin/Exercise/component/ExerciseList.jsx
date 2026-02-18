@@ -1,19 +1,10 @@
-import useExercise from "@/hooks/useExercise";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import OpenVideoModal from "../modals/ExerciseVideoModal";
 import ExerciseModal from "../modals/ExerciseModal";
 import { HiEye, HiPencil, HiTrash } from "react-icons/hi";
 
-export default function ExerciseList() {
-    const { exerciseList,
-        muscleList,
-        loading,
-        loadingMuscle,
-        fetchAllExercises,
-        fetchByMuscle,
-    } = useExercise();
-
+export default function ExerciseList({ muscleList, exerciseList, loadingMuscle, loading, fetchAllExercises, fetchByMuscle }) {
     const [openVideo, setOpenVideo] = useState(false);
     const [videoUrl, setVideoUrl] = useState("");
     const [openForm, setOpenForm] = useState(false)
@@ -128,8 +119,8 @@ export default function ExerciseList() {
                     </div>
                 ))
             )}
-            <OpenVideoModal open={openVideo} onClose={()=>setOpenVideo(false)} videoUrl={videoUrl}/>
-            <ExerciseModal open={openForm} onClose={()=>setOpenForm(false)} title={"Cập nhật bài tập"} item={item} onSuccess={fetchAllExercises}/>
+            <OpenVideoModal open={openVideo} onClose={() => setOpenVideo(false)} videoUrl={videoUrl} />
+            <ExerciseModal open={openForm} onClose={() => setOpenForm(false)} title={"Cập nhật bài tập"} item={item} onSuccess={fetchAllExercises} />
         </div>
     );
 }

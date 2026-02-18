@@ -98,7 +98,7 @@ export default function BodyMaxIndex() {
             </span>
           </div>
           <div>
-            <span className="text-center block text-md font-light">
+            <span className="text-center block text-md font-light py-1">
               Béo phì
             </span>
           </div>

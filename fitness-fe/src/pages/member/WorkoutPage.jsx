@@ -1,10 +1,10 @@
-import FilterMuscleGroup from "../../components/member/Exercise/FilterMuscleGroup";
-import ExerciseCard from "../../components/member/Exercise/ExerciseCard";
+import FilterMuscleGroup from "../../components/member/Exercise/component/FilterMuscleGroup";
+import ExerciseCard from "../../components/member/Exercise/component/ExerciseCard";
 import useExercise from "../../hooks/useExercise";
 import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
-import ExerciseDetailModal from "@/components/member/Exercise/ExerciseDetailModal";
-import ExerciseCart from "@/components/member/Exercise/ExerciseCart";
+import ExerciseDetailModal from "@/components/member/Exercise/component/ExerciseDetailModal";
+import ExerciseCart from "@/components/member/Exercise/component/ExerciseCart";
 import { toast } from "react-toastify";
 
 export default function WorkoutPage() {
@@ -128,7 +128,6 @@ export default function WorkoutPage() {
         </div>
       )}
 
-      {/* 🔥 modal */}
       {selectedExercise && (
         <ExerciseDetailModal
           exercise={selectedExercise}
