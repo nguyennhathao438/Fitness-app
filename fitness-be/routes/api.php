@@ -15,7 +15,8 @@ use App\Http\Controllers\MuscleGroupController;
 use App\Http\Controllers\AdminPackageController;    
 use App\Http\Controllers\PackageTypeController;
 use App\Http\Controllers\ServiceController;
-
+use App\Http\Controllers\PTScheduleController;
+use App\Http\Controllers\PTController;
 Route::post('/login', [AuthenController::class, 'login']);
 Route::post('/register', [MemberController::class, 'register']);
 Route::post('/check-email', [AuthenController::class, 'checkEmail']);
@@ -30,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/member/current-package', [TrainingPackageController::class, 'getCurrentPackageInfo']);
     
     Route::post('/member/upgrade', [MemberController::class, 'upgrade']);
+    Route::get('/member/my-schedules', [PTScheduleController::class, 'mySchedules']);
 
     //body metric
     Route::post('/body-metrics', [BodyMetricController::class, 'store']);
@@ -97,6 +99,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/services-manage/{id}', [ServiceController::class, 'show']);    
     Route::put('/services-manage/{id}', [ServiceController::class, 'update']);  
     Route::delete('/services-manage/{id}', [ServiceController::class, 'destroy']); 
+});
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::post('/pt/schedule', [PTScheduleController::class, 'createSchedule']);
+Route::get('/pt/schedules', [PTScheduleController::class, 'ptSchedules']);
+    Route::post('/pt/schedule/{id}/register', [PTScheduleController::class, 'register']);
+
+    Route::put('/pt/schedule/{id}', [PTScheduleController::class, 'updateSchedule']);
+Route::delete('/pt/schedule/{id}', [PTScheduleController::class, 'deleteSchedule']);
+
+});
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/pt/members', [PTController::class, 'myMembers']);
 });
 //package
 Route::get('/training-packages', [TrainingPackageController::class, 'index']);
