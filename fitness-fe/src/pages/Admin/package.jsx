@@ -5,6 +5,7 @@ import PackageList from "../../components/Admin/packagepage/PackageList";
 import PackageForm from "../../components/Admin/packagepage/PackageForm";
 import PackageTypeList from "../../components/Admin/packagepage/PackageTypeList";
 import PackageTypeForm from "../../components/Admin/packagepage/PackageTypeForm";
+import PackageStatContent from "../../components/Admin/packagepage/PackageStatContent";
 import ServiceList from "../../components/Admin/packagepage/ServiceList"; 
 import ServiceForm from "../../components/Admin/packagepage/ServiceForm"; 
 import Dialog from "../../components/Admin/Dialog";
@@ -26,7 +27,7 @@ const StatCard = ({ title, value, icon: Icon, colorClass, bgColorClass }) => (
 );
 
 export default function Package() {
-  const [activeTab, setActiveTab] = useState("list");
+  const [activeTab, setActiveTab] = useState("stats");
   const [openForm, setOpenForm] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0); 
   const [loading, setLoading] = useState(false);
@@ -109,10 +110,10 @@ export default function Package() {
 
       {/* TABS */}
       <div className="flex gap-8 border-b border-gray-200 mb-6 overflow-x-auto">
+        <TabButton active={activeTab === "stats"} onClick={() => setActiveTab("stats")} icon={<BarChart3 size={18}/>} label="Thống kê" /> 
         <TabButton active={activeTab === "list"} onClick={() => setActiveTab("list")} icon={<Layers size={18}/>} label="Danh Sách Gói" />
         <TabButton active={activeTab === "types"} onClick={() => setActiveTab("types")} icon={<ListFilter size={18}/>} label="Loại Gói Tập" />
         <TabButton active={activeTab === "services"} onClick={() => setActiveTab("services")} icon={<Activity size={18}/>} label="Dịch Vụ Đi Kèm" />
-        {/* <TabButton active={activeTab === "stats"} onClick={() => setActiveTab("stats")} icon={<BarChart3 size={18}/>} label="Thống kê" /> */}
       </div>
 
       {/* CONTENT AREA */}
@@ -120,7 +121,7 @@ export default function Package() {
         {activeTab === "list" && <PackageList refreshKey={refreshKey} onChanged={() => setRefreshKey(p => p + 1)} />}
         {activeTab === "types" && <PackageTypeList refreshKey={refreshKey} onChanged={() => setRefreshKey(p => p + 1)} />}
         {activeTab === "services" && <ServiceList refreshKey={refreshKey} onChanged={() => setRefreshKey(p => p + 1)} />}
-        {activeTab === "stats" && <div className="p-10 text-center text-gray-400 border-2 border-dashed rounded-xl">Tính năng đang phát triển...</div>}
+        {activeTab === "stats" && <PackageStatContent />}
       </div>
 
       {/* DIALOG FORM */}

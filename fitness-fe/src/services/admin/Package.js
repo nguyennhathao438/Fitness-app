@@ -27,3 +27,7 @@ export const getPackageTypes = () => {
 export const getPackageStats = () => {
   return api.get("/packages/stats");
 };
+
+export const getPackageStat = () => {
+  return api.get("/registration-stats"); 
+};

@@ -27,4 +27,9 @@ class TrainingPackage extends Model
     {
         return $this->belongsTo(PackageType::class);
     }
+    public function invoices()
+    {
+        // 1 Gói tập có nhiều Hóa đơn
+        return $this->hasMany(Invoice::class, 'package_id', 'id');
+    }
 }

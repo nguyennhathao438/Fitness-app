@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\TrainingPackage;
 use App\Models\PackageType;
 use App\Models\Service; 
+use App\Models\Invoice; // [THÊM MỚI] Import Invoice model
+use Illuminate\Support\Facades\DB; // [THÊM MỚI] Dùng để query DB
 
 class AdminPackageController extends Controller
 {
@@ -170,6 +172,45 @@ class AdminPackageController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Lỗi lấy thống kê: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getPackageStat()
+    {
+        try {
+            $packages = TrainingPackage::select('id', 'name')
+                ->where('is_deleted', false) 
+                ->whereHas('invoices', function ($query) {
+                    $query->where('status', 'paid'); // Phải có hóa đơn paid
+                })
+                ->withCount(['invoices as registered_count' => function ($query) {
+                    $query->where('status', 'paid'); // Đếm số lượng hóa đơn paid
+                }])
+                ->get();
+
+            $labels = [];
+            $registeredData = [];
+
+            foreach ($packages as $pkg) {
+                $labels[] = $pkg->name;
+                $registeredData[] = $pkg->registered_count;
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'labels' => $labels,
+                    'data' => [
+                        'registered' => $registeredData
+                    ]
+                ]
+            ]);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi lấy dữ liệu biểu đồ: ' . $e->getMessage()
             ], 500);
         }
     }

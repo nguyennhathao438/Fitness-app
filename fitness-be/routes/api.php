@@ -78,6 +78,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/packages', [AdminPackageController::class, 'store']);
     Route::put('/packages/{id}', [AdminPackageController::class, 'update']);
     Route::delete('/packages/{id}', [AdminPackageController::class, 'destroy']);
+    Route::get('/registration-stats', [AdminPackageController::class, 'getPackageStat']);
     
     Route::get('/package-type', [AdminPackageController::class, 'getTypes']);
 
