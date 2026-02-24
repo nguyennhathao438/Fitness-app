@@ -42,4 +42,29 @@ class Member extends Authenticatable
                 $q->where('code', $permission);
             })->exists();
     }
+
+public function managedMembers()
+{
+    return $this->belongsToMany(
+        Member::class,
+        'pt_member',
+        'pt_id',
+        'member_id'
+    );
+}
+
+public function pt()
+{
+    return $this->belongsToMany(
+        Member::class,
+        'pt_member',
+        'member_id',
+        'pt_id'
+    );
+}
+
+public function ptSchedules()
+{
+    return $this->hasMany(PTSchedule::class, 'pt_id');
+}
 }
