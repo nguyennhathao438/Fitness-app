@@ -12,7 +12,7 @@ use App\Http\Controllers\TrainingPackageController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\MuscleGroupController;
-
+use App\Http\Controllers\ChatbotController;
 Route::post('/login', [AuthenController::class, 'login']);
 Route::post('/register', [MemberController::class, 'register']);
 Route::post('/check-email', [AuthenController::class, 'checkEmail']);
@@ -80,3 +80,5 @@ Route::prefix('roles')->group(function () {
 });
 //Permission
 Route::get('/permissions', [RoleController::class, 'getAllPermission']);
+//Chatbot 
+Route::post('/chatbot', [ChatbotController::class, 'getIntent']);
