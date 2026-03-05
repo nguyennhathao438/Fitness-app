@@ -18,6 +18,7 @@ import Invoice from "./pages/Admin/Invoice";
 import Package from "./pages/Admin/package";
 import UpgradePackagePage from "./pages/member/UpgradePackagePage"; 
 import UpgradePaymentPage from "./pages/member/UpgradePaymentPage"; 
+import WorkoutPage from "./pages/member/WorkoutPage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         element: <Profile />,
+      },
+      {
+        path: "/workout",
+        element: <WorkoutPage />,
       },
     ],
   },

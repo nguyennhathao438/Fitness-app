@@ -16,6 +16,7 @@ use App\Http\Controllers\AdminPackageController;
 use App\Http\Controllers\PackageTypeController;
 use App\Http\Controllers\ServiceController;
 
+use App\Http\Controllers\ChatbotController;
 Route::post('/login', [AuthenController::class, 'login']);
 Route::post('/register', [MemberController::class, 'register']);
 Route::post('/check-email', [AuthenController::class, 'checkEmail']);
@@ -49,20 +50,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/genderStat', [MemberController::class, 'memberStats']);
     Route::get('/BirthStat', [MemberController::class, 'AgeStats']);
     Route::post('/personal-trainers', [PersonalTrainerController::class, 'createPT']);
-    //exercise
-    Route::get('/exercises', [ExerciseController::class, 'index']);
-    Route::post('/exercises', [ExerciseController::class, 'store']);
-    Route::get('/exercises/{id}', [ExerciseController::class, 'show']);
-    Route::put('/exercises/{id}', [ExerciseController::class, 'update']);
-    Route::delete('/exercises/{id}', [ExerciseController::class, 'destroy']);
-    Route::get('/exercises/by-muscle-group/{muscleGroupId}', [ExerciseController::class, 'getByMuscleGroup']);
 
-    // Muscle Group
-    Route::get('/muscle-groups', [MuscleGroupController::class, 'index']);
-    Route::post('/muscle-groups', [MuscleGroupController::class, 'store']);
-    Route::get('/muscle-groups/{id}', [MuscleGroupController::class, 'show']);
-    Route::put('/muscle-groups/{id}', [MuscleGroupController::class, 'update']);
-    Route::delete('/muscle-groups/{id}', [MuscleGroupController::class, 'destroy']);
+
     //invoice
     Route::get('/invoice', [InvoiceController::class, 'getInvoice']);
     Route::get('/invoice-thismonth', [InvoiceController::class, 'getInvoiceThisMonth']);
@@ -98,6 +87,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/services-manage/{id}', [ServiceController::class, 'update']);  
     Route::delete('/services-manage/{id}', [ServiceController::class, 'destroy']); 
 });
+
+// Muscle Group
+Route::get('/muscle-groups', [MuscleGroupController::class, 'index']);
+Route::post('/muscle-groups', [MuscleGroupController::class, 'store']);
+Route::get('/muscle-groups/{id}', [MuscleGroupController::class, 'show']);
+Route::put('/muscle-groups/{id}', [MuscleGroupController::class, 'update']);
+Route::delete('/muscle-groups/{id}', [MuscleGroupController::class, 'destroy']);
+//exercise
+Route::get('/exercises', [ExerciseController::class, 'index']);
+Route::post('/exercises', [ExerciseController::class, 'store']);
+Route::get('/exercises/{id}', [ExerciseController::class, 'show']);
+Route::put('/exercises/{id}', [ExerciseController::class, 'update']);
+Route::delete('/exercises/{id}', [ExerciseController::class, 'destroy']);
+Route::get('/exercises/by-muscle-group/{muscleGroupId}', [ExerciseController::class, 'getByMuscleGroup']);
 //package
 Route::get('/training-packages', [TrainingPackageController::class, 'index']);
 Route::get('/package-compare', [TrainingPackageController::class, 'getPackageCompare']);
@@ -117,3 +120,5 @@ Route::prefix('roles')->group(function () {
 });
 //Permission
 Route::get('/permissions', [RoleController::class, 'getAllPermission']);
+//Chatbot 
+Route::post('/chatbot', [ChatbotController::class, 'getIntent']);
