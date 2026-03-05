@@ -21,8 +21,12 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link to="/" className="shrink-0">
-              <img className="w-40 h-16" src="https://fight100.vn/wp-content/uploads/2024/02/logo.png" alt="" />
+            <Link href="/" className="shrink-0">
+              <img
+                className="w-40 h-16"
+                src="https://fight100.vn/wp-content/uploads/2024/02/logo.png"
+                alt=""
+              />
             </Link>
 
             {/* Desktop Navigation */}
@@ -45,8 +49,17 @@ export default function Header() {
                 </Link>
               )}
 
-              <Link to="/bmi" className="text-gray-300 hover:text-white transition-colors font-bold text-md ">
+              <Link
+                to="/bmi"
+                className="text-gray-300 hover:text-white transition-colors font-bold text-md "
+              >
                 BMI
+              </Link>
+              <Link
+                to="/workout"
+                className="text-gray-300 hover:text-white transition-colors font-bold text-md "
+              >
+                Workout
               </Link>
             </nav>
 
@@ -109,8 +122,12 @@ export default function Header() {
             </button>
           </div>
 
-          {/* Mobile Navigation */}
-          <div className={`lg:hidden overflow-hidden transition-all duration-300 ${isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
+          {/* Mobile Navigation - visible below lg (1024px) */}
+          <div
+            className={`lg:hidden overflow-hidden transition-all duration-300 ${
+              isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+            }`}
+          >
             <div className="pb-4 border-t border-[#2a2435] mt-2 pt-4">
               <nav className="flex flex-col gap-2">
                 <Link
