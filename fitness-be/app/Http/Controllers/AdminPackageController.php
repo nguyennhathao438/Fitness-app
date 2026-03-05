@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\TrainingPackage;
 use App\Models\PackageType;
 use App\Models\Service; 
-use App\Models\Invoice; // [THÊM MỚI] Import Invoice model
-use Illuminate\Support\Facades\DB; // [THÊM MỚI] Dùng để query DB
+use App\Models\Invoice; 
+use Illuminate\Support\Facades\DB; 
 
 class AdminPackageController extends Controller
 {
