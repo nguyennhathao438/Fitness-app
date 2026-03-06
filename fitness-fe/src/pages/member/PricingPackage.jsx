@@ -6,6 +6,7 @@ import {
   getTrainingPackages,
 } from "../../services/member/TraningPakageService.js";
 import CompareFeatures from "../../components/member/CompareFeature.jsx";
+import ChatBox from "../../components/member/ChatBox";
 
 export default function PricingPackages() {
   const [packageTypes, setPackageTypes] = useState([]);
@@ -134,6 +135,7 @@ export default function PricingPackages() {
         </div>
       </div>
       <CompareFeatures></CompareFeatures>
+      <ChatBox />
     </section>
   );
 }

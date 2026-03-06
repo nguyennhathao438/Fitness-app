@@ -141,7 +141,6 @@ class TrainingPackageController extends Controller
     }
 
     // Lấy thông tin chi tiết gói tập hiện tại của Member
-
     public function getCurrentPackageInfo(Request $request)
     {
         $memberId = $request->user()->id; // Lấy từ token
@@ -155,6 +154,13 @@ class TrainingPackageController extends Controller
             ->first();
 
         if ($activeInvoice && $activeInvoice->package) {
+            
+            $today = Carbon::today(); 
+            
+            $expireDate = Carbon::parse($activeInvoice->valid_until)->startOfDay(); 
+
+            $daysRemaining = max(0, (int) $today->diffInDays($expireDate, false));
+
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -163,7 +169,7 @@ class TrainingPackageController extends Controller
                     'duration_days' => $activeInvoice->package->duration_days,
                     'price' => $activeInvoice->package->price,
                     'valid_until' => $activeInvoice->valid_until,
-                    'days_remaining' => Carbon::now()->diffInDays($activeInvoice->valid_until, false),
+                    'days_remaining' => $daysRemaining,
                 ]
             ]);
         }

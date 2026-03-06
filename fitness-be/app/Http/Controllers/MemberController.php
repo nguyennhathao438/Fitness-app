@@ -59,6 +59,7 @@ class MemberController extends Controller
                     'member_id' => $member->id,
                     'package_id' => $package->id,
                     'payment_method' => $request->payment_method,
+                    'total_price' => $package->price,
                     'valid_until' => now()->addDays($package->duration_days),
                     'status' => $status,
                 ]);
@@ -415,27 +416,51 @@ class MemberController extends Controller
 
         try {
             DB::transaction(function () use ($request, $member, &$invoice, &$newPackage, $isExtend) {
-                //  Lấy thông tin gói muốn mua
+                // Lấy thông tin gói muốn mua
                 $newPackage = TrainingPackage::findOrFail($request->package_id);
 
-                //  Xác định trạng thái thanh toán
+                // Xác định trạng thái thanh toán
                 $status = 'paid';
                 if ($request->payment_method == 'cash') {
                     $status = 'pending'; 
                 }
 
-                //  TÍNH TOÁN NGÀY BẮT ĐẦU (
+                // TÍNH TOÁN NGÀY BẮT ĐẦU VÀ GIÁ TIỀN
                 $startDate = Carbon::now(); 
+                $totalPrice = $newPackage->price; 
+
+                // Tìm hóa đơn đang sử dụng (nếu có)
+                $currentInvoice = Invoice::where('member_id', $member->id)
+                    ->where('status', 'paid')
+                    ->where('valid_until', '>', Carbon::now())
+                    ->orderBy('valid_until', 'desc')
+                    ->orderByDesc('id')          
+                    ->with('package') 
+                    ->first();
 
                 if ($isExtend) {
-                    $currentInvoice = Invoice::where('member_id', $member->id)
-                        ->where('status', 'paid')
-                        ->where('valid_until', '>', Carbon::now())
-                        ->orderBy('valid_until', 'desc')
-                        ->first();
-                    
+                    // NẾU LÀ GIA HẠN: Nối tiếp ngày, giá tiền giữ nguyên
                     if ($currentInvoice) {
                         $startDate = Carbon::parse($currentInvoice->valid_until);
+                    }
+                } else {
+                    // NẾU LÀ NÂNG CẤP: Tính tiền dư để trừ đi
+                    if ($currentInvoice && $currentInvoice->package) {
+                        $oldPackage = $currentInvoice->package;
+                        
+                        // Tính số ngày còn lại (chỉ lấy phần nguyên ngày)
+                        $daysRemaining = max(0, Carbon::now()->startOfDay()->diffInDays(Carbon::parse($currentInvoice->valid_until)->startOfDay(), false));
+                        
+                        if ($daysRemaining > 0 && $oldPackage->duration_days > 0) {
+                            // Giá trị của 1 ngày ở gói cũ
+                            $dailyRate = $oldPackage->price / $oldPackage->duration_days;
+                            
+                            // Tổng tiền dư chưa dùng tới
+                            $remainingValue = $daysRemaining * $dailyRate;
+                            
+                            // Số tiền khách phải đóng = Giá gói mới - Tiền dư gói cũ 
+                            $totalPrice = max(0, round($newPackage->price - $remainingValue));
+                        }
                     }
                 } 
 
@@ -444,12 +469,12 @@ class MemberController extends Controller
                     'member_id' => $member->id,
                     'package_id' => $newPackage->id,
                     'payment_method' => $request->payment_method,
-                    'total_amount' => $newPackage->price,
-                    
+                    'total_price' => $totalPrice, 
                     'valid_until' => $startDate->copy()->addDays($newPackage->duration_days),
                     'status' => $status,
-                    'type' => $isExtend ? 'extend' : 'upgrade', 
-                    'description' => ($isExtend ? "Gia hạn gói " : "Nâng cấp lên gói ") . $newPackage->name
+                    
+                    // 'type' => $isExtend ? 'extend' : 'upgrade', 
+                    // 'description' => ($isExtend ? "Gia hạn gói " : "Nâng cấp lên gói ") . $newPackage->name
                 ]);
 
                 if ($status == 'paid') {

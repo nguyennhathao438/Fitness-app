@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getUpgradableTypes, getUpgradablePackagesByType, getCurrentPackageInfo } from "../../services/member/TraningPakageService";
 import PricingCard from "../../components/member/PricingCard";
+import CompareFeatures from "../../components/member/CompareFeature";
+import ChatBox from "../../components/member/ChatBox";
+
 
 export default function UpgradePackagePage() {
   const [packageTypes, setPackageTypes] = useState([]);
@@ -145,7 +148,7 @@ export default function UpgradePackagePage() {
                                     Thời hạn
                                 </div>
                                 <p className="text-white text-lg font-bold">
-                                    {currentPackage.duration_days} ngày
+                                    Còn {currentPackage.days_remaining} ngày
                                 </p>
                             </div>
 
@@ -242,6 +245,9 @@ export default function UpgradePackagePage() {
                 />
               ))}
             </div>
+            <div className="mt-10  ">
+               <CompareFeatures />
+            </div>
           </>
         ) : (
           /* TRƯỜNG HỢP ĐỈNH CAO */
@@ -264,6 +270,7 @@ export default function UpgradePackagePage() {
           </div>
         )}
       </div>
+      <ChatBox />
     </section>
   );
 }
