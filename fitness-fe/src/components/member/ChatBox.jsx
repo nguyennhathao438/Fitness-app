@@ -32,19 +32,36 @@ export default function ChatBox() {
     setIsBotThinking(true);
 
     setTimeout(() => {
-      setMessages(prev => [...prev, { 
-        id: Date.now(), 
-        text: "Dạ, hệ thống đã ghi nhận câu hỏi của bạn. Gói 1 năm hiện tại đang có ưu đãi giảm 20% đó ạ!", 
-        sender: "bot" 
-      }]);
       setIsBotThinking(false);
-    }, 3000);
+      
+      const fullResponse = "Dạ, hệ thống đã ghi nhận câu hỏi của bạn. Gói 1 năm hiện tại đang có ưu đãi giảm 20% đó ạ!";
+      const botMessageId = Date.now();
+
+      setMessages(prev => [...prev, { id: botMessageId, text: "", sender: "bot" }]);
+
+      let currentIndex = 0;
+      const typingInterval = setInterval(() => {
+        setMessages(prev => 
+          prev.map(msg => 
+            msg.id === botMessageId 
+              ? { ...msg, text: fullResponse.slice(0, currentIndex + 1) } 
+              : msg
+          )
+        );
+        currentIndex++;
+
+        if (currentIndex === fullResponse.length) {
+          clearInterval(typingInterval);
+        }
+      }, 30); // Tốc độ gõ chữ
+
+    }, 1500); 
   };
 
   return (
     <div className="fixed bottom-6 right-6 z-50 font-sans">
       
-      {/* NÚT MỞ CHATBOX BÊN NGOÀI (PHÁT VIDEO) */}
+      {/* NÚT MỞ CHATBOX BÊN NGOÀI */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -61,7 +78,7 @@ export default function ChatBox() {
         </button>
       )}
 
-      {/* KHUNG CHAT BÊN TRONG (HIỆN PNG) */}
+      {/* KHUNG CHAT BÊN TRONG */}
       {isOpen && (
         <div className="w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col h-[600px] animate-in slide-in-from-bottom-5 fade-in duration-300">
           
