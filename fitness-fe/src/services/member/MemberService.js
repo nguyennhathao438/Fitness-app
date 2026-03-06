@@ -39,3 +39,6 @@ export const changePassword = (data) => {
 export const upgradePackage = (data) => {
   return api.post("/member/upgrade", data);
 };
+export const getMyInfo = () => {
+  return api.get("/me");
+};

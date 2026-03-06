@@ -1,12 +1,22 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Star, Clock, Calendar, Crown, CalendarPlus } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Star,
+  Clock,
+  Calendar,
+  Crown,
+  CalendarPlus,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { getUpgradableTypes, getUpgradablePackagesByType, getCurrentPackageInfo } from "../../services/member/TraningPakageService";
+import {
+  getUpgradableTypes,
+  getUpgradablePackagesByType,
+  getCurrentPackageInfo,
+} from "../../services/member/TraningPakageService";
 import PricingCard from "../../components/member/PricingCard";
 import CompareFeatures from "../../components/member/CompareFeature";
-import ChatBox from "../../components/member/ChatBox";
-
 
 export default function UpgradePackagePage() {
   const [packageTypes, setPackageTypes] = useState([]);
@@ -30,9 +40,9 @@ export default function UpgradePackagePage() {
 
   const handleRenew = () => {
     if (currentPackage && currentPackage.package_id) {
-        navigate(`/member/payment/${currentPackage.package_id}`, { 
-            state: { isExtend: true } 
-        });
+      navigate(`/member/payment/${currentPackage.package_id}`, {
+        state: { isExtend: true },
+      });
     }
   };
 
@@ -46,10 +56,8 @@ export default function UpgradePackagePage() {
 
     if (member?.id) {
       // Lấy gói hiện tại & Lấy danh sách nâng cấp
-      Promise.all([
-        getCurrentPackageInfo(),
-        getUpgradableTypes(member.id)
-      ]).then(([curPkgRes, typesRes]) => {
+      Promise.all([getCurrentPackageInfo(), getUpgradableTypes(member.id)])
+        .then(([curPkgRes, typesRes]) => {
           if (curPkgRes.data.success) {
             setCurrentPackage(curPkgRes.data.data);
           }
@@ -58,14 +66,15 @@ export default function UpgradePackagePage() {
             setPackageTypes(typesRes);
             setActiveTab(typesRes[0].id);
           } else {
-             setLoading(false);
+            setLoading(false);
           }
-      }).catch(err => {
+        })
+        .catch((err) => {
           console.error(err);
           setLoading(false);
-      });
+        });
     } else {
-        setLoading(false);
+      setLoading(false);
     }
   }, [member]);
 
@@ -73,20 +82,21 @@ export default function UpgradePackagePage() {
   useEffect(() => {
     if (!activeTab || !member?.id) return;
 
-    getUpgradablePackagesByType(member.id, activeTab).then((data) => {
-      setPackages(data);
+    getUpgradablePackagesByType(member.id, activeTab)
+      .then((data) => {
+        setPackages(data);
 
-      requestAnimationFrame(() => {
-        if (scrollRef.current) {
-          scrollRef.current.scrollLeft = 0;
-          checkScrollButtons();
-        }
-      });
-    })
-    .catch(err => console.error(err))
-    .finally(() => {
+        requestAnimationFrame(() => {
+          if (scrollRef.current) {
+            scrollRef.current.scrollLeft = 0;
+            checkScrollButtons();
+          }
+        });
+      })
+      .catch((err) => console.error(err))
+      .finally(() => {
         setLoading(false);
-    });
+      });
   }, [activeTab, member]);
 
   const scroll = (direction) => {
@@ -97,9 +107,9 @@ export default function UpgradePackagePage() {
   };
 
   const formatDate = (dateString) => {
-      if(!dateString) return "";
-      const date = new Date(dateString);
-      return new Intl.DateTimeFormat('vi-VN').format(date);
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("vi-VN").format(date);
   };
 
   if (loading) {
@@ -119,61 +129,61 @@ export default function UpgradePackagePage() {
 
         {/* CARD GÓI TẬP HIỆN TẠI */}
         {currentPackage && (
-            <div className="mb-10 relative overflow-hidden rounded-2xl bg-gray-900 shadow-xl border border-yellow-500/20">
-                {/* Background Decor */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/20 blur-[80px] rounded-full pointer-events-none -mr-16 -mt-16"></div>
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-yellow-500/10 blur-[80px] rounded-full pointer-events-none -ml-16 -mb-16"></div>
+          <div className="mb-10 relative overflow-hidden rounded-2xl bg-gray-900 shadow-xl border border-yellow-500/20">
+            {/* Background Decor */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/20 blur-[80px] rounded-full pointer-events-none -mr-16 -mt-16"></div>
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-yellow-500/10 blur-[80px] rounded-full pointer-events-none -ml-16 -mb-16"></div>
 
-                <div className="relative z-10 p-6 md:p-8">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                        {/* Tên gói */}
-                        <div>
-                            <div className="flex items-center gap-2 mb-2">
-                                <Crown className="w-5 h-5 text-yellow-400" />
-                                <span className="text-gray-400 text-xs font-bold uppercase tracking-widest">
-                                    Gói tập hiện tại của bạn
-                                </span>
-                            </div>
-                            <h3 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
-                                {currentPackage.package_name}
-                            </h3>
-                        </div>
-
-                        {/*Thông tin chi tiết */}
-                        <div className="flex gap-4 w-full md:w-auto">
-                            {/* Box Thời hạn */}
-                            <div className="flex-1 md:flex-none bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 min-w-[140px]">
-                                <div className="flex items-center gap-2 text-gray-400 text-xs uppercase font-bold mb-1">
-                                    <Clock className="w-4 h-4" />
-                                    Thời hạn
-                                </div>
-                                <p className="text-white text-lg font-bold">
-                                    Còn {currentPackage.days_remaining} ngày
-                                </p>
-                            </div>
-
-                            {/* Box Hết hạn */}
-                            <div className="flex-1 md:flex-none bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 min-w-[140px]">
-                                <div className="flex items-center gap-2 text-gray-400 text-xs uppercase font-bold mb-1">
-                                    <Calendar className="w-4 h-4" />
-                                    Hết hạn
-                                </div>
-                                <p className="text-yellow-400 text-lg font-bold">
-                                    {formatDate(currentPackage.valid_until)}
-                                </p>
-                            </div>
-                            {/* NÚT GIA HẠN */}
-                            <button
-                                onClick={handleRenew}
-                                className="px-6 py-3 bg-white hover:bg-gray-100 text-purple-700 font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 border-2 border-transparent hover:border-purple-200"
-                            >
-                                <CalendarPlus className="w-5 h-5" />
-                                Gia hạn ngay
-                            </button>
-                        </div>
-                    </div>
+            <div className="relative z-10 p-6 md:p-8">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                {/* Tên gói */}
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Crown className="w-5 h-5 text-yellow-400" />
+                    <span className="text-gray-400 text-xs font-bold uppercase tracking-widest">
+                      Gói tập hiện tại của bạn
+                    </span>
+                  </div>
+                  <h3 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                    {currentPackage.package_name}
+                  </h3>
                 </div>
+
+                {/*Thông tin chi tiết */}
+                <div className="flex gap-4 w-full md:w-auto">
+                  {/* Box Thời hạn */}
+                  <div className="flex-1 md:flex-none bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 min-w-[140px]">
+                    <div className="flex items-center gap-2 text-gray-400 text-xs uppercase font-bold mb-1">
+                      <Clock className="w-4 h-4" />
+                      Thời hạn
+                    </div>
+                    <p className="text-white text-lg font-bold">
+                      Còn {currentPackage.days_remaining} ngày
+                    </p>
+                  </div>
+
+                  {/* Box Hết hạn */}
+                  <div className="flex-1 md:flex-none bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 min-w-[140px]">
+                    <div className="flex items-center gap-2 text-gray-400 text-xs uppercase font-bold mb-1">
+                      <Calendar className="w-4 h-4" />
+                      Hết hạn
+                    </div>
+                    <p className="text-yellow-400 text-lg font-bold">
+                      {formatDate(currentPackage.valid_until)}
+                    </p>
+                  </div>
+                  {/* NÚT GIA HẠN */}
+                  <button
+                    onClick={handleRenew}
+                    className="px-6 py-3 bg-white hover:bg-gray-100 text-purple-700 font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 border-2 border-transparent hover:border-purple-200"
+                  >
+                    <CalendarPlus className="w-5 h-5" />
+                    Gia hạn ngay
+                  </button>
+                </div>
+              </div>
             </div>
+          </div>
         )}
 
         {packageTypes.length > 0 ? (
@@ -246,7 +256,7 @@ export default function UpgradePackagePage() {
               ))}
             </div>
             <div className="mt-10  ">
-               <CompareFeatures />
+              <CompareFeatures />
             </div>
           </>
         ) : (
@@ -270,7 +280,6 @@ export default function UpgradePackagePage() {
           </div>
         )}
       </div>
-      <ChatBox />
     </section>
   );
 }

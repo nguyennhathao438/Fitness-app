@@ -6,7 +6,6 @@ import {
   getTrainingPackages,
 } from "../../services/member/TraningPakageService.js";
 import CompareFeatures from "../../components/member/CompareFeature.jsx";
-import ChatBox from "../../components/member/ChatBox";
 
 export default function PricingPackages() {
   const [packageTypes, setPackageTypes] = useState([]);
@@ -14,6 +13,8 @@ export default function PricingPackages() {
   const [packages, setPackages] = useState([]);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const scrollRef = useRef(null);
 
   const checkScrollButtons = () => {
@@ -26,29 +27,46 @@ export default function PricingPackages() {
 
   // Load loại gói
   useEffect(() => {
-    getPackageTypes().then((types) => {
-      setPackageTypes(types);
-      if (types.length > 0) {
-        setActiveTab(types[0].id);
-      }
-    });
+    function fetchPackageTypes() {
+      getPackageTypes()
+        .then((types) => {
+          setPackageTypes(types);
+          if (types.length > 0) {
+            setActiveTab(types[0].id);
+          }
+        })
+        .catch((err) => console.error(err));
+    }
+    fetchPackageTypes();
   }, []);
 
   // Load gói theo loại
   useEffect(() => {
     if (!activeTab) return;
+    function fetchPackages() {
+      if (isInitialLoad) {
+        setLoading(true);
+      }
+      getTrainingPackages(activeTab)
+        .then((res) => {
+          setPackages(res.data.data);
 
-    getTrainingPackages(activeTab).then((res) => {
-      setPackages(res.data.data);
-
-      requestAnimationFrame(() => {
-        if (scrollRef.current) {
-          scrollRef.current.scrollLeft = 0;
-          checkScrollButtons();
-        }
-      });
-    });
-  }, [activeTab]);
+          requestAnimationFrame(() => {
+            if (scrollRef.current) {
+              scrollRef.current.scrollLeft = 0;
+              checkScrollButtons();
+            }
+          });
+        })
+        .finally(() => {
+          if (isInitialLoad) {
+            setLoading(false);
+            setIsInitialLoad(false);
+          }
+        });
+    }
+    fetchPackages();
+  }, [activeTab, isInitialLoad]);
 
   const scroll = (direction) => {
     scrollRef.current?.scrollBy({
@@ -56,7 +74,13 @@ export default function PricingPackages() {
       behavior: "smooth",
     });
   };
-
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-white">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-700"></div>
+      </div>
+    );
+  }
   return (
     <section className="py-12 px-4 bg-white min-h-screen">
       <div className="max-w-5xl mx-auto">
@@ -135,7 +159,6 @@ export default function PricingPackages() {
         </div>
       </div>
       <CompareFeatures></CompareFeatures>
-      <ChatBox />
     </section>
   );
 }

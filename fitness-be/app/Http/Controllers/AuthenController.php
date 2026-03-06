@@ -8,6 +8,38 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Invoice;
 class AuthenController extends Controller
 {
+    public function getMyInfo(Request $request)
+    {
+
+        $member = $request->user();
+
+        $latestInvoice = Invoice::with('package.packageType.services')
+            ->where('member_id', $member->id)
+            ->latest()
+            ->first();
+
+        $serviceIds = [];
+        $validUntil = null;
+        $package = null;
+
+        if ($latestInvoice && $latestInvoice->package) {
+            $validUntil = $latestInvoice->valid_until;
+            $package = $latestInvoice->package;
+
+            if ($package->packageType) {
+                $serviceIds = $package
+                    ->packageType
+                    ->services
+                    ->pluck('id');
+            }
+        }
+
+        return response()->json([
+            'member' => $member,
+            'valid_until' => $validUntil,
+            'service_ids' => $serviceIds
+        ]);
+    }
     public function login(Request $request)
     {
         $request->validate([

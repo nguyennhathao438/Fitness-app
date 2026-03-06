@@ -93,10 +93,10 @@ class MemberController extends Controller
         $member = $request->user(); // member đang đăng nhập
 
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:members,email,' . $member->id,
-            'phone'    => 'required|string|max:20',
-            'gender'   => 'nullable|string|in:male,female,other'
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:members,email,' . $member->id,
+            'phone' => 'required|string|max:20',
+            'gender' => 'nullable|string|in:male,female,other'
         ]);
 
         try {
@@ -113,13 +113,13 @@ class MemberController extends Controller
 
             return response()->json([
                 'message' => 'Cập nhật thông tin thành công',
-                'member'  => $member,
+                'member' => $member,
             ], 200);
         } catch (\Throwable $e) {
             return response()->json([
                 'message' => 'Cập nhật thất bại',
-                'error'   => $e->getMessage(),
-                ], 500);
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -216,7 +216,7 @@ class MemberController extends Controller
                 $cloudinary = new Cloudinary([
                     'cloud' => [
                         'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                        'api_key'    => env('CLOUDINARY_API_KEY'),
+                        'api_key' => env('CLOUDINARY_API_KEY'),
                         'api_secret' => env('CLOUDINARY_API_SECRET'),
                     ],
                 ]);
@@ -272,17 +272,17 @@ class MemberController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-            'this_month' => $memberThisMonth,
-            'last_month' => $memberLastMonth,
-            'percent_change' => $percentChange,
-        ],
+                'this_month' => $memberThisMonth,
+                'last_month' => $memberLastMonth,
+                'percent_change' => $percentChange,
+            ],
         ]);
     }
     // Thống kê biểu đồ cột theo vai trò và tổng người dùng
     public function getMemberChart(Request $request)
     {
-        $type  = $request->type ?? 'yearly';
-        $year  = $request->year ?? now()->year;
+        $type = $request->type ?? 'yearly';
+        $year = $request->year ?? now()->year;
         $month = $request->month ?? now()->month;
 
         $labels = [];
@@ -294,8 +294,8 @@ class MemberController extends Controller
             $daysInMonth = Carbon::create($year, $month)->daysInMonth;
             for ($day = 1; $day <= $daysInMonth; $day++) {
                 $start = Carbon::create($year, $month, $day)->startOfDay();
-                $end   = Carbon::create($year, $month, $day)->endOfDay();
-                $labels[] = (string)$day;
+                $end = Carbon::create($year, $month, $day)->endOfDay();
+                $labels[] = (string) $day;
                 $memberData[] = Member::where('is_deleted', false)
                     ->whereBetween('created_at', [$start, $end])
                     ->whereHas('roles', fn($q) => $q->where('name', 'Member'))
@@ -319,7 +319,7 @@ class MemberController extends Controller
             ];
             foreach ($quarters as [$label, $startMonth, $endMonth]) {
                 $start = Carbon::create($year, $startMonth, 1)->startOfMonth();
-                $end   = Carbon::create($year, $endMonth, 1)->endOfMonth();
+                $end = Carbon::create($year, $endMonth, 1)->endOfMonth();
                 $labels[] = $label;
                 $memberData[] = Member::where('is_deleted', false)
                     ->whereBetween('created_at', [$start, $end])
@@ -338,7 +338,7 @@ class MemberController extends Controller
         else {
             for ($m = 1; $m <= 12; $m++) {
                 $start = Carbon::create($year, $m, 1)->startOfMonth();
-                $end   = Carbon::create($year, $m, 1)->endOfMonth();
+                $end = Carbon::create($year, $m, 1)->endOfMonth();
                 $labels[] = 'T' . $m;
                 $memberData[] = Member::where('is_deleted', false)
                     ->whereBetween('created_at', [$start, $end])
@@ -406,12 +406,12 @@ class MemberController extends Controller
         $request->validate([
             'package_id' => 'required|exists:training_packages,id',
             'payment_method' => 'required|in:momo,vnpay,cash',
-            'is_extend' => 'boolean', 
+            'is_extend' => 'boolean',
         ]);
 
         $invoice = null;
         $newPackage = null;
-        
+
         $isExtend = $request->input('is_extend', false);
 
         try {
@@ -422,20 +422,20 @@ class MemberController extends Controller
                 // Xác định trạng thái thanh toán
                 $status = 'paid';
                 if ($request->payment_method == 'cash') {
-                    $status = 'pending'; 
+                    $status = 'pending';
                 }
 
                 // TÍNH TOÁN NGÀY BẮT ĐẦU VÀ GIÁ TIỀN
-                $startDate = Carbon::now(); 
-                $totalPrice = $newPackage->price; 
+                $startDate = Carbon::now();
+                $totalPrice = $newPackage->price;
 
                 // Tìm hóa đơn đang sử dụng (nếu có)
                 $currentInvoice = Invoice::where('member_id', $member->id)
                     ->where('status', 'paid')
                     ->where('valid_until', '>', Carbon::now())
                     ->orderBy('valid_until', 'desc')
-                    ->orderByDesc('id')          
-                    ->with('package') 
+                    ->orderByDesc('id')
+                    ->with('package')
                     ->first();
 
                 if ($isExtend) {
@@ -447,32 +447,32 @@ class MemberController extends Controller
                     // NẾU LÀ NÂNG CẤP: Tính tiền dư để trừ đi
                     if ($currentInvoice && $currentInvoice->package) {
                         $oldPackage = $currentInvoice->package;
-                        
+
                         // Tính số ngày còn lại (chỉ lấy phần nguyên ngày)
                         $daysRemaining = max(0, Carbon::now()->startOfDay()->diffInDays(Carbon::parse($currentInvoice->valid_until)->startOfDay(), false));
-                        
+
                         if ($daysRemaining > 0 && $oldPackage->duration_days > 0) {
                             // Giá trị của 1 ngày ở gói cũ
                             $dailyRate = $oldPackage->price / $oldPackage->duration_days;
-                            
+
                             // Tổng tiền dư chưa dùng tới
                             $remainingValue = $daysRemaining * $dailyRate;
-                            
+
                             // Số tiền khách phải đóng = Giá gói mới - Tiền dư gói cũ 
                             $totalPrice = max(0, round($newPackage->price - $remainingValue));
                         }
                     }
-                } 
+                }
 
                 // TẠO HÓA ĐƠN MỚI
                 $invoice = Invoice::create([
                     'member_id' => $member->id,
                     'package_id' => $newPackage->id,
                     'payment_method' => $request->payment_method,
-                    'total_price' => $totalPrice, 
+                    'total_price' => $totalPrice,
                     'valid_until' => $startDate->copy()->addDays($newPackage->duration_days),
                     'status' => $status,
-                    
+
                     // 'type' => $isExtend ? 'extend' : 'upgrade', 
                     // 'description' => ($isExtend ? "Gia hạn gói " : "Nâng cấp lên gói ") . $newPackage->name
                 ]);
@@ -480,7 +480,7 @@ class MemberController extends Controller
                 if ($status == 'paid') {
                     if (!$member->valid_until || Carbon::parse($invoice->valid_until)->gt(Carbon::parse($member->valid_until))) {
                         $member->update([
-                           'valid_until' => $invoice->valid_until
+                            'valid_until' => $invoice->valid_until
                         ]);
                     }
                 }

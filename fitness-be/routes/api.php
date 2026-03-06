@@ -12,7 +12,7 @@ use App\Http\Controllers\TrainingPackageController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\MuscleGroupController;
-use App\Http\Controllers\AdminPackageController;    
+use App\Http\Controllers\AdminPackageController;
 use App\Http\Controllers\PackageTypeController;
 use App\Http\Controllers\ServiceController;
 
@@ -21,6 +21,8 @@ Route::post('/login', [AuthenController::class, 'login']);
 Route::post('/register', [MemberController::class, 'register']);
 Route::post('/check-email', [AuthenController::class, 'checkEmail']);
 Route::middleware('auth:sanctum')->group(function () {
+    //Lấy thông tin bản thân
+    Route::get('/me', [AuthenController::class, 'getMyInfo']);
     Route::post('/surveys', [SurveyController::class, 'store']);
     Route::post('/logout', [AuthenController::class, 'logout']);
     //  NÂNG CẤP  GIA HẠN GÓI TẬP 
@@ -29,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/packages/upgrade-list', [TrainingPackageController::class, 'getUpgradablePackagesByType']);
 
     Route::get('/member/current-package', [TrainingPackageController::class, 'getCurrentPackageInfo']);
-    
+
     Route::post('/member/upgrade', [MemberController::class, 'upgrade']);
 
     //body metric
@@ -59,33 +61,33 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/invoice-permonth', [InvoiceController::class, 'getInvoicePerMonth']);
     Route::get('/invoice-moneystat', [InvoiceController::class, 'getInvoiceMoney']);
     Route::put('/invoice_delete/{invoiceID}', [InvoiceController::class, 'deleteInvoice']);
-    
+
     //package
     Route::get('/packages', [AdminPackageController::class, 'index']);
-    Route::get('/packages/stats', [AdminPackageController::class, 'stats']); 
+    Route::get('/packages/stats', [AdminPackageController::class, 'stats']);
     Route::get('/packages/{id}', [AdminPackageController::class, 'show']);
     Route::post('/packages', [AdminPackageController::class, 'store']);
     Route::put('/packages/{id}', [AdminPackageController::class, 'update']);
     Route::delete('/packages/{id}', [AdminPackageController::class, 'destroy']);
     Route::get('/registration-stats', [AdminPackageController::class, 'getPackageStat']);
-    
+
     Route::get('/package-type', [AdminPackageController::class, 'getTypes']);
 
     // Lấy danh sách Dịch vụ Cho checkbox
     Route::get('/services', [PackageTypeController::class, 'getAllService']);
 
     // Package Types
-    Route::get('/package-types', [PackageTypeController::class, 'index']);      
-    Route::post('/package-types', [PackageTypeController::class, 'store']);       
-    Route::get('/package-types/{id}', [PackageTypeController::class, 'show']);    
-    Route::put('/package-types/{id}', [PackageTypeController::class, 'update']);  
+    Route::get('/package-types', [PackageTypeController::class, 'index']);
+    Route::post('/package-types', [PackageTypeController::class, 'store']);
+    Route::get('/package-types/{id}', [PackageTypeController::class, 'show']);
+    Route::put('/package-types/{id}', [PackageTypeController::class, 'update']);
     Route::delete('/package-types/{id}', [PackageTypeController::class, 'destroy']);
 
-    Route::get('/services-manage', [ServiceController::class, 'index']);        
-    Route::post('/services-manage', [ServiceController::class, 'store']);      
-    Route::get('/services-manage/{id}', [ServiceController::class, 'show']);    
-    Route::put('/services-manage/{id}', [ServiceController::class, 'update']);  
-    Route::delete('/services-manage/{id}', [ServiceController::class, 'destroy']); 
+    Route::get('/services-manage', [ServiceController::class, 'index']);
+    Route::post('/services-manage', [ServiceController::class, 'store']);
+    Route::get('/services-manage/{id}', [ServiceController::class, 'show']);
+    Route::put('/services-manage/{id}', [ServiceController::class, 'update']);
+    Route::delete('/services-manage/{id}', [ServiceController::class, 'destroy']);
 });
 
 // Muscle Group

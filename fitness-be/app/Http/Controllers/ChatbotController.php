@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Http\Services\PackageAiService;
 use Illuminate\Support\Facades\DB;
+use App\Http\Services\FaqAiService;
 class ChatbotController extends Controller
 {
     public function suggestPackage($question)
@@ -34,7 +35,7 @@ class ChatbotController extends Controller
                 "sql" => $sql,
                 "data" => $data,
                 "answer" => $answer
-            ]);
+            ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -74,8 +75,10 @@ class ChatbotController extends Controller
             case 'goi_y_goi_tap':
                 return $this->suggestPackage($question);
 
-            case 'goi_y_bai_tap':
-                return response()->json(["message" => "Chưa triển khai: Gợi ý bài tập"], 200);
+            case 'faq':
+                $faqService = app(FaqAiService::class);
+                $answer = $faqService->ask($question);
+                return response()->json(["answer" => $answer], 200);
 
             case 'xem_lich':
                 return response()->json(["message" => "Xem lịch"], 200);
