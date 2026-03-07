@@ -10,8 +10,8 @@ import {
     ResponsiveContainer,
 } from "recharts";
 import { Activity, PersonStanding } from "lucide-react";
-import UpdateBodyMetricModal from "../modals/UpdateBodyMetricModal";
-import { useBodyMetric } from "../hooks/useBodyMetric";
+import UpdateBodyMetricModal from "../../modals/UpdateBodyMetricModal";
+import { useBodyMetric } from "../../hooks/useBodyMetric";
 export default function ProfileBodyMetric() {
     const [showUpdateBodyMetric, setShowUpdateBodyMetric] = useState(false)
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Heart, Calendar, CheckSquare, MessageCircle,Dumbbell} from "lucide-react";
-import ProfileBodyMetric from "./ProfileBodyMetric";
+import ProfileBodyMetric from "./BodyMetric/ProfileBodyMetric";
 
 export default function ProfileTabBar() {
   const [activeTab, setActiveTab] = useState(0);
@@ -11,6 +11,7 @@ export default function ProfileTabBar() {
     { id: 2, label: "Lịch tập", icon: Calendar },
     { id: 3, label: "Checklist", icon: CheckSquare},
     { id: 4, label: "Nhắn tin", icon: MessageCircle },
+    { id: 5, label: "Lịch sử tập", icon: MessageCircle },
   ];
 
   return (
