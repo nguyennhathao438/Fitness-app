@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 class Member extends Authenticatable
 {
+    
     protected $appends = ['age'];
     public function getAgeAttribute()
     {
