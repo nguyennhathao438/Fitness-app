@@ -23,6 +23,10 @@ export default function WorkoutModal({ exercises = [], open, onClose, workoutTod
     const totalWorkoutTime = totalTime + sessionTime;
     const currentSet = completedSetCount + 1;
 
+    const handleClose = () => {
+        setShowConfirm(true);
+    };
+
     useEffect(() => {
         if (!open) return;
         //eslint-disable-next-line react-hooks/set-state-in-effect
@@ -46,6 +50,22 @@ export default function WorkoutModal({ exercises = [], open, onClose, workoutTod
         return () => clearInterval(interval);
     }, [isRunning]);
 
+    const finishWorkout = async () => {
+        try {
+            const percent = Math.floor(
+                (completedExercise.size / exercises.length) * 100
+            );
+            await api.put(`/workout-history/${workoutId}`, {
+                total_time: totalWorkoutTime,
+                completion_percentage: percent
+            });
+            reloadWorkout?.();
+        } catch (err) {
+            console.error(err);
+        }
+        setShowConfirm(false); 
+        onClose(); 
+    };
 
     useEffect(() => {
         if (!open || exercises.length === 0) return;
@@ -123,25 +143,12 @@ export default function WorkoutModal({ exercises = [], open, onClose, workoutTod
                     setCompletedSetCount(0); //currentSet tự reset về 1
                     setTimeLeft(localExercises[nextIndex].execution_time || 0);
                     setIsRunning(false);
-                } else {
-                    onClose();
                 }
             }, 300);
             return () => clearTimeout(t);
         }
     }, [completedSetCount, totalSet]);
 
-    /* ================= CONTROLS ================= */
-    // const goToNext = (nextIndex) => {
-    //     if (nextIndex < localExercises.length) {
-    //         setCurrentIndex(nextIndex)
-    //         setCompletedSetCount(0)
-    //         setTimeLeft(localExercises[nextIndex].execution_time || 0)
-    //         setIsRunning(false)
-    //     } else {
-    //         finishWorkout()
-    //     }
-    // }
     const selectExercise = (index) => {
         if (index === currentIndex) return;
         setCurrentIndex(index);
@@ -164,50 +171,6 @@ export default function WorkoutModal({ exercises = [], open, onClose, workoutTod
         }
     };
 
-    // const skipExercise = async () => {
-    //     try {
-    //         await api.put(`/workout-history-details/${currentExercise.detail_id}`, {
-    //             completion_percentage: 0,
-    //             status: "skipped"
-    //         })
-    //     } catch (err) {
-    //         console.error(err)
-    //     }
-    //     setLocalExercises((prev) => {
-    //         const copy = [...prev];
-    //         copy[currentIndex] = {
-    //             ...copy[currentIndex],
-    //             completion_percentage: 0
-    //         };
-    //         return copy;
-    //     });
-    //     setCompletedExercise((prev) => {
-    //         const next = new Set(prev)
-    //         next.add(currentIndex)
-    //         return next
-    //     })
-    //     if (currentIndex < localExercises.length - 1) {
-    //         goToNext(currentIndex + 1)
-    //     } else {
-    //         onClose()
-    //     }
-    // }
-
-    const finishWorkout = async () => {
-        try {
-            const percent = Math.floor(
-                (completedExercise.size / exercises.length) * 100
-            )
-            await api.put(`/workout-history/${workoutId}`, {
-                total_time: totalWorkoutTime,
-                completion_percentage: percent
-            });
-            reloadWorkout?.()
-        } catch (err) {
-            console.error(err)
-        }
-        onClose()
-    }
     const formatTime = (seconds) => {
         const m = Math.floor(seconds / 60);
         const s = seconds % 60;
@@ -225,7 +188,7 @@ export default function WorkoutModal({ exercises = [], open, onClose, workoutTod
 
     /* ================= UI ================= */
     return (
-        <Modal open={open} onClose={onClose} title="Bắt đầu buổi tập" bgColor={"bg-gray-900"} width="max-w-6xl">
+        <Modal open={open} onClose={handleClose} bgColor={"bg-gray-900"} width="max-w-6xl">
             <div className="w-full rounded-3xl flex">
 
                 {/* LEFT */}
@@ -297,15 +260,20 @@ export default function WorkoutModal({ exercises = [], open, onClose, workoutTod
                     </div>
 
                     {/* SET PROGRESS */}
-                    <div className="w-64">
-                        <div className="flex justify-between text-sm mb-1">
-                            <span>Set {Math.min(currentSet, totalSet)}/{totalSet}</span>
-                            <span>{Math.round(setProgress * 100)}%</span>
+                    {currentExercise?.set_count > 0 && currentExercise?.rep > 0 && (
+                        <div className="w-64">
+                            <div className="flex justify-between text-sm mb-1">
+                                <span>Set {Math.min(currentSet, totalSet)}/{totalSet}</span>
+                                <span>{Math.round(setProgress * 100)}%</span>
+                            </div>
+                            <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                                <div
+                                    className="h-full bg-green-500 transition-all duration-300"
+                                    style={{ width: `${setProgress * 100}%` }}
+                                />
+                            </div>
                         </div>
-                        <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-                            <div className="h-full bg-green-500 transition-all duration-300" style={{ width: `${setProgress * 100}%` }} />
-                        </div>
-                    </div>
+                    )}
 
                     {/* CONTROLS */}
                     <div className="flex gap-4">
