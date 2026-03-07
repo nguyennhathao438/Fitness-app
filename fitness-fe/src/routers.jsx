@@ -18,6 +18,15 @@ import Invoice from "./pages/Admin/Invoice";
 import Package from "./pages/Admin/package";
 import UpgradePackagePage from "./pages/member/UpgradePackagePage"; 
 import UpgradePaymentPage from "./pages/member/UpgradePaymentPage"; 
+import ListMemberOfPT from "./pages/PT/ListMemberOfPT";
+import CreateSchedulePT from "./pages/PT/CreateSchedule";
+
+import DefaultPT from "./layouts/DefaultPT";
+import ScheduleDashboardPT from "./pages/PT/ScheduleDashboard";
+import PTRegisterPage from "./pages/MemberSchedule/MemberRegisterPage";
+import MySchedulePage from "./pages/MemberSchedule/MySchedulePage";
+import Notifications from "./pages/member/Notifications";
+import MemberDetail from "./pages/PT/MemberDetail";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -63,6 +72,18 @@ const router = createBrowserRouter([
         path: "/profile",
         element: <Profile />,
       },
+      {
+  path: "/member/pt-register",
+  element: <PTRegisterPage />,
+},
+{
+  path: "/member/my-schedules",
+  element: <MySchedulePage />,
+},
+{
+  path: "/notifications",
+  element: <Notifications  />,
+},
     ],
   },
   {
@@ -97,6 +118,22 @@ const router = createBrowserRouter([
         path: "packages",
         element: <Package />,
       },
+    ],
+  },
+   {
+    path: "/pt",
+    element: <DefaultPT />,
+    children: [
+      { index: true, element: <ListMemberOfPT /> },
+      { path: "schedules", element: <ScheduleDashboardPT /> },
+
+      { path: "schedules/create", element: <CreateSchedulePT /> },
+
+      {
+  path: "/pt/members/:id",
+  element: <MemberDetail />
+}
+    //   { path: "schedules/:scheduleId/members", element: <ScheduleMembersPT /> },
     ],
   },
 ]);
