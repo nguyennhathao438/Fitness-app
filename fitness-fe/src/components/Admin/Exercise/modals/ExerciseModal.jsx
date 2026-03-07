@@ -19,9 +19,7 @@ export default function ExerciseModal({ open, onClose, title, item, onSuccess })
         video: z.string().url().optional().or(z.literal("")),
     });
 
-    const {
-        muscleList,
-    } = useExercise();
+    const {muscleList} = useExercise();
 
     const { register, handleSubmit, reset, watch, formState: { errors }, } = useForm({
         resolver: zodResolver(exerciseSchema),

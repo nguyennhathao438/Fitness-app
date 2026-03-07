@@ -60,8 +60,7 @@ export default function ExerciseGridCard({ exercise, onSelectExercise, onAddExer
         {/* button */}
         <button
           onClick={(e) => {
-            e.stopPropagation(); // 👈 tránh click mở overlay
-            console.log("Add exercise");
+            e.stopPropagation(); //tránh click mở overlay
             onAddExercise(exercise)
           }}
           className="w-full py-3 rounded-full font-bold text-sm transition-all

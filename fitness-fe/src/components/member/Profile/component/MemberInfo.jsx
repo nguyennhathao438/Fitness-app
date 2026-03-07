@@ -43,9 +43,7 @@ export default function MemberInfo() {
         }
     });
 
-
     const onSubmit = async (data) => {
-        console.log("data", data)
         setIsLoading(true);
         try {
             const response = await updateProfile(data);
@@ -66,7 +64,6 @@ export default function MemberInfo() {
             toast.error(firstErr.message);
     };
 
-    console.log("member la", member)
     return (
         <div>
             <div className="flex flex-col md:flex-row py-5 bg-[#000000]">

@@ -1,13 +1,16 @@
 import FilterMuscleGroup from "../../components/member/Exercise/component/FilterMuscleGroup";
 import ExerciseCard from "../../components/member/Exercise/component/ExerciseCard";
 import useExercise from "../../hooks/useExercise";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Search } from "lucide-react";
 import ExerciseDetailModal from "@/components/member/Exercise/component/ExerciseDetailModal";
 import ExerciseCart from "@/components/member/Exercise/component/ExerciseCart";
 import { toast } from "react-toastify";
+import { useWorkoutHistory } from "@/components/member/Exercise/hooks/useWorkoutHistory";
 
 export default function WorkoutPage() {
+  const { exerciseList, muscleList, loading } = useExercise();
+  const { workoutToday, refetch} = useWorkoutHistory();
   const [selectedMuscles, setSelectedMuscles] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -15,7 +18,7 @@ export default function WorkoutPage() {
   const [exerciseAdd, setExerciseAdd] = useState([])
 
   const handleAddExercise = (item) => {
-    if (exerciseAdd.some(ex => ex.id == item.id)){
+    if (exerciseAdd.some(ex => ex.id == item.id)) {
       toast.error("Bài tập đã được thêm")
       return
     }
@@ -24,25 +27,33 @@ export default function WorkoutPage() {
 
   const PER_PAGE = 8;
 
-  const { exerciseList, muscleList, loading } = useExercise();
+  useEffect(() => {
+    if (workoutToday?.details) {
+      const exercises = workoutToday.details.map((detail) => ({
+        ...detail.exercise,
+        detail_id: detail.id,
+        set_base: detail.set_count,
+        rep_base: detail.rep,
+        time_action: detail.execution_time,
+      }));
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setExerciseAdd(exercises)
+    }
+  }, [workoutToday]);
 
   const filteredExercises = useMemo(() => {
     if (!exerciseList) return [];
-
     let data = [...exerciseList];
-
     if (selectedMuscles.length > 0) {
       data = data.filter((ex) =>
         ex.muscle_groups?.some((m) => selectedMuscles.includes(m.name)),
       );
     }
-
     if (search.trim() !== "") {
       data = data.filter((ex) =>
         ex.name.toLowerCase().includes(search.toLowerCase()),
       );
     }
-
     return data;
   }, [exerciseList, selectedMuscles, search]);
 
@@ -134,9 +145,12 @@ export default function WorkoutPage() {
           onClose={() => setSelectedExercise(null)}
         />
       )}
+
       {exerciseAdd.length > 0 && (
         <ExerciseCart
           listExerciseAdd={exerciseAdd}
+          workoutToday={workoutToday}
+          refetch={refetch}
           onRemove={(exercise) =>
             setExerciseAdd((prev) =>
               prev.filter((e) => e.id != exercise.id)

@@ -12,6 +12,8 @@ use App\Http\Controllers\TrainingPackageController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\MuscleGroupController;
+use App\Http\Controllers\WorkoutHistoryController;
+use App\Http\Controllers\WorkoutHistoryDetailController;
 
 Route::post('/login', [AuthenController::class, 'login']);
 Route::post('/register', [MemberController::class, 'register']);
@@ -46,6 +48,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/invoice-permonth', [InvoiceController::class, 'getInvoicePerMonth']);
     Route::get('/invoice-moneystat', [InvoiceController::class, 'getInvoiceMoney']);
     Route::put('/invoice_delete/{invoiceID}', [InvoiceController::class, 'deleteInvoice']);
+
+    // Workout History
+    Route::post('/workout-history', [WorkoutHistoryController::class, 'store']);
+    Route::get('/workout-history', [WorkoutHistoryController::class, 'index']);
+    Route::get('/workout-history/latest', [WorkoutHistoryController::class, 'latest']);
+    Route::get('/workout-history/today', [WorkoutHistoryController::class, 'today']);
+    Route::put('/workout-history/{id}/completion', [WorkoutHistoryController::class, 'updateCompletion']);
+    Route::put('/workout-history/{id}', [WorkoutHistoryController::class, 'update']);
+    Route::get('/workout-history/{id}', [WorkoutHistoryController::class, 'show']);
+
+    // Workout History Detail
+    Route::get('/workout-history-details', [WorkoutHistoryDetailController::class, 'getAll']);
+    Route::get('/workout-history-details', [WorkoutHistoryDetailController::class, 'index']);
+    Route::post('/workout-history-details', [WorkoutHistoryDetailController::class, 'store']);
+    Route::get('/workout-history-details/{id}', [WorkoutHistoryDetailController::class, 'show']);
+    Route::put('/workout-history-details/{id}', [WorkoutHistoryDetailController::class, 'update']);
+    Route::get('/workout-history-details/history/{workoutHistoryId}', [WorkoutHistoryDetailController::class, 'indexExist']);
 });
 
 // Muscle Group
