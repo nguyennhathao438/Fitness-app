@@ -2,7 +2,7 @@ import AgePieChart from "./AgePieChart";
 import AgeStatCards from "./AgeStatCard";
 import { TransgenderIcon, UserCheck } from "lucide-react";
 import ProgressBarStat from "../ProgressBarStat";
-export default function MemberStatContent({ genderStats , ageStats }) {
+export default function MemberStatContent({ genderStats , ageStats , havePTStats }) {
 
   return (
     <div className="space-y-2">
@@ -22,8 +22,8 @@ export default function MemberStatContent({ genderStats , ageStats }) {
               icon={<UserCheck/>}
               title="Phân bố theo hội viên"
               items={[
-              { label: "Thường", value: 600, color: "bg-green-500" },
-              { label: "VIP", value: 400, color: "bg-yellow-500" },
+              { label: "đã có PT", value: havePTStats.withPT.havePT, color: "bg-green-500" },
+              { label: "chưa có", value: havePTStats.withPT.noPT, color: "bg-yellow-500" },
               ]}
             />
             </div>

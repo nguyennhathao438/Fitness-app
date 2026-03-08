@@ -15,6 +15,8 @@ import WaitingForRegister from "./pages/member/WaitingForRegister";
 import Exercise from "./pages/Admin/Exercise";
 import MuscleGroup from "./pages/Admin/MuscleGroup";
 import Invoice from "./pages/Admin/Invoice";
+import Message from "./pages/Admin/Message";
+import MessagePT from "./pages/Admin/MessagePT";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -59,7 +61,7 @@ const router = createBrowserRouter([
     element: <DefaultAdmin />,
     children: [
       {
-        path: "",
+        path: "dashboard",
         element: <Dashboard />,
       },
       {
@@ -81,6 +83,14 @@ const router = createBrowserRouter([
       {
         path: "order",
         element: <Invoice />,
+      },
+      {
+        path: "message",
+        element: <Message />,
+      },
+      {
+        path: "message-pt",
+        element: <MessagePT />,
       },
     ],
   },

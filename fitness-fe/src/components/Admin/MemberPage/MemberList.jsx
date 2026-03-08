@@ -1,6 +1,6 @@
-import { SearchIcon, EyeIcon, PencilIcon, TrashIcon, FilterIcon } from "lucide-react";
+import { SearchIcon, EyeIcon, PencilIcon, TrashIcon, FilterIcon, CableIcon, UserCogIcon, UserPlusIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { deletedUser, getPersonalTrainers, updatedUser } from "../../../services/admin/PersonalTrainerService";
+import { deletedUser, getMembers, selectedPTForMember, updatedUser } from "../../../services/admin/PersonalTrainerService";
 import Pagination from "../Pagination";
 import Dialog from "../Dialog";
 import DetailDialog from "../DetailDialog";
@@ -9,6 +9,9 @@ import PTForm from "../PTForm";
 import BodyMetricInfoTab from "./BodyMetricInfoTab";
 import DeletedDialog from "../DeletedDialog";
 import { toast } from "react-toastify";
+import PTSelectedForm from "./PTSeletedForm";
+import defaultAvatar from "@/assets/default-avatar.jpg";
+import UpdatePTSelectedForm from "./UpdatePTSelectedForm";
 
 export default function MemberList({onChanged}) {
     const [page, setPage] = useState(1);
@@ -21,17 +24,22 @@ export default function MemberList({onChanged}) {
     const [selectedMember, setSelectedMember] = useState(null);
     const [loading, setLoading] = useState(false);
     const [openForm, setOpenForm] = useState(false);
+    const [openselectPT, setOpenSelectPT] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
+    const [openUpdated, setOpenUpdated] = useState(false);
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [memberList, setMemberList] = useState([]);
+    const [hasPT, setHasPT] = useState("");
+
     // lấy danh sách Member
     const fetchMembers = () => {
       setLoading(true);
-      return getPersonalTrainers({
+      return getMembers({
         page,
         keyword: debouncedSearch,
         gender,
         sort,
+        has_pt: hasPT,
       })
         .then(res => {
           setMemberList(res.data.data.data);
@@ -44,19 +52,11 @@ export default function MemberList({onChanged}) {
       if (isSubmitting) return;
       try {
         setIsSubmitting(true);
-        const res = await updatedUser(selectedMember.id, formData);
-
-        const updatedMember = res.data.member;
-
-        setMemberList(prev =>
-          prev.map(m =>
-            m.id === updatedMember.id ? updatedMember : m
-          )
-        );
-
+        await updatedUser(selectedMember.id, formData);
         toast.success("Updated Success");
         setOpenForm(false);
         setSelectedMember(null);
+        fetchMembers(); 
         onChanged?.();
       } catch (error) {
         toast.error("Fail to updated");
@@ -66,7 +66,7 @@ export default function MemberList({onChanged}) {
     };
     useEffect(() => {
       fetchMembers();
-    }, [page, debouncedSearch, gender, sort]);
+    }, [page, debouncedSearch, gender, sort,hasPT]);
 
     useEffect(() => {
       const timer = setTimeout(() => {
@@ -77,7 +77,7 @@ export default function MemberList({onChanged}) {
     
     useEffect(() => {
       setPage(1);
-      }, [debouncedSearch, gender, sort]);
+      }, [debouncedSearch, gender, sort,hasPT]);
     
   return (
     <>
@@ -117,6 +117,20 @@ export default function MemberList({onChanged}) {
                 <option value="other">Other</option>
               </select>
             </div>
+            
+            <div className="relative w-full sm:w-[180px]">
+              <FilterIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
+              <select
+                value={hasPT}
+                onChange={(e) => setHasPT(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg
+                          focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
+              >
+                <option value="">All Members</option>
+                <option value="1">Đã có PT</option>
+                <option value="0">Chưa có PT</option>
+              </select>
+            </div>
 
             {/* Sort */}
             <div className="relative w-full sm:w-[160px]">
@@ -138,13 +152,13 @@ export default function MemberList({onChanged}) {
 
 
       {/* TABLE */}
-      <div className="sm:overflow-x-hidden rounded-lg border bg-white ">
+      <div className="md:overflow-x-hidden max-md:overflow-x-auto rounded-lg border bg-white ">
         <table className="w-full text-sm">
           <thead className="bg-gray-100 text-gray-700">
             <tr>
               <th className="px-4 py-3 text-left">Member</th>
               <th className="px-4 py-3 text-left">Email</th>
-              <th className="px-4 py-3 text-center">Actions</th>
+              <th className="px-4 py-3 text-left">Actions</th>
             </tr>
           </thead>
 
@@ -173,11 +187,24 @@ export default function MemberList({onChanged}) {
                     hover:translate-x-2  
                   "
                 >
-                  {/* Member */}
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 relative">
+                    {m.can_add_pt && (
+                    <span
+                      className="
+                        inline-block mb-1
+                      text-red-500 text-xs font-semibold
+                      bg-red-50 px-2 py-0.5 rounded-full
+                        xl:absolute xl:right-45
+                        lg:absolute lg:top-1 lg:right-15
+                        lg:mb-0
+                      "
+                    >
+                      Chưa có PT
+                    </span>
+                  )}
                     <div className="flex items-center gap-3">
                       <img
-                        src={m.avatar || "/avatar-default.png"}
+                        src={m.avatar || defaultAvatar}
                         className="size-10 rounded-full object-cover"
                       />
                       <span className="font-medium text-md text-gray-800">
@@ -185,15 +212,24 @@ export default function MemberList({onChanged}) {
                       </span>
                     </div>
                   </td>
-
-                  {/* Email */}
                   <td className="px-4 py-3 text-gray-600 font-medium">
                     {m.email}
                   </td>
-
-                  {/* Actions */}
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 flex">
                     <div className="flex justify-center gap-3">
+                      {m.can_add_pt && (
+                        <button
+                          title="Assign PT"
+                          className="p-2 rounded-lg bg-green-100 text-green-600
+                                    hover:bg-green-200 transition"
+                          onClick={() => {
+                            setSelectedMember(m);
+                            setOpenSelectPT(true);
+                          }}
+                        >
+                          <UserPlusIcon size={16} />
+                        </button>
+                      )}
                       <button
                         className="p-2 rounded-lg bg-blue-100 text-blue-600
                                   hover:bg-blue-200 transition"
@@ -204,7 +240,6 @@ export default function MemberList({onChanged}) {
                       >
                         <EyeIcon size={16} />
                       </button>
-
                       <button
                         className="p-2 rounded-lg bg-yellow-100 text-yellow-600
                                   hover:bg-yellow-200 transition"
@@ -215,7 +250,6 @@ export default function MemberList({onChanged}) {
                       >
                         <PencilIcon size={16} />
                       </button>
-
                       <button
                         className="p-2 rounded-lg bg-red-100 text-red-600
                                   hover:bg-red-200 transition"
@@ -226,6 +260,19 @@ export default function MemberList({onChanged}) {
                       >
                         <TrashIcon size={16} />
                       </button>
+                      {!m.can_add_pt && m.activept && (
+                        <button
+                          title="Change PT"
+                          className="p-2 rounded-lg bg-orange-100 text-orange-600
+                                    hover:bg-orange-200 transition"
+                          onClick={() => {
+                            setSelectedMember(m);
+                            setOpenUpdated(true);
+                          }}
+                        >
+                          <UserCogIcon size={16} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -234,8 +281,6 @@ export default function MemberList({onChanged}) {
           </tbody>
         </table>
       </div>
-
-
       {/* Pagination */}
         <div className="">
             {meta && meta.last_page > 1 && (
@@ -254,6 +299,49 @@ export default function MemberList({onChanged}) {
                 loading={isSubmitting}
                 />)}
             </Dialog>
+    {/* SelectedPT Dialog */}
+            <Dialog open={openselectPT} onClose={() => setOpenSelectPT(false)}>
+                {selectedMember && (
+                <PTSelectedForm
+                onSubmit={async (ptId) => {
+                  try {
+                    await selectedPTForMember({
+                      member_id: selectedMember.id,
+                      pt_id: ptId,
+                    });
+
+                    toast.success("Gán PT thành công");
+                    setOpenSelectPT(false);
+                    fetchMembers(); // refresh lại list
+                    onChanged?.();
+                  } catch (err) {
+                    const msg =
+                      err?.response?.data?.message || "Gán PT thất bại";
+                    toast.error(msg);
+                  }
+
+                }}
+              />
+              )}
+            </Dialog>
+    {/* UpdatedPT Dialog */}
+            <Dialog open={openUpdated} onClose={() => setOpenUpdated(false)}>
+              {selectedMember && (
+                <UpdatePTSelectedForm
+                  member={selectedMember}
+                  onClose={() => setOpenUpdated(false)}
+                  onSuccess={() => {
+                    setOpenUpdated(false);
+                    fetchMembers();
+                    onChanged?.();
+                  }}
+                  onChange={()=>{
+                    fetchMembers();
+                    onChanged?.();
+                  }}
+                />
+              )}
+            </Dialog>
     {/* Delete Dialog */}
             <DeletedDialog
               open={openDelete}
@@ -268,10 +356,10 @@ export default function MemberList({onChanged}) {
                   fetchMembers();
                   onChanged?.();
                 } catch (err) {
-                  toast.error("Xóa thất bại");
+                  toast.error("Member đang có pt nên không thể xóa");
                 }
               }}
-              name="người dùng"
+              name="Xóa người dùng"
             />
     {/* View Dialog */}
             <Dialog open={openView} onClose={() => setOpenView(false)}>

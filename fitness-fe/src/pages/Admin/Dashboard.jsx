@@ -7,11 +7,11 @@ import {
   UsersIcon,
   ShoppingCartIcon,
   BarChart3Icon,
-  DollarSignIcon,
-  DumbbellIcon,
-  TrophyIcon,
 } from "lucide-react";
 import UserBarChart from "@/components/Admin/dashboard/UserBarChart";
+import TopActiveMember from "@/components/Admin/dashboard/TopActiveMember";
+import MemberSurvey from "@/components/Admin/dashboard/MemberSurvey";
+import TopTraingPT from "@/components/Admin/dashboard/TopTrainingPT";
 
 
 export default function Dashboard() {
@@ -163,16 +163,8 @@ export default function Dashboard() {
       {/* ===== BLOCK 3 ===== */}
       {/* Member Training Destiny */}
       <div className="bg-white rounded-xl shadow p-6">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="p-2 rounded-lg bg-orange-100">
-            <DumbbellIcon className="size-5 text-orange-600" />
-          </div>
-          <h2 className="text-lg font-semibold text-gray-700">
-            Member Training Destiny
-          </h2>
-        </div>
-        <div className="h-[250px] flex items-center justify-center text-gray-400">
-          Chart here
+        <div className="h-[400px] max-sm:h-[450px]">
+          <MemberSurvey/>
         </div>
       </div>
 
@@ -182,32 +174,12 @@ export default function Dashboard() {
 
         {/* Top 5 Active Longest Members */}
         <div className="bg-white rounded-xl shadow p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="p-2 rounded-lg bg-indigo-100">
-              <TrophyIcon className="size-5 text-indigo-600" />
-            </div>
-            <h3 className="font-semibold text-gray-700">
-              Top 5 Longest Active Members
-            </h3>
-          </div>
-          <div className="text-gray-400 text-center py-10">
-            Table here
-          </div>
+          <TopActiveMember/>
         </div>
 
-        {/* Top 5 Best Seller Training Package */}
+        {/* Top 5 Personal Trainers with the Most Training Sessions */}
         <div className="bg-white rounded-xl shadow p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="p-2 rounded-lg bg-pink-100">
-              <ShoppingCartIcon className="size-5 text-pink-600" />
-            </div>
-            <h3 className="font-semibold text-gray-700">
-              Top 5 Best Seller Training Package
-            </h3>
-          </div>
-          <div className="text-gray-400 text-center py-10">
-            Table here
-          </div>
+          <TopTraingPT/>
         </div>
 
       </div>

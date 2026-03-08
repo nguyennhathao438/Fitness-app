@@ -11,12 +11,17 @@ use App\Http\Controllers\OtpController;
 use App\Http\Controllers\TrainingPackageController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ExerciseController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\MuscleGroupController;
+use App\Http\Controllers\PTClientController;
+use App\Http\Controllers\SurveyTrainingController;
 
 Route::post('/login', [AuthenController::class, 'login']);
 Route::post('/register', [MemberController::class, 'register']);
 Route::post('/check-email', [AuthenController::class, 'checkEmail']);
 Route::middleware('auth:sanctum')->group(function () {
+    //survey
+    Route::get('/survey-member', [SurveyTrainingController::class, 'getSurveyMember']);
     Route::post('/surveys', [SurveyController::class, 'store']);
     Route::post('/logout', [AuthenController::class, 'logout']);
     //body metric
@@ -27,11 +32,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/body-metrics/{memberID}', [BodyMetricController::class, 'getAll']);
     //member
     Route::put('/deleted/{memberID}', [MemberController::class, 'deletedUser']);
+    Route::put('/deleted_pt/{ptID}', [MemberController::class, 'deletePT']);
     Route::put('/update/{memberID}', [MemberController::class, 'editUser']);
     Route::put('/change-password', [MemberController::class, 'changePassword']);
     Route::put('/profile', [MemberController::class, 'updateProfile']);
-    Route::get('member-thismonth', [MemberController::class, 'getUserThisMonth']);
+    Route::get('/member-thismonth', [MemberController::class, 'getUserThisMonth']);
     Route::get('/userchart', [MemberController::class, 'getMemberChart']);
+    Route::get('/members', [MemberController::class, 'getMember']);
+    Route::get('/userStat', [MemberController::class, 'getStatUser']);
+    Route::get('/havePT', [MemberController::class, 'memberHavePTStats']);
+    Route::get('/me',[MemberController::class,'getMe']);
     //PT
     Route::get('/personal-trainers', [PersonalTrainerController::class, 'getPT']);
     Route::get('/genderStat', [MemberController::class, 'memberStats']);
@@ -57,7 +67,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/paymentstat', [InvoiceController::class, 'getPayment']);
     Route::get('/invoice-permonth', [InvoiceController::class, 'getInvoicePerMonth']);
     Route::get('/invoice-moneystat', [InvoiceController::class, 'getInvoiceMoney']);
+    Route::get('/invoice-memberlongtime', [InvoiceController::class, 'getMemberByInvoice']);
     Route::put('/invoice_delete/{invoiceID}', [InvoiceController::class, 'deleteInvoice']);
+    Route::put('/invoice_update/{invoiceID}', [InvoiceController::class, 'updateInvoice']);
+    //PTClient
+    Route::post('/ptclient', [PTClientController::class, 'createPTClient']);
+    Route::get('/all_pt', [PTClientController::class, 'getPT']);
+    Route::get('/allMember/{ptID}', [PTClientController::class, 'getAllforPT']);
+    Route::get('/session', [PTClientController::class, 'getTopPT']);
+    Route::put('/cancel_pt', [PTClientController::class, 'cancelPT']);
+    Route::put('/change_pt', [PTClientController::class, 'ChangePT']);
+    // Message
+    Route::post('/messages', [MessageController::class, 'store']);
+    Route::get('/messages/{userId}', [MessageController::class, 'getMessages']);
+    Route::get('/chatWithPt',[MessageController::class, 'getChatPartners']);
+    Route::get('/chatFromPt',[MessageController::class, 'getPTClients']);
+    Route::get('/getChatPt',[MessageController::class, 'getChatWithPT']);
 });
 //package
 Route::get('/training-packages', [TrainingPackageController::class, 'index']);

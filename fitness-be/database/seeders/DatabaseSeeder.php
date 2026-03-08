@@ -24,6 +24,11 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             RolePermissionSeeder::class,
             InvoiceSeeder::class,
+            BodyMetricSeeder::class,
+            MemberRoleSeeder::class,
+            SurveySeeder::class,
+            SurveyTrainingTimeSeeder::class,
+            PTClientSeeder::class,
         ]);
     }
 }

@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Heart, Calendar, CheckSquare, MessageCircle,Dumbbell} from "lucide-react";
 import ProfileBMI from "./ProfileBMI";
+import ProfileMessage from "./ProfileMessage";
+import { getPTChat } from "@/services/member/Message";
 
 export default function ProfileTabBar() {
   const [activeTab, setActiveTab] = useState(0);
-
+  const [pt, setPt] = useState(null);
   const tabs = [  
     { id: 0, label: "BMI", icon: Heart},
     { id: 1, label: "Gói tập", icon: Dumbbell },
@@ -12,7 +14,14 @@ export default function ProfileTabBar() {
     { id: 3, label: "Checklist", icon: CheckSquare},
     { id: 4, label: "Nhắn tin", icon: MessageCircle },
   ];
+  useEffect(() => {
+  const fetchPT = async () => {
+    const res = await getPTChat();
+    setPt(res.data[0]);
+  };
 
+  fetchPT();
+}, []);
   return (
     <div className="min-h-screen flex flex-col">
       {/* TabBar */}
@@ -43,6 +52,7 @@ export default function ProfileTabBar() {
       {/* Content Area */}
       <main className="flex-1">
         {tabs[activeTab].id === 0 && <ProfileBMI/>}
+        {tabs[activeTab].id === 4 && <ProfileMessage pt={pt}/>}
       </main>
     </div>
   );

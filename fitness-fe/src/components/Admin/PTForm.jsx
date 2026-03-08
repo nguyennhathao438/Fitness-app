@@ -1,8 +1,9 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UserIcon, UploadIcon, ShieldIcon } from "lucide-react";
+import { UserIcon, UploadIcon, ShieldIcon, InfoIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { getAllRoles } from "@/services/admin/Role";
 
 const baseSchema = {
   name: z.string().min(3).regex(/^[A-Za-zÀ-ỹ\s]+$/),
@@ -23,7 +24,8 @@ const editSchema = z.object(baseSchema);
 export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,pt,loading = false,}) {
   const [preview, setPreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-
+  const [roles,setRoles] = useState([]);
+  const [selectedRoles, setSelectedRoles] = useState([]);
   const handleFormSubmit = (data) => {
   const formData = new FormData();
 
@@ -32,6 +34,10 @@ export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,
   formData.append("phone", data.phone || "");
   formData.append("gender", data.gender || "");
   formData.append("birthday", data.birthday || "");
+  selectedRoles.forEach(roleId => {
+  formData.append("roles[]", roleId);
+});
+
   if (mode === "add") {
     formData.append("password", data.password);
   }
@@ -55,6 +61,17 @@ export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,
   },
   });
   useEffect(() => {
+    const fetchRole = async () => {
+      try {
+        const res = await getAllRoles();
+        setRoles(res.data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchRole();
+  },[])
+  useEffect(() => {
   if (mode === "edit" && pt) {
     reset({
       name: pt.name,
@@ -63,6 +80,7 @@ export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,
       gender: pt.gender,
       birthday: pt.birthday? pt.birthday.split("T")[0]: "",
     });
+    setSelectedRoles(pt.roles?.map(r => r.id) || []);
   }
 
   if (mode === "add") {
@@ -74,22 +92,23 @@ export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,
       birthday: "",
       password: "",
     });
+    setSelectedRoles([]);
   }
   }, [pt, mode, reset]);
   return (
     <form
       onSubmit={handleSubmit(handleFormSubmit)}
       className="
-        sm:max-w-xl lg:min-w-4xl
-        h-[100dvh] sm:h-[90dvh] md:h-[90dvh]
-        bg-white rounded-none sm:rounded-xl
+        sm:max-w-xl lg:min-w-3xl
+        max-h-[80dvh] sm:max-h-[90dvh]
+        bg-white rounded-xl sm:rounded-xl
         flex flex-col
       "
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 text-white">
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 text-white rounded-t-xl">
         <h2 className="text-xl font-semibold">
-          {mode === "add" ? "Add New PT" : "Edit PT"}
+          {mode === "add" ? "Add New PT" : "Edit information"}
         </h2>
         <p className="text-sm opacity-90">
           Fill in the information details
@@ -97,10 +116,13 @@ export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,
       </div>
 
       {/* Content */}
-      <div className="p-6 space-y-6 overflow-y-auto flex-1">
+      <div className={`
+    p-6 space-y-6 overflow-y-auto
+    ${mode === "edit" ? "flex-1" : ""}
+  `}>
         {/* Basic Info */}
         <div>
-          <div className="flex items-center gap-2 mb-4 ">
+          <div className="flex items-center gap-2">
             <UserIcon className="bg-[#DBEAFE] rounded-md w-7 h-7 text-purple-600" />
             <h3 className="font-semibold text-lg">Basic Information</h3>
           </div>
@@ -189,34 +211,66 @@ export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,
         </div>
 
         {/* Role / Permission */}
-        <div>
-          <div className="flex items-center gap-2 mb-2">
+        {mode === "edit" &&(
+          <div>
+          <div className="flex items-center gap-2">
             <ShieldIcon className="size-5 text-purple-600" />
             <h3 className="font-semibold text-lg">Role</h3>
           </div>
 
-          <div className="border rounded-lg overflow-hidden">
+          <div className="border rounded-lg overflow-x-auto h-[110px]">
             <table className="w-full text-sm">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-4 py-2 text-left">Permission name</th>
+                  <th className="px-4 py-2 text-left">Role name</th>
                   <th className="px-4 py-2 text-left">Description</th>
+                  <th>CheckBox</th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="text-gray-400">
-                  <td className="px-4 py-3" colSpan={2}>
-                    No permissions yet
+              {roles.length > 0 ? (
+                roles.map((role) => (
+                  <tr key={role.id} className="border-t">
+                    <td className="px-4 py-2">{role.name}</td>
+                    <td className="px-4 py-2">{role.description}</td>
+                    <td className="px-4 py-2 text-center">
+                      <input
+                        type="checkbox"
+                        checked={selectedRoles.includes(role.id)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedRoles(prev => [...prev, role.id]);
+                          } else {
+                            setSelectedRoles(prev =>
+                              prev.filter(id => id !== role.id)
+                            );
+                          }
+                        }}
+                        className="w-4 h-4 accent-purple-600"
+                      />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={3} className="px-4 py-3 text-gray-400">
+                    Loading Role...
                   </td>
                 </tr>
+              )}
               </tbody>
+
             </table>
           </div>
 
-          <p className="text-xs text-gray-500 mt-2">
-            Permissions auto-update based on role, but can be manually overridden
+          <div className="flex items-center mt-2 gap-1">
+          <InfoIcon className="h-5 w-5 text-gray-500"/>
+          <p className="text-xs text-gray-500">
+            Role auto-update based on role, but can be manually overridden
           </p>
+          </div>
         </div>
+        )}
       </div>
 
       {/* Footer */}

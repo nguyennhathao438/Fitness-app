@@ -42,4 +42,26 @@ class Member extends Authenticatable
                 $q->where('code', $permission);
             })->exists();
     }
+    public function latestInvoice()
+    {
+    return $this->hasOne(Invoice::class)
+        ->where('status','paid')
+        ->where('is_deleted', false)
+        ->orderByDesc('valid_until');
+    }
+    public function ptClientsAsPT()
+    {
+        return $this->hasMany(PersonalTrainerClient::class, 'pt_id');
+    }
+
+    public function ptClientsAsMember()
+    {
+        return $this->hasMany(PersonalTrainerClient::class, 'member_id');
+    }
+    public function activept()
+    {
+        return $this->hasOne(PersonalTrainerClient::class, 'member_id')
+            ->where('status', 'active');
+    }
+
 }
