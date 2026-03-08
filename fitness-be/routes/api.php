@@ -15,6 +15,8 @@ use App\Http\Controllers\MuscleGroupController;
 use App\Http\Controllers\AdminPackageController;
 use App\Http\Controllers\PackageTypeController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\WorkoutHistoryController;
+use App\Http\Controllers\WorkoutHistoryDetailController;
 
 use App\Http\Controllers\ChatbotController;
 Route::post('/login', [AuthenController::class, 'login']);
@@ -88,6 +90,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/services-manage/{id}', [ServiceController::class, 'show']);
     Route::put('/services-manage/{id}', [ServiceController::class, 'update']);
     Route::delete('/services-manage/{id}', [ServiceController::class, 'destroy']);
+    // Workout History
+    Route::post('/workout-history', [WorkoutHistoryController::class, 'store']);
+    Route::get('/workout-history', [WorkoutHistoryController::class, 'index']);
+    Route::get('/workout-history/latest', [WorkoutHistoryController::class, 'latest']);
+    Route::get('/workout-history/today', [WorkoutHistoryController::class, 'today']);
+    Route::put('/workout-history/{id}/completion', [WorkoutHistoryController::class, 'updateCompletion']);
+    Route::put('/workout-history/{id}', [WorkoutHistoryController::class, 'update']);
+    Route::get('/workout-history/{id}', [WorkoutHistoryController::class, 'show']);
+
+    // Workout History Detail
+    Route::get('/workout-history-details', [WorkoutHistoryDetailController::class, 'getAll']);
+    Route::get('/workout-history-details', [WorkoutHistoryDetailController::class, 'index']);
+    Route::post('/workout-history-details', [WorkoutHistoryDetailController::class, 'store']);
+    Route::get('/workout-history-details/{id}', [WorkoutHistoryDetailController::class, 'show']);
+    Route::put('/workout-history-details/{id}', [WorkoutHistoryDetailController::class, 'update']);
+    Route::get('/workout-history-details/history/{workoutHistoryId}', [WorkoutHistoryDetailController::class, 'indexExist']);
 });
 
 // Muscle Group

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import gymImg from "../../assets/gym.jpg"
+import gymImg from "../../../assets/gym.jpg"
 import { User } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getAllTrainingPackages } from "../../services/member/TraningPakageService";
+import { getAllTrainingPackages } from "../../../services/member/TraningPakageService";
 export default function InfoPackage() {
     const [packages, setPackages] = useState([]);
     useEffect(() => {

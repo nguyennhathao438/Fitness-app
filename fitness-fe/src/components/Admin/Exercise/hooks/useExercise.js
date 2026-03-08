@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { getExercises } from "../services/admin/Exercise";
-import { getAllMuscleGroup } from "../services/admin/MuscleGroup";
-import { getExercisesByMuscleGroup } from "../services/admin/Exercise";
+import { getExercises } from "../../../../services/admin/Exercise";
+import { getAllMuscleGroup } from "../../../../services/admin/MuscleGroup";
+import { getExercisesByMuscleGroup } from "../../../../services/admin/Exercise"
 const useExercise = () => {
   const [exerciseList, setExerciseList] = useState([]);
   const [muscleList, setMuscleList] = useState([]);

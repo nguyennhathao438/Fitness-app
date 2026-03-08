@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Heart, Calendar, CheckSquare, MessageCircle,Dumbbell} from "lucide-react";
-import ProfileBMI from "./ProfileBMI";
+import ProfileBodyMetric from "./BodyMetric/ProfileBodyMetric";
+import StatisticsWorkout from "./WorkoutHistory/StatisticsWorkout";
 
 export default function ProfileTabBar() {
   const [activeTab, setActiveTab] = useState(0);
@@ -11,10 +12,11 @@ export default function ProfileTabBar() {
     { id: 2, label: "Lịch tập", icon: Calendar },
     { id: 3, label: "Checklist", icon: CheckSquare},
     { id: 4, label: "Nhắn tin", icon: MessageCircle },
+    { id: 5, label: "Lịch sử tập", icon: MessageCircle },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex flex-col">
       {/* TabBar */}
       <div className="bg-white border-b border-gray-200 shadow-lg">
         <div className="flex justify-around items-center h-20">
@@ -42,7 +44,8 @@ export default function ProfileTabBar() {
 
       {/* Content Area */}
       <main className="flex-1">
-        {tabs[activeTab].id === 0 && <ProfileBMI/>}
+        {tabs[activeTab].id === 0 && <ProfileBodyMetric/>}
+        {tabs[activeTab].id === 5 && <StatisticsWorkout/>}
       </main>
     </div>
   );
