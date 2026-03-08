@@ -188,7 +188,7 @@ export default function WorkoutModal({ exercises = [], open, onClose, workoutTod
 
     /* ================= UI ================= */
     return (
-        <Modal open={open} onClose={handleClose} bgColor={"bg-gray-900"} width="max-w-6xl">
+        <Modal open={open} title={"Tập luyện"} onClose={handleClose} bgColor={"bg-gray-900"} width="max-w-6xl">
             <div className="w-full rounded-3xl flex">
 
                 {/* LEFT */}

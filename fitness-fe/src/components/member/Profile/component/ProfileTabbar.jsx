@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Heart, Calendar, CheckSquare, MessageCircle,Dumbbell} from "lucide-react";
 import ProfileBodyMetric from "./BodyMetric/ProfileBodyMetric";
+import StatisticsWorkout from "./WorkoutHistory/StatisticsWorkout";
 
 export default function ProfileTabBar() {
   const [activeTab, setActiveTab] = useState(0);
@@ -44,6 +45,7 @@ export default function ProfileTabBar() {
       {/* Content Area */}
       <main className="flex-1">
         {tabs[activeTab].id === 0 && <ProfileBodyMetric/>}
+        {tabs[activeTab].id === 5 && <StatisticsWorkout/>}
       </main>
     </div>
   );
