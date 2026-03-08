@@ -7,8 +7,10 @@ const weekDays = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
 function getStartOfWeek(date) {
     const d = new Date(date);
-    const day = d.getDay() || 7;
-    if (day !== 1) d.setHours(-24 * (day - 1));
+    const day = d.getDay();
+    const diff = d.getDate() - (day === 0 ? 6 : day - 1);
+    d.setDate(diff);
+    d.setHours(0, 0, 0, 0);
     return d;
 }
 
@@ -106,7 +108,7 @@ export default function StatisticsWorkout() {
             </div>
 
             {/* Navigation */}
-            <div className="flex items-center justify-center gap-20 mb-8">
+            <div className="flex items-center justify-center gap-6 mb-8 flex-wrap">
                 <button
                     onClick={prevWeek}
                     disabled={isLoading}
@@ -115,9 +117,17 @@ export default function StatisticsWorkout() {
                     ← Tuần trước
                 </button>
 
-                <div className="text-center text-gray-600">
-                    <span className="font-semibold text-lg text-gray-900">{workoutDaysCount}</span>
-                    <span> ngày tập / 7 ngày</span>
+                <div className="flex flex-col items-center gap-2">
+                    <div className="text-center text-gray-600">
+                        <span className="font-semibold text-lg text-gray-900">{workoutDaysCount}</span>
+                        <span> ngày tập / 7 ngày</span>
+                    </div>
+                    <input
+                        type="date"
+                        value={currentWeek.toISOString().split("T")[0]}
+                        onChange={(e) => setCurrentWeek(new Date(e.target.value))}
+                        className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-500"
+                    />
                 </div>
 
                 <button
@@ -131,7 +141,7 @@ export default function StatisticsWorkout() {
 
             {isLoading ? (
                 <div className="flex justify-center items-center h-64">
-                    <p className="text-gray-500">Đang tải dữ liệu...</p>
+                    <p className="font-bold text-2xl">Đang tải dữ liệu...</p>
                 </div>
             ) : (
                 <>
