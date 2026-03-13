@@ -22,6 +22,10 @@ use App\Http\Controllers\PTClientController;
 use App\Http\Controllers\SurveyTrainingController;
 
 use App\Http\Controllers\ChatbotController;
+
+use App\Http\Controllers\PTScheduleController;
+use App\Http\Controllers\PTController;
+use App\Http\Controllers\NotificationController;
 Route::post('/login', [AuthenController::class, 'login']);
 Route::post('/register', [MemberController::class, 'register']);
 Route::post('/check-email', [AuthenController::class, 'checkEmail']);
@@ -40,6 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/member/current-package', [TrainingPackageController::class, 'getCurrentPackageInfo']);
 
     Route::post('/member/upgrade', [MemberController::class, 'upgrade']);
+    Route::get('/member/my-schedules', [PTScheduleController::class, 'mySchedules']);
 
     //body metric
     Route::post('/body-metrics', [BodyMetricController::class, 'store']);
@@ -130,6 +135,34 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/chatWithPt', [MessageController::class, 'getChatPartners']);
     Route::get('/chatFromPt', [MessageController::class, 'getPTClients']);
     Route::get('/getChatPt', [MessageController::class, 'getChatWithPT']);
+    // member xem lich
+    Route::get('/member/my-pt', [MemberController::class, 'myPT']);//ok
+
+    // Member chọn PT lần đầu
+    Route::post('/member/choose-pt', [MemberController::class, 'choosePT']);
+
+    // Lấy danh sách PT
+    Route::get('/member/pts', [MemberController::class, 'listPTs']);
+    Route::post('/member/register/{scheduleId}', [PTScheduleController::class, 'register']);
+    Route::get('/member/schedules', [PTScheduleController::class, 'memberSchedules']);//lấy lịch của PT
+    Route::get('/member/my-schedules', [PTScheduleController::class, 'myRegisteredSchedules']);// lấy lịch của mình
+
+    Route::delete('/member/{id}/cancel', [MemberController::class, 'cancel'])
+        ->middleware('auth:sanctum');
+});
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::post('/pt/schedule', [PTScheduleController::class, 'createSchedule']);
+    Route::get('/pt/schedules', [PTScheduleController::class, 'ptSchedules']);
+    Route::post('/pt/schedule/{id}/register', [PTScheduleController::class, 'register']);
+    Route::post('/pt/assign-member', [PTController::class, 'assignMember']);
+    Route::put('/pt/schedule/{id}', [PTScheduleController::class, 'updateSchedule']);
+    Route::delete('/pt/schedule/{id}', [PTScheduleController::class, 'deleteSchedule']);
+    Route::get('/pt/members/{id}', [MemberController::class, 'getMemberDetailForPT']);
+
+});
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/pt/members', [PTController::class, 'myMembers']);
 });
 
 // Muscle Group
@@ -168,3 +201,9 @@ Route::get('/permissions', [RoleController::class, 'getAllPermission']);
 //Chatbot 
 Route::post('/chatbot', [ChatbotController::class, 'getIntent']);
 Route::get('/permissions', [RoleController::class, 'getAllPermission']);
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsRead']);
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
+});
