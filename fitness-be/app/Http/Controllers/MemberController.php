@@ -264,7 +264,6 @@ class MemberController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:members,email,' . $memberId,
             'phone' => 'nullable|string|max:15',
             'gender' => 'nullable|in:male,female,other',
             'birthday' => 'nullable|date',
@@ -274,7 +273,6 @@ class MemberController extends Controller
         try {
             $data = [
                 'name' => $request->name,
-                'email' => $request->email,
                 'phone' => $request->phone,
                 'gender' => $request->gender,
                 'birthday' => $request->birthday,
@@ -282,17 +280,13 @@ class MemberController extends Controller
 
             if ($request->hasFile('avatar')) {
 
-                $cloudinary = new Cloudinary([
-                    'cloud' => [
-                        'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                        'api_key'    => env('CLOUDINARY_API_KEY'),
-                        'api_secret' => env('CLOUDINARY_API_SECRET'),
-                    ],
-                ]);
+                $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
 
                 $result = $cloudinary->uploadApi()->upload(
                     $request->file('avatar')->getRealPath(),
-                    ['folder' => 'members/avatar']
+                    [
+                        'folder' => 'members/avatar'
+                    ]
                 );
 
                 $data['avatar'] = $result['secure_url'];
@@ -522,7 +516,7 @@ class MemberController extends Controller
         $query->orderBy('created_at', $sort);
 
         // PHÂN TRANG (6 ITEM / TRANG)
-        $members = $query->paginate(6);
+        $members = $query->paginate(1);
 
         // append computed fields
         $members->getCollection()->transform(function ($member) {

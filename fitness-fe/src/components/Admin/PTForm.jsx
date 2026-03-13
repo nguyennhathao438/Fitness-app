@@ -164,6 +164,7 @@ export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,
                 label="Email"
                 register={register("email")}
                 error={errors.email}
+                readOnly={mode === "edit"}
               />
 
               {mode === "add" && <Input label="Password" type="password"  register={register("password")} error={errors.password} />}
@@ -302,13 +303,14 @@ export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,
 
 /* ---------- Small UI helpers ---------- */
 
-function Input({ label, type = "text", register, error, className = "" }) {
+function Input({ label, type = "text", register, error, className = "",readOnly = false }) {
   return (
     <div>
       <label className="text-sm font-medium">{label}</label>
 
       <input
         type={type}
+        readOnly = {readOnly}
         {...register}
         className={`
           w-full mt-1 px-3 py-2 border rounded-lg outline-none font-medium
