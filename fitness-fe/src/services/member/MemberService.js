@@ -42,3 +42,35 @@ export const upgradePackage = (data) => {
 export const getMyInfo = () => {
   return api.get("/me");
 };
+
+// ===== PT =====
+export const getMyPT = () => {
+  return api.get("/member/my-pt");
+};
+
+export const getPTList = () => {
+  return api.get("/member/pts");
+};
+
+export const choosePT = (pt_id) => {
+  return api.post("/member/choose-pt", { pt_id });
+};
+
+// ===== SCHEDULE =====
+export const getMemberSchedules = (start, end) => {
+  return api.get("/member/schedules", {
+    params: { start, end },
+  });
+};
+
+export const registerSchedule = (scheduleId) => {
+  return api.post(`/member/register/${scheduleId}`);
+};
+
+export const getMySchedules = () => {
+  return api.get("/member/my-schedules");
+};
+
+export const cancelMySchedule = (scheduleId) => {
+  return api.delete(`/member/${scheduleId}/cancel`);
+};

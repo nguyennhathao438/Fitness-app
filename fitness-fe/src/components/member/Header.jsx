@@ -4,21 +4,37 @@ import { Menu, X, User, LogOut } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../storages/authSlice.js";
 import defaultAvatar from "../../assets/default-avatar.jpg";
-
+import { Bell, BellDot } from "lucide-react";import { useEffect } from "react";
+import { notificationService } from "../../services/notificationService";
 export default function Header() {
   const { member, isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  
+  const [notifications, setNotifications] = useState([]);
+const [openNotification, setOpenNotification] = useState(false);
+const unreadCount = notifications.filter(n => !n.is_read).length;
   const handleLogout = () => {
     dispatch(logout());
   };
-  
+  useEffect(() => {
+  if (isAuthenticated) {
+    loadNotifications();
+  }
+}, [isAuthenticated]);
+
+const loadNotifications = async () => {
+  try {
+    const data = await notificationService.getNotifications();
+    setNotifications(data);
+  } catch (error) {
+    console.error(error);
+  }
+};
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <>
-      <header className="bg-[#000000] border-b border-[#2a2435]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<header className="bg-[#000000] border-b border-[#2a2435] relative z-[1000]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link href="/" className="shrink-0">
@@ -66,7 +82,168 @@ export default function Header() {
             {/* Desktop Right Section */}
             <div className="hidden lg:flex items-center gap-4">
               {isAuthenticated ? (
-                <>
+                <>{/* Notification */}
+{isAuthenticated && (
+  <div className="relative inline-block">
+
+  <button
+  onClick={() => setOpenNotification(!openNotification)}
+  className="relative p-2 rounded-full bg-gray-800 border-2 border-purple-400 text-gray-300 hover:text-white hover:bg-gray-700 transition-all"
+>
+
+  {unreadCount > 0 ? (
+    <BellDot className="w-5 h-5 text-purple-400 animate-pulse" />
+  ) : (
+    <Bell className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+  )}
+
+  {unreadCount > 0 && (
+    <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white ring-2 ring-white px-1">
+      {unreadCount > 99 ? "99+" : unreadCount}
+    </span>
+  )}
+
+</button>
+
+    {openNotification && (
+      <>
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setOpenNotification(false)}
+        />
+
+        <div className="absolute right-0 mt-3 w-80 z-[2000] overflow-hidden bg-white rounded-[24px] shadow-xl shadow-slate-200/60 border border-slate-200">
+
+          {/* Header */}
+
+          <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+
+            <h3 className="font-bold text-slate-900">
+              Notifications
+            </h3>
+
+            <div className="flex items-center gap-2">
+
+              <span className="text-xs font-semibold px-2 py-1 bg-purple-100 text-purple-600 rounded-lg">
+                {unreadCount} New
+              </span>
+
+              {unreadCount > 0 && (
+                <button
+                  onClick={async () => {
+                    await notificationService.markAllRead();
+                    loadNotifications();
+                  }}
+                  className="text-xs text-purple-600 font-semibold hover:underline"
+                >
+                  Mark all
+                </button>
+              )}
+
+            </div>
+
+          </div>
+
+          {/* List */}
+
+          <div className="max-h-[400px] overflow-y-auto">
+
+            {notifications.length > 0 ? (
+
+              notifications.slice(0,5).map((noti) => {
+
+                const isUnread = !noti.is_read;
+
+                return (
+
+                  <div
+                    key={noti.id}
+                    onClick={async () => {
+                      await notificationService.markAsRead(noti.id);
+                      loadNotifications();
+                      setOpenNotification(false);
+                    }}
+                    className={`px-6 py-4 border-b border-slate-50 transition-colors cursor-pointer
+                    ${isUnread
+                        ? "bg-purple-50 hover:bg-purple-100"
+                        : "bg-white hover:bg-slate-50"
+                      }`}
+                  >
+
+                    <div className="flex gap-3">
+
+                      <div
+                        className={`w-2 h-2 mt-1.5 rounded-full shrink-0 ${
+                          isUnread
+                            ? "bg-purple-600"
+                            : "bg-slate-300"
+                        }`}
+                      />
+
+                      <div>
+
+                        <p
+                          className={`text-sm leading-snug ${
+                            isUnread
+                              ? "text-slate-900 font-semibold"
+                              : "text-slate-500"
+                          }`}
+                        >
+                          {noti.message || "New activity"}
+                        </p>
+
+                        <p className="text-xs text-slate-400 mt-1 font-medium">
+                          {new Date(noti.created_at).toLocaleString("vi-VN")}
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                );
+
+              })
+
+            ) : (
+
+              <div className="text-center py-12 px-6">
+
+                <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Bell className="w-8 h-8 text-slate-300" />
+                </div>
+
+                <p className="text-slate-500 font-medium">
+                  No notifications yet
+                </p>
+
+              </div>
+
+            )}
+
+          </div>
+
+          {/* Footer */}
+
+          <div className="p-3 bg-slate-50 border-t border-slate-100">
+
+            <Link
+              to="/notifications"
+              onClick={() => setOpenNotification(false)}
+              className="block w-full py-2 text-sm font-semibold text-slate-600 hover:text-purple-600 text-center transition-colors"
+            >
+              View all activity
+            </Link>
+
+          </div>
+
+        </div>
+      </>
+    )}
+
+  </div>
+)}
                   <div className="flex items-center gap-3">
                     {member?.avatar ? (
                       <Link to="/profile">

@@ -7,13 +7,23 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
-    protected function schedule(Schedule $schedule)
+    /**
+     * Define the application's command schedule.
+     */
+    protected function schedule(Schedule $schedule): void
     {
         $schedule->command('pt:expire')->daily();
+        $schedule->command('app:send-schedule-reminder')->everyMinute();
+
+        $schedule->command('package:check-expiry')->daily();
     }
-    
-    protected function commands()
+    /**
+     * Register the commands for the application.
+     */
+    protected function commands(): void
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
+
+        require base_path('routes/console.php');
     }
 }

@@ -10,6 +10,10 @@
 
     cd fitness-be
 
+    composer install
+
+    php artisan migrate:fresh --seed
+
     php artisan config:clear
 
     php artisan cache:clear
