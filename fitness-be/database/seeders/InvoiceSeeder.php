@@ -19,7 +19,7 @@ class InvoiceSeeder extends Seeder
             [
                 'member_id' => $members[1]->id,
                 'package_id' => $packages[0]->id,
-                'total_price' => $packages[0]->price, 
+                'total_price' => $packages[0]->price,
                 'payment_method' => 'momo',
                 'status' => 'paid',
                 'valid_until' => Carbon::now()->addDays(30),
@@ -30,7 +30,7 @@ class InvoiceSeeder extends Seeder
             [
                 'member_id' => $members[2]->id,
                 'package_id' => $packages[1]->id,
-                'total_price' => $packages[1]->price, 
+                'total_price' => $packages[1]->price,
                 'payment_method' => 'vnpay',
                 'status' => 'pending',
                 'valid_until' => Carbon::now()->addDays(90),
@@ -41,7 +41,7 @@ class InvoiceSeeder extends Seeder
             [
                 'member_id' => $members[3]->id,
                 'package_id' => $packages[4]->id,
-                'total_price' => $packages[4]->price, 
+                'total_price' => $packages[4]->price,
                 'payment_method' => 'cash',
                 'status' => 'paid',
                 'valid_until' => Carbon::now()->addDays(30),
@@ -52,7 +52,7 @@ class InvoiceSeeder extends Seeder
             [
                 'member_id' => $members[4]->id,
                 'package_id' => $packages[8]->id,
-                'total_price' => $packages[8]->price, 
+                'total_price' => $packages[8]->price,
                 'payment_method' => 'momo',
                 'status' => 'reject',
                 'valid_until' => null,
@@ -63,7 +63,7 @@ class InvoiceSeeder extends Seeder
             [
                 'member_id' => $members[5]->id,
                 'package_id' => $packages[2]->id,
-                'total_price' => $packages[2]->price, 
+                'total_price' => $packages[2]->price,
                 'payment_method' => 'vnpay',
                 'status' => 'paid',
                 'valid_until' => Carbon::now()->addDays(180),
@@ -96,7 +96,7 @@ class InvoiceSeeder extends Seeder
             [
                 'member_id' => $members[8]->id,
                 'package_id' => $packages[6]->id,
-                'total_price' => $packages[6]->price, 
+                'total_price' => $packages[6]->price,
                 'payment_method' => 'vnpay',
                 'status' => 'paid',
                 'valid_until' => Carbon::now()->addDays(90),
@@ -107,7 +107,7 @@ class InvoiceSeeder extends Seeder
             [
                 'member_id' => $members[9]->id,
                 'package_id' => $packages[9]->id,
-                'total_price' => $packages[9]->price, 
+                'total_price' => $packages[9]->price,
                 'payment_method' => 'cash',
                 'status' => 'paid',
                 'valid_until' => Carbon::now()->addDays(60),
@@ -118,7 +118,7 @@ class InvoiceSeeder extends Seeder
             [
                 'member_id' => $members[1]->id,
                 'package_id' => $packages[14]->id,
-                'total_price' => $packages[14]->price, 
+                'total_price' => $packages[14]->price,
                 'payment_method' => 'momo',
                 'status' => 'paid',
                 'valid_until' => Carbon::now()->addDays(45),

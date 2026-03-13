@@ -27,6 +27,11 @@ class DatabaseSeeder extends Seeder
             MuscleGroupSeeder::class,
             ExerciseSeeder::class,
             ExerciseMuscleGroupSeeder::class,
+            BodyMetricSeeder::class,
+            MemberRoleSeeder::class,
+            SurveySeeder::class,
+            SurveyTrainingTimeSeeder::class,
+            PTClientSeeder::class,
         ]);
     }
 }

@@ -15,10 +15,12 @@ import Exercise from "./pages/Admin/Exercise";
 import MuscleGroup from "./pages/Admin/MuscleGroup";
 import Invoice from "./pages/Admin/Invoice";
 import Package from "./pages/Admin/package";
-import UpgradePackagePage from "./pages/member/UpgradePackagePage"; 
-import UpgradePaymentPage from "./pages/member/UpgradePaymentPage"; 
+import UpgradePackagePage from "./pages/member/UpgradePackagePage";
+import UpgradePaymentPage from "./pages/member/UpgradePaymentPage";
 import WorkoutPage from "./pages/member/WorkoutPage";
 import BodyMaxIndex from "./pages/member/BodyMaxIndex";
+import Message from "./pages/Admin/Message";
+import MessagePT from "./pages/Admin/MessagePT";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -37,7 +39,7 @@ const router = createBrowserRouter([
         element: <UpgradePackagePage />,
       },
       {
-        path: "/member/payment/:packageId", 
+        path: "/member/payment/:packageId",
         element: <UpgradePaymentPage />,
       },
       {
@@ -46,7 +48,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/bmi",
-        element: <BodyMaxIndex/>,
+        element: <BodyMaxIndex />,
       },
       {
         path: "/login",
@@ -75,7 +77,7 @@ const router = createBrowserRouter([
     element: <DefaultAdmin />,
     children: [
       {
-        path: "",
+        path: "dashboard",
         element: <Dashboard />,
       },
       {
@@ -101,6 +103,14 @@ const router = createBrowserRouter([
       {
         path: "packages",
         element: <Package />,
+      },
+      {
+        path: "message",
+        element: <Message />,
+      },
+      {
+        path: "message-pt",
+        element: <MessagePT />,
       },
     ],
   },

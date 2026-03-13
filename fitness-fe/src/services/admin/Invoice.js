@@ -18,3 +18,9 @@ export const getInvoicePerMonth = (params) => {
 export const getInvoiceMoney = (params) => {
     return api.get("/invoice-moneystat",{params});
 }
+export const updatedInvoice = (invoiceID, data) => {
+  return api.put(`/invoice_update/${invoiceID}`, data);
+};
+export const getInvoiceLongestActive = () => {
+    return api.get("/invoice-memberlongtime");
+}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import PTForm from "../PTForm";
 import DetailDialog from "../DetailDialog";
 import PTInfoTab from "./PTInfoTab";
+import PTMembersTab from "./PTMembersTab";
 
 export default function PTCard({pt,onDeleteClick,onEditClick}) {
     const [openView, setOpenView] = useState(false);
@@ -44,7 +45,7 @@ export default function PTCard({pt,onDeleteClick,onEditClick}) {
                 </div>
                 <div className="space-x-5">
                     <span className="inline-block max-sm:text-sm">Active Member:</span>
-                    <span className="font-bold">8 members</span>
+                    <span className="font-bold">{pt.active_clients_count}</span>
                 </div>
                 <div className="flex justify-center">
                     <button className="flex justify-center gap-2 mt-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg w-2/3"
@@ -70,7 +71,7 @@ export default function PTCard({pt,onDeleteClick,onEditClick}) {
                 {
                 id: "members",
                 label: "Các hội viên",
-                // content: <PTMembersTab ptId={pt.id} />,
+                content: <PTMembersTab pt={pt} />,
                 },
                 {
                 id: "schedule",

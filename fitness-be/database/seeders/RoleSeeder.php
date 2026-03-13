@@ -27,5 +27,9 @@ class RoleSeeder extends Seeder
             ['name' => 'Receptionist'],
             ['description' => 'Lễ tân']
         );
+        Role::updateOrCreate(
+            ['name' => 'Member'],
+            ['description' => 'Hội viên']
+        );
     }
 }

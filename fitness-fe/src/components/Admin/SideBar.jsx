@@ -38,7 +38,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
       <nav className="mt-4 border-t border-gray-300 px-2">
         <ul className="mt-2 space-y-5">
           <NavLink
-            to="/admin"
+            to="/admin/dashboard"
             className={({ isActive }) =>
               `flex items-center px-4 py-2 rounded-md cursor-pointer transition
                             hover:bg-purple-500 hover:translate-x-1
@@ -80,14 +80,36 @@ export default function SideBar({ collapsed, setCollapsed }) {
               Packages
             </span>
           </NavLink>
-          <li className="px-4 py-2 cursor-pointer rounded-md hover:bg-purple-500 hover:translate-x-1">
+          <NavLink
+            to="/admin/message"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
+                            hover:bg-purple-500 hover:translate-x-1
+                            ${isActive ? "bg-purple-600" : ""}`
+            }
+          >
             <MessageCircleIcon className=" text-white inline-block mr-2 size-5"></MessageCircleIcon>
             <span
               className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
             >
               Messages
             </span>
-          </li>
+          </NavLink>
+          <NavLink
+            to="/admin/message-pt"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
+                            hover:bg-purple-500 hover:translate-x-1
+                            ${isActive ? "bg-purple-600" : ""}`
+            }
+          >
+            <MessageCircleIcon className=" text-white inline-block mr-2 size-5"></MessageCircleIcon>
+            <span
+              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+            >
+              Messages PT
+            </span>
+          </NavLink>
           <NavLink
             to="/admin/order"
             className={({ isActive }) =>

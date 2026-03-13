@@ -11,9 +11,10 @@ use Cloudinary\Cloudinary;
 use DB;
 use Throwable;
 use App\Models\PasswordOtp;
+use App\Models\PersonalTrainerClient;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Support\Facades\Log;
 class MemberController extends Controller
 {
     /*
@@ -126,7 +127,10 @@ class MemberController extends Controller
     // Thống kê progressbar giới tính
     public function memberStats()
     {
-        $baseQuery = Member::where('is_deleted', false);
+        $baseQuery = Member::whereHas('roles', function ($q) {
+            $q->where('name', 'Member');
+        })
+            ->where('is_deleted', false);
 
         $male = (clone $baseQuery)->where('gender', 'male')->count();
         $female = (clone $baseQuery)->where('gender', 'female')->count();
@@ -141,10 +145,34 @@ class MemberController extends Controller
             ]
         ]);
     }
+    // Thống kê progressbar hội viên theo pt
+    public function memberHavePTStats()
+    {
+        $baseQuery = Member::whereHas('roles', function ($q) {
+            $q->where('name', 'Member');
+        })
+            ->where('is_deleted', false);
+
+        $havePT = PersonalTrainerClient::where('status', 'active')->count();
+        $noPT = (clone $baseQuery)->whereDoesntHave('activept')->count();
+        $total = $havePT + $noPT;
+
+        return response()->json([
+            'success' => true,
+            'total' => $total,
+            'withPT' => [
+                'havePT' => $havePT,
+                'noPT' => $noPT,
+            ]
+        ]);
+    }
     //thống kê biểu đồ tròn theo độ tuổi
     public function AgeStats()
     {
         $stats = Member::where('is_deleted', false)
+            ->whereHas('roles', function ($q) {
+                $q->where('name', 'Member');
+            })
             ->whereNotNull('birthday')
             ->selectRaw("
             SUM(TIMESTAMPDIFF(YEAR, birthday, CURDATE()) < 18) AS under_18,
@@ -172,7 +200,16 @@ class MemberController extends Controller
         if (!$member) {
             return response()->json(['message' => 'User không tồn tại'], 404);
         }
+        $hasActivePT = PersonalTrainerClient::where('member_id', $memberId)
+            ->where('status', 'active')
+            ->exists();
 
+        if ($hasActivePT) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không thể xóa member đang có PT hướng dẫn'
+            ], 400);
+        }
         $member->update([
             'is_deleted' => true
         ]);
@@ -181,10 +218,44 @@ class MemberController extends Controller
             'message' => 'Xóa user thành công'
         ]);
     }
+    public function deletePT($ptId)
+    {
+        $pt = Member::find($ptId);
+
+        if (!$pt) {
+            return response()->json([
+                'success' => false,
+                'message' => 'PT không tồn tại'
+            ], 404);
+        }
+
+        // PT đang hướng dẫn member nào không?
+        $hasActiveClients = PersonalTrainerClient::where('pt_id', $ptId)
+            ->where('status', 'active')
+            ->exists();
+
+        if ($hasActiveClients) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không thể xóa PT đang hướng dẫn member'
+            ], 400);
+        }
+
+        $pt->update([
+            'is_deleted' => true
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Xóa PT thành công'
+        ]);
+    }
+
 
     // sửa thông tin người dùng
     public function editUser(Request $request, $memberId)
     {
+        Log::info("Request to edit user", ['memberId' => $memberId, 'requestData' => $request->all()]);
         $member = Member::where('id', $memberId)
             ->where('is_deleted', false)
             ->first();
@@ -213,24 +284,24 @@ class MemberController extends Controller
 
             if ($request->hasFile('avatar')) {
 
-                $cloudinary = new Cloudinary([
-                    'cloud' => [
-                        'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                        'api_key' => env('CLOUDINARY_API_KEY'),
-                        'api_secret' => env('CLOUDINARY_API_SECRET'),
-                    ],
-                ]);
+                $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
 
                 $result = $cloudinary->uploadApi()->upload(
                     $request->file('avatar')->getRealPath(),
-                    ['folder' => 'members/avatar']
+                    [
+                        'folder' => 'members/avatar'
+                    ]
                 );
 
                 $data['avatar'] = $result['secure_url'];
             }
 
             $member->update($data);
+            $roles = $request->input('roles', []);
+            $member->roles()->sync($roles);
 
+            // reload role cho response
+            $member->load('roles:id,name');
             return response()->json([
                 'success' => true,
                 'message' => 'Cập nhật user thành công',
@@ -396,7 +467,6 @@ class MemberController extends Controller
             'message' => 'Đổi mật khẩu thành công'
         ], 200);
     }
-
     //Nâng cấp (Upgrade) hoặc Gia hạn (Extend) gói tập
 
     public function upgrade(Request $request)
@@ -502,5 +572,137 @@ class MemberController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    // lấy danh sách member
+    public function getMember(Request $request)
+    {
+        $query = Member::query()
+            ->where('is_deleted', false)
+            ->whereHas('roles', function ($q) {
+                $q->where('name', 'Member');
+            })
+            ->with([
+                'latestInvoice:id,member_id,package_id,valid_until,created_at',
+                'latestInvoice.package:id,package_type_id',
+                'latestInvoice.package.packageType:id',
+                'latestInvoice.package.packageType.services:id,name',
+                'roles:id,name',
+                'activept:id,member_id,pt_id,status,start_date,end_date',
+                'activept.pt:id,name,avatar',
+            ]);
+
+        // TÌM KIẾM (theo tên hoặc SĐT)
+
+        if ($request->filled('keyword')) {
+            $keyword = $request->keyword;
+
+            $query->where(function ($q) use ($keyword) {
+                $q->where('name', 'like', "%$keyword%")
+                    ->orWhere('phone', 'like', "%$keyword%");
+            });
+        }
+
+        // LỌC THEO GIỚI TÍNH
+        if ($request->filled('gender')) {
+            $query->where('gender', $request->gender);
+        }
+        // Filter PT
+        if ($request->filled('has_pt')) {
+            if ($request->has_pt == 1) {
+                $query->whereHas('activept');
+            } elseif ($request->has_pt == 0) {
+                $query->whereDoesntHave('activept')
+                    ->whereHas('latestInvoice', function ($q) {
+                        $q->whereDate('valid_until', '>=', Carbon::today())
+                            ->whereHas('package.packageType.services', function ($q2) {
+                                $q2->where('services.id', 2);
+                            });
+                    });
+            }
+        }
+
+        // SẮP XẾP THEO NGÀY TẠO
+        $sort = $request->get('sort', 'desc'); // mặc định mới nhất
+        $query->orderBy('created_at', $sort);
+
+        // PHÂN TRANG (6 ITEM / TRANG)
+        $members = $query->paginate(6);
+
+        // append computed fields
+        $members->getCollection()->transform(function ($member) {
+            $canAddPT = false;
+
+            // Chưa có PT
+            if (!$member->activept && $member->latestInvoice && Carbon::parse($member->latestInvoice->valid_until)->gte(Carbon::today())) {
+
+                $services = optional(
+                    optional(
+                        optional($member->latestInvoice->package)->packageType
+                    )->services
+                );
+
+                if ($services && $services->contains('id', 2)) {
+                    $canAddPT = true;
+                }
+            }
+            if (!$member->latestInvoice) {
+                $member->invoice = null;
+                return $member;
+            }
+            $today = Carbon::today();
+            $validUntil = Carbon::parse($member->latestInvoice->valid_until);
+
+            $member->invoice = [
+                'start_date' => $member->latestInvoice->created_at->toDateString(),
+                'valid_until' => $validUntil->toDateString(),
+                'days_left' => max(0, $today->diffInDays($validUntil, false)),
+            ];
+            $member->can_add_pt = $canAddPT;
+
+            unset($member->latestInvoice);
+
+            return $member;
+
+        });
+        // TRẢ JSON CHO FRONTEND
+        return response()->json([
+            'success' => true,
+            'data' => $members
+        ]);
+    }
+    public function getStatUser()
+    {
+        // THỐNG KÊ
+        $full = Member::where('is_deleted', false)
+            ->count();
+        // THỐNG KÊ thẻ member
+        $fullMember = Member::where('is_deleted', false)
+            ->whereHas('roles', function ($q) {
+                $q->where('name', 'Member');
+            })
+            ->count();
+        // THỐNG KÊ
+        $fullPT = Member::where('is_deleted', false)
+            ->whereHas('roles', function ($q) {
+                $q->where('name', 'PT');
+            })
+            ->count();
+        $fullDeleted = Member::where('is_deleted', true)
+            ->whereHas('roles', function ($q) {
+                $q->where('name', 'Member');
+            })
+            ->count();
+        return response()->json([
+            'success' => true,
+            'full' => $full,
+            'fullMember' => $fullMember,
+            'fullPT' => $fullPT,
+            'fullDeleted' => $fullDeleted,
+        ]);
+    }
+    public function getMe(Request $request)
+    {
+        return response()->json($request->user());
     }
 }

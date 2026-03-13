@@ -1,7 +1,7 @@
 import { FilterIcon, SearchIcon } from "lucide-react";
 import {useEffect, useState } from "react";
 import PTCard from "../../components/Admin/PTPage/PTCard";
-import { deletedUser, getPersonalTrainers, updatedUser } from "../../services/admin/PersonalTrainerService";
+import { deletedPT, getPersonalTrainers, updatedUser } from "../../services/admin/PersonalTrainerService";
 import Pagination from "../../components/Admin/Pagination";
 import { toast } from "react-toastify";
 import DeletedDialog from "../../components/Admin/DeletedDialog";
@@ -27,7 +27,7 @@ export default function PT({ refreshKey,onChanged }){
         // Fetch PT data from API
         getPersonalTrainers({page, keyword: debouncedSearch, gender, sort}).then(res => {
             setPts(res.data.data.data);   // MẢNG PT
-            setMeta(res.data.data);       // META PAGINATION
+            setMeta(res.data.data);// META PAGINATION
         }).finally(() => setLoading(false));
     }, [page,debouncedSearch,gender,sort,refreshKey]);
     
@@ -46,7 +46,7 @@ export default function PT({ refreshKey,onChanged }){
     const handleDeletePT = async () => {
     if (!selectedPT) return;
     try {
-        await deletedUser(selectedPT.id);
+        await deletedPT(selectedPT.id);
 
         toast.success("Xóa thành công");
 
@@ -62,7 +62,7 @@ export default function PT({ refreshKey,onChanged }){
         onChanged?.();
         } catch (err) {
             console.error(err);
-            toast.error("Xóa thất bại");
+            toast.error("PT đang có học viên nên không thể xóa");
         }
     };
     // sửa thông tin
@@ -187,6 +187,7 @@ export default function PT({ refreshKey,onChanged }){
                     setSelectedPT(null);
                 }}
                 onConfirm={handleDeletePT}
+                name="Xóa PT"
             />
             {/* Edit PT Dialog */}
             <Dialog 
