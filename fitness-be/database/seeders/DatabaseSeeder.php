@@ -38,6 +38,8 @@ class DatabaseSeeder extends Seeder
             NotificationSeeder::class,
             PtMemberSeeder::class,
             PtScheduleSeeder::class,
+            WorkoutHistorySeeder::class,
+            WorkoutHistoryDetailSeeder::class,
         ]);
     }
 }
