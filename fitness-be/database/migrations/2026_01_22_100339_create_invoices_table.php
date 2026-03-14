@@ -20,6 +20,8 @@ return new class extends Migration {
             $table->foreignId('package_id')
                 ->constrained('training_packages')
                 ->onDelete('cascade');
+            
+            $table->integer('total_price');
 
             $table->enum('payment_method', ['momo', 'vnpay', 'cash']);
             $table->enum('status', ['pending', 'paid', 'reject']);

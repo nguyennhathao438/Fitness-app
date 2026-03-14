@@ -8,8 +8,8 @@ export default function Header() {
         <div>
             <div className="flex justify-between items-center mb-6">
                 <div>
-                    <h1 className="text-3xl text-purple-800 font-bold">Exercise Management</h1>
-                    <p className="text-md text-purple-500">
+                    <h1 className="text-3xl font-bold">Exercise Management</h1>
+                    <p className="text-md">
                         Manage exercises and workout details
                     </p>
                 </div>

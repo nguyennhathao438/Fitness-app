@@ -1,16 +1,28 @@
 import { DollarSign, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-export default function PricingCard({ package: pkg }) {
+export default function PricingCard({ package: pkg, isUpgrade = false }) {
   const navigate = useNavigate();
+
   const formatVND = (price) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
     }).format(price);
   };
+
+  // Hàm xử lý khi bấm nút
+  const handleAction = () => {
+    if (isUpgrade) {
+      navigate(`/member/payment/${pkg.id}`); 
+    } else {
+      navigate(`/register/${pkg.id}`);
+    }
+  };
+
   return (
     <div className="group h-[320px] [perspective:1000px]">
       <div className="relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+
         {/* Front Face */}
         <div className="absolute inset-0 bg-gray-50 rounded-2xl p-5 flex flex-col [backface-visibility:hidden] shadow-sm border border-gray-100">
           <h3 className="text-xl font-bold text-gray-900 mb-6">{pkg.name}</h3>
@@ -48,10 +60,10 @@ export default function PricingCard({ package: pkg }) {
 
           <button
             type="button"
-            onClick={() => navigate(`/register/${pkg.id}`)}
+            onClick={handleAction}
             className="w-full bg-white text-purple-700 font-bold py-3 rounded-full hover:bg-gray-100 transition-colors mt-6"
           >
-            Đăng ký ngay
+            {isUpgrade ? "Nâng cấp ngay" : "Đăng ký ngay"}
           </button>
         </div>
       </div>

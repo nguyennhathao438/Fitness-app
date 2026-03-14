@@ -9,6 +9,7 @@ import {
   AlertCircleIcon,
   XCircleIcon,
 } from "lucide-react";
+import defaultAvatar from "@/assets/default-avatar.jpg";
 
 export default function InvoiceDetail({ invoice }) {
   if (!invoice) return null;
@@ -95,7 +96,7 @@ export default function InvoiceDetail({ invoice }) {
               <img
                 src={
                   invoice.member.avatar ||
-                  "https://ui-avatars.com/api/?name=User"
+                  defaultAvatar
                 }
                 className="w-10 h-10 rounded-full object-cover"
               />
@@ -164,8 +165,13 @@ export default function InvoiceDetail({ invoice }) {
 
               <div className="flex justify-between">
                 <span className="text-gray-500">Type</span>
-                <span className="font-medium">
-                  {invoice.package.package_type?.name || "Standard"}
+                <span className="font-medium text-right">
+                  {invoice.package.package_type.services?.length > 0
+                  ? invoice.package.package_type.services
+                      .map(s => s.name)
+                      .join(", ")
+                  : "none"}
+
                 </span>
               </div>
 

@@ -2,10 +2,11 @@ import momoimg from "../../assets/momo.png";
 import vnpayimg from "../../assets/vnpay.png";
 import cardimg from "../../assets/creditcard.png";
 import { toast } from "react-toastify";
-import { register } from "../../services/member/MemberService.js";
+import { register, upgradePackage } from "../../services/member/MemberService.js";
 import { useDispatch } from "react-redux";
 import { login } from "../../storages/authSlice.js";
 import { useState } from "react";
+
 const paymentMethods = [
   {
     id: "momo",
@@ -36,9 +37,11 @@ const paymentMethods = [
   },
 ];
 
-export default function StepPayment({ data, setData, next, prev, setWaiting }) {
+// [UPDATE] Thêm prop isExtend
+export default function StepPayment({ data, setData, next, prev, setWaiting, isUpgrade = false, isExtend = false }) {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+
   const choosePayment = (methodId) => {
     setData((prevData) => ({
       ...prevData,
@@ -48,24 +51,43 @@ export default function StepPayment({ data, setData, next, prev, setWaiting }) {
 
   const handlePayment = async () => {
     if (!data.payment_method) {
-      alert("Vui lòng chọn phương thức thanh toán!");
+      toast.warning("Vui lòng chọn phương thức thanh toán!");
       return;
     }
     setLoading(true);
-    //Gọi api thanh toán ở đây
-    //Nếu thanh toán thành công
     try {
-      const res = await register(data);
-      dispatch(login(res.data));
-      localStorage.setItem("token", res.data.token);
-      toast.success("Đăng ký thành công");
-      if (res.data.waiting) {
-        setWaiting(true);
+      let res;
+      // Logic xử lý Nâng cấp hoặc Gia hạn
+      if (isUpgrade || isExtend) {
+        res = await upgradePackage({
+            package_id: data.package_id,
+            payment_method: data.payment_method,
+            is_extend: isExtend 
+        });
+        const successMsg = isExtend ? "Gia hạn thành công!" : "Nâng cấp gói thành công!";
+        toast.success(res.data.message || successMsg);
+
+      } else {
+        // Logic Đăng ký mới 
+        res = await register(data);
+        dispatch(login(res.data));
+        localStorage.setItem("token", res.data.token);
+        toast.success("Đăng ký thành công");
       }
-      next(); // sang step 3 (hoàn tất)
+      if (res.data.waiting) {
+        if(setWaiting) setWaiting(true);
+      }
+      next();
+
     } catch (error) {
-      toast.error("Đăng ký thất bại");
       console.error(error);
+      let errorMsg = "Có lỗi xảy ra";
+      if (isExtend) errorMsg = "Gia hạn thất bại";
+      else if (isUpgrade) errorMsg = "Nâng cấp thất bại";
+      else errorMsg = "Đăng ký thất bại";
+
+      const msg = error.response?.data?.message || errorMsg;
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -74,7 +96,11 @@ export default function StepPayment({ data, setData, next, prev, setWaiting }) {
   return (
     <div className="space-y-6">
       <h2 className="text-xl md:text-2xl text-yellow-400 text-center font-semibold">
-        Chọn phương thức thanh toán
+        {/* Tiêu đề linh hoạt */}
+        {isExtend 
+            ? "Thanh toán Gia hạn" 
+            : (isUpgrade ? "Thanh toán Nâng cấp" : "Chọn phương thức thanh toán")
+        }
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -94,7 +120,6 @@ export default function StepPayment({ data, setData, next, prev, setWaiting }) {
         }
       `}
           >
-            {/* Check */}
             {data.payment_method === method.id && (
               <div
                 className={`absolute -top-2 -right-2 w-6 h-6 rounded-full
@@ -148,7 +173,7 @@ export default function StepPayment({ data, setData, next, prev, setWaiting }) {
           className="flex-1 py-3 rounded-full border-2 border-yellow-400 text-yellow-400 
       hover:bg-yellow-400 hover:scale-105 hover:text-gray-900 hover:font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-yellow-400/30"
         >
-          Quay lai
+          Quay lại
         </button>
 
         <button
@@ -166,7 +191,10 @@ export default function StepPayment({ data, setData, next, prev, setWaiting }) {
             <span className="w-5 h-5 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
           )}
 
-          {loading ? "Đang xử lý..." : "Thanh toán & Đăng ký"}
+          {loading ? "Đang xử lý..." : (
+              isExtend ? "Thanh toán Gia hạn" : 
+              (isUpgrade ? "Thanh toán Nâng cấp" : "Thanh toán & Đăng ký")
+          )}
         </button>
       </div>
     </div>

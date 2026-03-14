@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\WorkoutHistoryDetail;
 use App\Models\WorkoutHistory;
-
+use Carbon\Carbon;
+use App\Models\MuscleGroup;
+use Illuminate\Support\Facades\DB;
 class WorkoutHistoryDetailController extends Controller
 {
     public function getAll(Request $request)

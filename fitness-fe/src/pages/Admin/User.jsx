@@ -20,6 +20,8 @@ import {
 import {
   getAgeUser,
   getGenderUser,
+  getMemberHavePT,
+  getUserStat,
 } from "../../services/admin/StatUserInformation";
 import MemberList from "../../components/Admin/MemberPage/MemberList";
 import { toast } from "react-toastify";
@@ -28,7 +30,11 @@ export default function User() {
   const [activeTab, setActiveTab] = useState("stats");
   const [openForm, setOpenForm] = useState(false);
   const [full, setFull] = useState(0);
+  const [fullMember, setFullMember] = useState(0);
+  const [fullPT, setFullPT] = useState(0);
+  const [fullDeleted, setFullDeleted] = useState(0);
   const [memberGender, setmemberGender] = useState(null);
+  const [havePT, setHavePT] = useState(null);
   const [memberAge, setMemberAge] = useState(null);
   const [refreshPT, setRefreshPT] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,8 +50,11 @@ export default function User() {
       toast.success("Thêm PT thành công");
       setOpenForm(false);
       setRefreshStats((prev) => prev + 1);
-      getPersonalTrainers().then((res) => {
-        setFull(res.data.full);
+      getUserStat().then((res) => {
+          setFull(res.data.full);
+          setFullMember(res.data.fullMember);
+          setFullPT(res.data.fullPT);
+          setFullDeleted(res.data.fullDeleted);
       });
       setRefreshPT((prev) => prev + 1); // trigger reload
       setActiveTab("PersonalTrainer");
@@ -66,16 +75,22 @@ export default function User() {
   };
 
   useEffect(() => {
-  getPersonalTrainers()
+  getUserStat()
     .then((res) => {
       setFull(res.data.full);
+      setFullMember(res.data.fullMember);
+      setFullPT(res.data.fullPT);
+      setFullDeleted(res.data.fullDeleted);
     });
 
   getGenderUser()
     .then((res) => {
       setmemberGender(res.data);
     });
-
+  getMemberHavePT()
+    .then((res) => {
+      setHavePT(res.data);
+    })
   getAgeUser()
     .then((res) => {
       setMemberAge(res.data);
@@ -127,23 +142,23 @@ export default function User() {
 
           <StatHeader
             name="Members"
-            value={80}
+            value={fullMember}
             icon={<UserCheckIcon className="size-5 text-[#16A34A]" />}
             className1="bg-[#DCFCE7]"
           />
 
           <StatHeader
             name="Personal Trainers"
-            value={20}
-            icon={<UserXIcon className="size-5 text-[#DC2626]" />}
-            className1="bg-[#FF6B73]"
+            value={fullPT}
+            icon={<CrownIcon className="size-5 text-[#2563EB]" />}
+            className1="bg-[#BEE3F8]"
           />
 
           <StatHeader
-            name="VIP Members"
-            value={5}
-            icon={<CrownIcon className="size-5 text-[#2563EB]" />}
-            className1="bg-[#BEE3F8]"
+            name="Deleted Member"
+            value={fullDeleted}
+            icon={<UserXIcon className="size-5 text-[#DC2626]" />}
+            className1="bg-[#FF6B73]"
           />
         </div>
 
@@ -205,10 +220,11 @@ export default function User() {
 
           {/* Content */}
           <div className="mt-2">
-            {activeTab === "stats" && memberGender && memberAge && (
+            {activeTab === "stats" && memberGender && memberAge && havePT && (
               <MemberStatContent
                 genderStats={memberGender}
                 ageStats={memberAge}
+                havePTStats={havePT}
               />
             )}
             {activeTab === "members" && <MemberList onChanged={() => {
