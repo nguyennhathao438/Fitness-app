@@ -1,3 +1,7 @@
+## CHẠY MODEL INTENT
+
+    uvicorn main:app --port 8001
+
 ## KIỂM TRA PORT
 
     netstat -ano | findstr :xxxx
