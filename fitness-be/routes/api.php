@@ -30,6 +30,8 @@ Route::post('/login', [AuthenController::class, 'login']);
 Route::post('/register', [MemberController::class, 'register']);
 Route::post('/check-email', [AuthenController::class, 'checkEmail']);
 Route::middleware('auth:sanctum')->group(function () {
+    //Chatbot 
+    Route::post('/chatbot', [ChatbotController::class, 'getIntent']);
     //Lấy thông tin bản thân
     Route::get('/me', [AuthenController::class, 'getMyInfo']);
     //survey
@@ -198,8 +200,7 @@ Route::prefix('roles')->group(function () {
 //Permission
 
 Route::get('/permissions', [RoleController::class, 'getAllPermission']);
-//Chatbot 
-Route::post('/chatbot', [ChatbotController::class, 'getIntent']);
+
 Route::get('/permissions', [RoleController::class, 'getAllPermission']);
 Route::middleware('auth:sanctum')->group(function () {
 

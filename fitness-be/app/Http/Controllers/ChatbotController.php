@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Http;
 use App\Http\Services\PackageAiService;
 use Illuminate\Support\Facades\DB;
 use App\Http\Services\FaqAiService;
+use App\Http\Services\ExerciseAiService;
 class ChatbotController extends Controller
 {
     public function suggestPackage($question)
@@ -49,7 +50,7 @@ class ChatbotController extends Controller
         $request->validate([
             'question' => 'required|string',
         ]);
-
+        $member = $request->user();
         $question = $request->question;
 
         $response = Http::post('http://127.0.0.1:8001/predict', [
@@ -66,9 +67,9 @@ class ChatbotController extends Controller
 
         $intent = $data['intent'] ?? null;
 
-        return $this->handle($intent, $question);
+        return $this->handle($intent, $question, $member->id);
     }
-    public function handle($intent, $question)
+    public function handle($intent, $question, $memberId)
     {
         switch ($intent) {
 
@@ -80,8 +81,10 @@ class ChatbotController extends Controller
                 $answer = $faqService->ask($question);
                 return response()->json(["answer" => $answer], 200);
 
-            case 'xem_lich':
-                return response()->json(["message" => "Xem lịch"], 200);
+            case 'goi_y_bai_tap':
+                $exerciseService = app(ExerciseAiService::class);
+                $answer = $exerciseService->ask($question, $memberId);
+                return response()->json(["answer" => $answer], 200);
 
             default:
                 return response()->json([

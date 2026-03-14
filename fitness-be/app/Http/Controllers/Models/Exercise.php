@@ -21,4 +21,8 @@ class Exercise extends Model
     {
         return $this->belongsToMany(MuscleGroup::class);
     }
+    public function details()
+    {
+        return $this->hasMany(WorkoutHistoryDetail::class, 'exercise_id');
+    }
 }
