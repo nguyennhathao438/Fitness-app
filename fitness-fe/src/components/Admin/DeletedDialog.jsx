@@ -22,12 +22,12 @@ export default function DeletedDialog({ open, onClose, onConfirm,name}) {
 
         {/* Title */}
         <h3 className="text-lg font-semibold text-center mb-2">
-          Xóa {name}
+          {name}
         </h3>
 
         {/* Content */}
         <p className="text-sm text-gray-500 text-center mb-6">
-          Bạn có chắc chắn muốn xóa {name} này không?  
+          Bạn có chắc chắn muốn {name} này không?  
           Hành động này có thể hoàn tác.
         </p>
 
@@ -44,7 +44,7 @@ export default function DeletedDialog({ open, onClose, onConfirm,name}) {
             onClick={onConfirm}
             className="flex-1 px-4 py-2 rounded-xl bg-red-500 text-white hover:bg-red-600"
           >
-            Có, xóa
+            Có
           </button>
         </div>
       </div>

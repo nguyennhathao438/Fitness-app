@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 class Member extends Authenticatable
 {
+
     protected $appends = ['age'];
     public function getAgeAttribute()
     {
@@ -41,5 +42,52 @@ class Member extends Authenticatable
             ->whereHas('permissions', function ($q) use ($permission) {
                 $q->where('code', $permission);
             })->exists();
+    }
+    public function latestInvoice()
+    {
+        return $this->hasOne(Invoice::class)
+            ->where('status', 'paid')
+            ->where('is_deleted', false)
+            ->orderByDesc('valid_until');
+    }
+    public function ptClientsAsPT()
+    {
+        return $this->hasMany(PersonalTrainerClient::class, 'pt_id');
+    }
+
+    public function ptClientsAsMember()
+    {
+        return $this->hasMany(PersonalTrainerClient::class, 'member_id');
+    }
+    public function activept()
+    {
+        return $this->hasOne(PersonalTrainerClient::class, 'member_id')
+            ->where('status', 'active');
+    }
+
+
+    public function managedMembers()
+    {
+        return $this->belongsToMany(
+            Member::class,
+            'pt_member',
+            'pt_id',
+            'member_id'
+        );
+    }
+
+    public function pt()
+    {
+        return $this->belongsToMany(
+            Member::class,
+            'pt_member',
+            'member_id',
+            'pt_id'
+        );
+    }
+
+    public function ptSchedules()
+    {
+        return $this->hasMany(PTSchedule::class, 'pt_id');
     }
 }

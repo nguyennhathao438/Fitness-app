@@ -13,7 +13,7 @@ class InvoiceController extends Controller
         $query = Invoice::with([
             'package:id,name,duration_days,price,package_type_id',
             'member:id,name,email,avatar',
-            'package.packageType:id,name',
+            'package.packageType.services:id,name',
         ]) -> where('is_deleted',false);
     // Tìm kiếm theo tên gói và tên người dùng
         if($request->filled('keyword')){
@@ -74,7 +74,7 @@ class InvoiceController extends Controller
 
     // PHÂN TRANG (6 ITEM / TRANG)
         $invoice = $query
-            ->orderByDesc('id')
+            ->orderByDesc('created_at')
             ->paginate(7);
     // TRẢ JSON CHO FRONTEND
         return response()->json([
@@ -107,12 +107,12 @@ class InvoiceController extends Controller
     }
     // lấy số lượng order tháng này
     public function getInvoiceThisMonth(){
-        // Thống kê tiền tháng này
+        // Thống kê invoice tháng này
         $invoiceThisMonth = Invoice::where('is_deleted',false)
         ->whereMonth('invoices.created_at', Carbon::now()->month)
         ->whereYear('invoices.created_at', Carbon::now()->year)
         ->count();
-        // Thống kê tiền tháng trước
+        // Thống kê invoice tháng trước
         $invoiceLastMonth = Invoice::where('is_deleted',false)
         ->whereMonth('invoices.created_at', Carbon::now()->subMonth()->month)
         ->whereYear('invoices.created_at', Carbon::now()->subMonth()->year)
@@ -271,5 +271,57 @@ class InvoiceController extends Controller
             ],
         ]);
     }
+    // chuyển đổi trạng thái đơn hàng
+    public function updateInvoice(Request $request,$invoiceId){
+        $invoice = Invoice::where('id', $invoiceId)
+        ->where('is_deleted',false)
+        ->where('status','pending')
+        ->where('payment_method','cash')
+        ->first();
+        if (!$invoice) {
+            return response()->json(['message' => 'chỉ có thể update khi invoice đang pending'], 404);
+        }
+        $request->validate([
+            'status' => 'required|in:paid,reject',
+        ]);
+        try{
+            $data = [
+                'status' => $request->status
+            ];
+            $invoice->update($data);
 
+            return response()->json([
+                'success' => true,
+                'message' => 'Cập nhật invoice thành công',
+                'invoice' => $invoice
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cập nhật thất bại',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    // top 5 người dùng lâu nhất
+    public function getMemberByInvoice(){
+        $query = Invoice::selectRaw('
+        member_id,
+        SUM(DATEDIFF(valid_until, updated_at)) AS total_days
+        ')
+        ->where('status', 'paid')
+        ->where('is_deleted', false)
+        ->whereNotNull('valid_until')
+        ->whereRaw('valid_until > updated_at')
+        ->groupBy('member_id')
+        ->orderByDesc('total_days')
+        ->take(5)
+        ->with(['member:id,name,avatar,birthday'])
+        ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $query,
+        ]);
+    }
 }

@@ -5,10 +5,10 @@ import BenefitsSection from "@/components/member/Home/BenefitSection";
 export default function Home() {
   return (
     <div>
-      <Banner/>
-      <InfoPackage/>
-      <FoodComparison/>
-      <BenefitsSection/>
+      <Banner />
+      <InfoPackage />
+      <FoodComparison />
+      <BenefitsSection />
     </div>
   );
 }

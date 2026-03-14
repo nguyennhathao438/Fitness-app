@@ -13,6 +13,7 @@ class Invoice extends Model
     protected $fillable = [
         'member_id',
         'package_id',
+        'total_price',
         'payment_method',
         'status',
         'valid_until',
@@ -24,6 +25,7 @@ class Invoice extends Model
         'valid_until' => 'date',
         'package_id' => 'integer',
         'is_deleted' => 'boolean',
+        'total_price' => 'decimal:2'
     ];
 
     /* =====================

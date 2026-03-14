@@ -13,8 +13,9 @@ class RolePermissionSeeder extends Seeder
         $admin = Role::where('name', 'Admin')->first();
         $pt = Role::where('name', 'PT')->first();
         $receptionist = Role::where('name', 'Receptionist')->first();
+        $member = Role::where('name', 'Member')->first();
 
-        if (!$admin || !$pt || !$receptionist) {
+        if (!$admin || !$pt || !$receptionist || !$member) {
             throw new \Exception('Role chưa tồn tại');
         }
 
@@ -40,6 +41,16 @@ class RolePermissionSeeder extends Seeder
 
         // RECEPTIONIST
         $receptionist->permissions()->sync(
+            Permission::whereIn('code', [
+                'user.read',
+                'user.create',
+                'service.read',
+                'invoice.read',
+                'invoice.create',
+            ])->pluck('id')->toArray()
+        );
+        // Member
+        $member->permissions()->sync(
             Permission::whereIn('code', [
                 'user.read',
                 'user.create',
