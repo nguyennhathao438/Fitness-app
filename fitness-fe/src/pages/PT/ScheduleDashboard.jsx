@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-  startOfWeek,
-  addDays,
-  format,
-  subWeeks,
-  addWeeks,
-} from "date-fns";
-
+import { startOfWeek, addDays, format, subWeeks, addWeeks } from "date-fns";
+import { toast } from "react-toastify";
 import CreateEditScheduleModal from "./CreateEditScheduleModal";
 import {
   createSchedule,
@@ -34,8 +28,7 @@ const timeToMinutes = (t) => {
   return h * 60 + m;
 };
 
-const minutesFromStart = (time) =>
-  timeToMinutes(time) - START_HOUR * 60;
+const minutesFromStart = (time) => timeToMinutes(time) - START_HOUR * 60;
 
 /**
  * =========================
@@ -44,7 +37,7 @@ const minutesFromStart = (time) =>
  */
 export default function CalendarPT() {
   const [weekStart, setWeekStart] = useState(
-    startOfWeek(new Date(), { weekStartsOn: 1 })
+    startOfWeek(new Date(), { weekStartsOn: 1 }),
   );
 
   const [schedules, setSchedules] = useState([]);
@@ -79,7 +72,7 @@ export default function CalendarPT() {
    */
   const HOURS = Array.from(
     { length: END_HOUR - START_HOUR + 1 },
-    (_, i) => `${String(i + START_HOUR).padStart(2, "0")}:00`
+    (_, i) => `${String(i + START_HOUR).padStart(2, "0")}:00`,
   );
 
   const DAYS = Array.from({ length: 7 }).map((_, i) => {
@@ -110,11 +103,7 @@ export default function CalendarPT() {
     }
 
     if (y + popupHeight > window.innerHeight + window.scrollY) {
-      y =
-        window.innerHeight +
-        window.scrollY -
-        popupHeight -
-        margin;
+      y = window.innerHeight + window.scrollY - popupHeight - margin;
     }
 
     return { x, y };
@@ -148,10 +137,14 @@ export default function CalendarPT() {
    * =========================
    */
   const handleSave = async (data) => {
-    if (editing) {
-      await updateSchedule(editing.id, data);
-    } else {
-      await createSchedule(data);
+    try {
+      if (editing) {
+        await updateSchedule(editing.id, data);
+      } else {
+        await createSchedule(data);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Có lỗi xảy ra");
     }
 
     setActiveSlot(null);
@@ -188,9 +181,7 @@ export default function CalendarPT() {
 
       if (type === "current") {
         setDirection("right");
-        setWeekStart(
-          startOfWeek(new Date(), { weekStartsOn: 1 })
-        );
+        setWeekStart(startOfWeek(new Date(), { weekStartsOn: 1 }));
       }
 
       setAnimating(false);
@@ -267,16 +258,9 @@ export default function CalendarPT() {
 
             {/* DAYS */}
             {DAYS.map((d, i) => (
-              <div
-                key={i}
-                className="text-center py-2 border-b bg-purple-50"
-              >
-                <div className="font-bold">
-                  {d.labelDay}
-                </div>
-                <div className="text-xs">
-                  {d.labelDate}
-                </div>
+              <div key={i} className="text-center py-2 border-b bg-purple-50">
+                <div className="font-bold">{d.labelDay}</div>
+                <div className="text-xs">{d.labelDate}</div>
               </div>
             ))}
 
@@ -306,67 +290,55 @@ export default function CalendarPT() {
                   <div
                     key={i}
                     className="h-14 border-b hover:bg-purple-50 cursor-pointer transition"
-                    onClick={(e) =>
-                      openCreate(e, d.date, START_HOUR + i)
-                    }
+                    onClick={(e) => openCreate(e, d.date, START_HOUR + i)}
                   />
                 ))}
 
                 {/* SCHEDULES */}
                 {schedules
-                  .filter(
-                    (s) =>
-                      s.date ===
-                      format(d.date, "yyyy-MM-dd")
-                  )
+                  .filter((s) => s.date === format(d.date, "yyyy-MM-dd"))
                   .map((s) => {
                     const top =
-                      (minutesFromStart(
-                        s.start_time
-                      ) /
-                        60) *
-                      HOUR_HEIGHT;
+                      (minutesFromStart(s.start_time) / 60) * HOUR_HEIGHT;
 
                     const height =
                       ((timeToMinutes(s.end_time) -
-                        timeToMinutes(
-                          s.start_time
-                        )) /
+                        timeToMinutes(s.start_time)) /
                         60) *
                       HOUR_HEIGHT;
 
                     return (
                       <div
-  key={s.id}
-  onClick={(e) => openEdit(e, s)}
-  style={{ top, height, left: "6px", right: "6px" }}
-  className="absolute group overflow-hidden border-l-4 border-purple-500 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md hover:bg-white transition-all duration-200 cursor-pointer rounded-r-lg"
->
-  <div className="flex flex-col h-full p-2.5 space-y-1">
-    {/* Time Badge */}
-    <div className="flex items-center gap-1.5">
-      <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
-      <span className="text-[10px] font-bold uppercase tracking-wider text-purple-700">
-        {s.start_time} – {s.end_time}
-      </span>
-    </div>
+                        key={s.id}
+                        onClick={(e) => openEdit(e, s)}
+                        style={{ top, height, left: "6px", right: "6px" }}
+                        className="absolute group overflow-hidden border-l-4 border-purple-500 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md hover:bg-white transition-all duration-200 cursor-pointer rounded-r-lg"
+                      >
+                        <div className="flex flex-col h-full p-2.5 space-y-1">
+                          {/* Time Badge */}
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-purple-700">
+                              {s.start_time} – {s.end_time}
+                            </span>
+                          </div>
 
-    {/* Member Info */}
-    {s.member && (
-      <div className="flex items-center gap-2 mt-auto">
-        <div className="flex-shrink-0 w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center text-[10px]">
-          {s.member.name.charAt(0)}
-        </div>
-        <div className="text-[12px] font-medium text-slate-700 truncate group-hover:text-purple-700 transition-colors">
-          {s.member.name}
-        </div>
-      </div>
-    )}
-  </div>
+                          {/* Member Info */}
+                          {s.member && (
+                            <div className="flex items-center gap-2 mt-auto">
+                              <div className="flex-shrink-0 w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center text-[10px]">
+                                {s.member.name.charAt(0)}
+                              </div>
+                              <div className="text-[12px] font-medium text-slate-700 truncate group-hover:text-purple-700 transition-colors">
+                                {s.member.name}
+                              </div>
+                            </div>
+                          )}
+                        </div>
 
-  {/* Hover Overlay Effect */}
-  <div className="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-</div>
+                        {/* Hover Overlay Effect */}
+                        <div className="absolute inset-0 bg-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
                     );
                   })}
               </div>
