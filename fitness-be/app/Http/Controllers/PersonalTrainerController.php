@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Throwable;
@@ -77,6 +78,10 @@ class PersonalTrainerController extends Controller
                     'password' => Hash::make($request->password),
                     'is_deleted' => false,
                 ]);
+                $role = Role::where('name', 'PT')->first();
+
+                // gán role cho member
+                $member->roles()->attach($role->id);
             });
 
             return response()->json([

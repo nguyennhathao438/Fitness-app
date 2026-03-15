@@ -17,7 +17,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
   };
   return (
     <div
-      className={`fixed top-0 left-0 h-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white transition-all duration-300 ${collapsed ? "w-24" : "w-64"}`}
+      className={`fixed top-0 left-0 h-full bg-gradient-to-r from-[#56228d] to-[#2a125e] text-white transition-all duration-300 ${collapsed ? "w-24" : "w-64"}`}
     >
       <div
         className={`p-4 ${!collapsed ? "flex" : "items-center w-max space-y-2"} gap-2`}

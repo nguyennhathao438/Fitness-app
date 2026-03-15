@@ -1,7 +1,11 @@
+import getPages from "../utils/getpages";
+
 export default function Pagination({ meta, onPageChange }) {
   if (!meta || meta.last_page <= 1) return null;
 
   const { current_page, last_page } = meta;
+
+  const pages = getPages(current_page, last_page);
 
   const baseBtn =
     "px-3 py-1 rounded-md border text-sm transition-all duration-200";
@@ -25,10 +29,12 @@ export default function Pagination({ meta, onPageChange }) {
         Prev
       </button>
 
-      {/* Page numbers */}
-      {[...Array(last_page)].map((_, i) => {
-        const page = i + 1;
-        return (
+      {pages.map((page, i) =>
+        page === "..." ? (
+          <span key={`ellipsis-${i}`} className="px-2">
+            ...
+          </span>
+        ) : (
           <button
             key={page}
             onClick={() => onPageChange(page)}
@@ -38,8 +44,8 @@ export default function Pagination({ meta, onPageChange }) {
           >
             {page}
           </button>
-        );
-      })}
+        )
+      )}
 
       {/* Next */}
       <button
