@@ -4,9 +4,11 @@ export function buildPermissionMatrix(listPermissions) {
   const map = {};
 
   listPermissions.forEach((p) => {
-    if (!map[p.name]) {
-      map[p.name] = {
-        name: p.name,
+    const [module, action] = p.code.split(".");
+
+    if (!map[module]) {
+      map[module] = {
+        name: module,
         create: null,
         read: null,
         update: null,
@@ -14,8 +16,7 @@ export function buildPermissionMatrix(listPermissions) {
       };
     }
 
-    // store full permission object so callers can access id and code
-    map[p.name][p.action] = p;
+    map[module][action] = p;
   });
 
   return Object.values(map);
