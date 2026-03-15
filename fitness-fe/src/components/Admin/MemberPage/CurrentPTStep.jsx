@@ -8,8 +8,8 @@ export function CurrentPTStep({ pt,startDate,endDate, loading,onNext, onRemove }
       <div className="rounded-xl border bg-gray-50 p-5 flex gap-4">
         {/* Avatar */}
         <div className="relative">
-          <div className="size-20 rounded-xl object-cover font-bold">
-            <img src={pt.avatar || defaultAvatar} alt={pt.name} />
+          <div>
+            <img className="size-20 rounded-full object-cover font-bold" src={pt.avatar || defaultAvatar} alt={pt.name} />
           </div>
           <span className="absolute -top-1 -right-1 size-6 rounded-full bg-fuchsia-500 text-white flex items-center justify-center text-sm">
             ✓
