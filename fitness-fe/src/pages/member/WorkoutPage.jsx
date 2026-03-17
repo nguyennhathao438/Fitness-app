@@ -7,15 +7,22 @@ import ExerciseDetailModal from "@/components/member/Exercise/component/Exercise
 import ExerciseCart from "@/components/member/Exercise/component/ExerciseCart";
 import { toast } from "react-toastify";
 import { useWorkoutHistory } from "@/components/member/Exercise/hooks/useWorkoutHistory";
-
+import useFavoriteExercise from "@/components/member/Exercise/hooks/useFavoriteExercise";
+import FavoriteCart from "@/components/member/Exercise/component/FavoriteCard";
 export default function WorkoutPage() {
   const { exerciseList, muscleList, loading } = useExercise();
-  const { workoutToday, refetch} = useWorkoutHistory();
+  const { workoutToday, refetch } = useWorkoutHistory();
   const [selectedMuscles, setSelectedMuscles] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [exerciseAdd, setExerciseAdd] = useState([])
+
+  const {
+    favoriteIds,
+    favoriteExercises,
+    toggleFavorite
+  } = useFavoriteExercise();
 
   const handleAddExercise = (item) => {
     if (exerciseAdd.some(ex => ex.id == item.id)) {
@@ -116,9 +123,17 @@ export default function WorkoutPage() {
               exercise={ex}
               onSelectExercise={setSelectedExercise}
               onAddExercise={handleAddExercise}
+              isFavorite={favoriteIds.includes(ex.id)}
+              onToggleFavorite={toggleFavorite}
             />
           ))}
         </div>
+      )}
+      {favoriteExercises.length > 0 && (
+        <FavoriteCart
+          favorites={favoriteExercises}
+          onRemove={toggleFavorite}
+        />
       )}
 
       {/* pagination */}

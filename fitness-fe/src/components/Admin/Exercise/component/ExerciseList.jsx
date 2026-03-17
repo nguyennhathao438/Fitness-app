@@ -44,7 +44,7 @@ export default function ExerciseList({
 
     return (
         <div>
-            <div className="grid grid-cols-4 md:grid-cols-8 gap-3 mb-6">
+            <div className="flex flex-wrap gap-2 mb-6">
                 {!loadingMuscle && (
                     <button
                         onClick={() => {
@@ -52,8 +52,8 @@ export default function ExerciseList({
                             fetchAllExercises();
                         }}
                         className={`px-4 py-2 rounded-full text-sm border ${selectedMuscles.length === 0
-                                ? "bg-purple-600 text-white"
-                                : "bg-white text-gray-600"
+                            ? "bg-purple-600 text-white"
+                            : "bg-white text-gray-600"
                             }`}
                     >
                         Tất cả
@@ -65,8 +65,8 @@ export default function ExerciseList({
                         key={m.id}
                         onClick={() => toggleMuscle(m.name)}
                         className={`px-4 py-2 rounded-full text-sm border ${selectedMuscles.includes(m.name)
-                                ? "bg-purple-600 text-white"
-                                : "bg-white text-gray-600"
+                            ? "bg-purple-600 text-white"
+                            : "bg-white text-gray-600"
                             }`}
                     >
                         {m.name}
@@ -75,8 +75,9 @@ export default function ExerciseList({
             </div>
 
             {loading ? (
-                <div className="w-full flex items-center justify-center border border-gray-200 rounded-xl h-[50vh] text-center text-xl">
-                    Đang tải dữ liệu ...
+                <div className="w-full flex flex-col items-center justify-center rounded-xl h-[50vh] gap-4">
+                    <div className="w-10 h-10 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
+                    <p className="text-gray-500 text-sm">Loading ...</p>
                 </div>
             ) : filteredExercises.length === 0 ? (
                 <div className="w-full flex items-center justify-center border border-gray-200 rounded-xl h-[50vh] text-center text-xl">
@@ -86,21 +87,23 @@ export default function ExerciseList({
                 filteredExercises.map((item) => (
                     <div
                         key={item.id}
-                        className="bg-white rounded-xl p-4 flex justify-between items-center shadow-sm"
+                        className="bg-white rounded-xl p-4 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4"
                     >
-                        <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-100">
+                        {/* LEFT */}
+                        <div className="flex gap-3">
+                            <div className="w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
                                 {item.video ? (
                                     <img
                                         src={getYoutubeThumbnail(item.video)}
+                                        alt={item.name}
                                         onClick={() => {
                                             setVideoUrl(item.video);
                                             setOpenVideo(true);
                                         }}
-                                        className="cursor-pointer hover:scale-105 transition"
+                                        className="cursor-pointer w-full h-full object-cover"
                                     />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-xl">
+                                    <div className="w-full h-full flex items-center justify-center text-lg">
                                         💪
                                     </div>
                                 )}
@@ -108,41 +111,37 @@ export default function ExerciseList({
 
                             <div>
                                 <p className="text-xs text-gray-400">TÊN BÀI TẬP</p>
-                                <h3 className="font-semibold">{item.name}</h3>
+                                <h3 className="font-semibold text-sm md:text-base">{item.name}</h3>
 
-                                <p className="text-xs hidden md:block text-gray-400 mt-2">
+                                <p className="text-xs text-gray-400 mt-1 hidden md:block">
                                     MÔ TẢ
                                 </p>
-                                <p className="text-sm hidden md:block text-gray-600">
+                                <p className="text-sm text-gray-600 hidden md:block">
                                     {item.description}
                                 </p>
                             </div>
                         </div>
 
-                        <div className="flex gap-5 md:gap-10 text-center">
+                        {/* SET REP TIME */}
+                        <div className="grid grid-cols-3 text-center text-xs md:text-base">
                             <div>
-                                <p className="text-xs text-gray-400 md:text-lg">SỐ SET</p>
-                                <p className="text-xs md:text-lg font-semibold text-purple-600">
-                                    {item.set_base}
-                                </p>
+                                <p className="text-gray-400">SET</p>
+                                <p className="font-semibold text-purple-600">{item.set_base}</p>
                             </div>
 
                             <div>
-                                <p className=" text-xs md:text-lg text-gray-400">SỐ REP</p>
-                                <p className="text-xs md:text-lg font-semibold text-purple-600">
-                                    {item.rep_base}
-                                </p>
+                                <p className="text-gray-400">REP</p>
+                                <p className="font-semibold text-purple-600">{item.rep_base}</p>
                             </div>
 
                             <div>
-                                <p className=" text-xs md:text-lg text-gray-400">THỜI GIAN</p>
-                                <p className="text-xs md:text-lg font-semibold">
-                                    {item.time_action}
-                                </p>
+                                <p className="text-gray-400">TIME</p>
+                                <p className="font-semibold">{item.time_action}</p>
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-2">
+                        {/* ACTION */}
+                        <div className="flex md:flex-col gap-2 md:gap-2">
                             <button
                                 onClick={() => {
                                     if (!item.video) {
@@ -152,9 +151,10 @@ export default function ExerciseList({
                                     setVideoUrl(item.video);
                                     setOpenVideo(true);
                                 }}
-                                className="flex items-center gap-2 px-3 py-1 bg-[#BEE3F8] text-[#2563EB] rounded"
+                                className="flex-1 md:flex-none flex justify-center items-center gap-1 px-3 py-1 bg-[#BEE3F8] text-[#2563EB] rounded text-sm"
                             >
-                                <HiEye /> Video
+                                <HiEye />
+                                <span className="hidden md:inline">Video</span>
                             </button>
 
                             <button
@@ -162,13 +162,15 @@ export default function ExerciseList({
                                     setItem(item);
                                     setOpenForm(true);
                                 }}
-                                className="flex justify-center items-center gap-2 px-3 py-1 bg-[#DCFCE7] text-[#16A34A] rounded"
+                                className="flex-1 md:flex-none flex justify-center items-center gap-1 px-3 py-1 bg-[#DCFCE7] text-[#16A34A] rounded text-sm"
                             >
-                                <HiPencil /> Sửa
+                                <HiPencil />
+                                <span className="hidden md:inline">Sửa</span>
                             </button>
 
-                            <button className="flex justify-center items-center gap-2 px-3 py-1 bg-[#FF6B73] text-[#DC2626] rounded">
-                                <HiTrash /> Xóa
+                            <button className="flex-1 md:flex-none flex justify-center items-center gap-1 px-3 py-1 bg-[#FFE4E6] text-[#DC2626] rounded text-sm">
+                                <HiTrash />
+                                <span className="hidden md:inline">Xóa</span>
                             </button>
                         </div>
                     </div>
