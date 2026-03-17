@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
+
 class Member extends Authenticatable
 {
 
@@ -83,6 +84,16 @@ class Member extends Authenticatable
             'pt_member',
             'member_id',
             'pt_id'
+        );
+    }
+
+    public function favorites()
+    {
+        return $this->belongsToMany(
+            Exercise::class,
+            'favorite_exercises',
+            'member_id',
+            'exercise_id'
         );
     }
 

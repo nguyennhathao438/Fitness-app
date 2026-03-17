@@ -21,6 +21,17 @@ class Exercise extends Model
     {
         return $this->belongsToMany(MuscleGroup::class);
     }
+
+    public function favoritedBy()
+    {
+        return $this->belongsToMany(
+            Member::class,
+            'favorite_exercises',
+            'exercise_id',
+            'member_id'
+        );
+    }
+
     public function details()
     {
         return $this->hasMany(
