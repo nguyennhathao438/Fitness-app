@@ -20,7 +20,6 @@ use App\Http\Controllers\WorkoutHistoryController;
 use App\Http\Controllers\WorkoutHistoryDetailController;
 use App\Http\Controllers\PTClientController;
 use App\Http\Controllers\SurveyTrainingController;
-
 use App\Http\Controllers\ChatbotController;
 
 use App\Http\Controllers\PTScheduleController;
