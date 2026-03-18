@@ -17,12 +17,9 @@ export default function WorkoutPage() {
   const [page, setPage] = useState(1);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [exerciseAdd, setExerciseAdd] = useState([])
+  const [openFavorite, setOpenFavorite] = useState(false);
 
-  const {
-    favoriteIds,
-    favoriteExercises,
-    toggleFavorite
-  } = useFavoriteExercise();
+  const { favoriteIds, favoriteExercises, toggleFavorite } = useFavoriteExercise();
 
   const handleAddExercise = (item) => {
     if (exerciseAdd.some(ex => ex.id == item.id)) {
@@ -48,28 +45,45 @@ export default function WorkoutPage() {
     }
   }, [workoutToday]);
 
+
   const filteredExercises = useMemo(() => {
     if (!exerciseList) return [];
+
     let data = [...exerciseList];
+
+    // lọc favorite
+    if (openFavorite) {
+      data = data.filter((ex) => favoriteIds.includes(ex.id));
+    }
+
+    // lọc nhóm cơ
     if (selectedMuscles.length > 0) {
       data = data.filter((ex) =>
-        ex.muscle_groups?.some((m) => selectedMuscles.includes(m.name)),
+        ex.muscle_groups?.some((m) => selectedMuscles.includes(m.name))
       );
     }
+
+    // tìm kiếm
     if (search.trim() !== "") {
       data = data.filter((ex) =>
-        ex.name.toLowerCase().includes(search.toLowerCase()),
+        ex.name.toLowerCase().includes(search.toLowerCase())
       );
     }
+
     return data;
-  }, [exerciseList, selectedMuscles, search]);
+  }, [exerciseList, selectedMuscles, search, openFavorite, favoriteIds]);
 
-  const totalPages = Math.ceil(filteredExercises.length / PER_PAGE);
+  // nguồn dữ liệu
+  const sourceExercises = filteredExercises;
 
+  // tổng số trang
+  const totalPages = Math.ceil(sourceExercises.length / PER_PAGE);
+
+  // phân trang
   const paginatedExercises = useMemo(() => {
     const start = (page - 1) * PER_PAGE;
-    return filteredExercises.slice(start, start + PER_PAGE);
-  }, [filteredExercises, page]);
+    return sourceExercises.slice(start, start + PER_PAGE);
+  }, [sourceExercises, page]);
 
   if (loading) {
     return (
@@ -78,6 +92,7 @@ export default function WorkoutPage() {
       </div>
     );
   }
+
 
   return (
     <div className="min-h-screen bg-slate-100 p-6 space-y-6">
@@ -91,12 +106,15 @@ export default function WorkoutPage() {
       />
 
       {/* search */}
-      <div className="flex justify-center">
+      <div className="flex justify-center items-center gap-4 flex-wrap">
+
+        {/* search */}
         <div className="w-full max-w-md relative">
           <Search
             className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-500"
             size={18}
           />
+
           <input
             type="text"
             placeholder="Tìm bài tập..."
@@ -108,12 +126,38 @@ export default function WorkoutPage() {
             className="w-full pl-11 pr-5 py-2.5 rounded-full bg-white border-2 border-purple-600 text-gray-800 outline-none focus:ring-2 focus:ring-purple-300/40 transition-all"
           />
         </div>
+
+        {/* favorite button */}
+        <button
+  onClick={() => setOpenFavorite(!openFavorite)}
+  className={`relative flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold transition-all duration-200
+  shadow-md hover:shadow-lg active:scale-95
+  ${openFavorite
+  ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white ring-2 ring-blue-300"
+  : "bg-white border-2 border-blue-500 text-blue-600 hover:bg-blue-500 hover:text-white"
+}`}
+>
+
+  <span>
+    {openFavorite ? "Tất cả bài tập" : "Bài tập yêu thích"}
+  </span>
+
+  {!openFavorite && favoriteExercises.length > 0 && (
+    <span className="ml-1 px-2 py-0.5 text-xs font-bold bg-red-500 text-white rounded-full">
+      {favoriteExercises.length}
+    </span>
+  )}
+</button>
       </div>
+
+
 
       {/* grid */}
       {paginatedExercises.length === 0 ? (
         <div className="text-center text-gray-500">
-          Không có bài tập phù hợp
+          {openFavorite
+            ? "Bạn chưa có bài tập yêu thích"
+            : "Không có bài tập phù hợp"}
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -128,12 +172,6 @@ export default function WorkoutPage() {
             />
           ))}
         </div>
-      )}
-      {favoriteExercises.length > 0 && (
-        <FavoriteCart
-          favorites={favoriteExercises}
-          onRemove={toggleFavorite}
-        />
       )}
 
       {/* pagination */}
@@ -174,5 +212,7 @@ export default function WorkoutPage() {
         />
       )}
     </div>
+
+
   );
 }
