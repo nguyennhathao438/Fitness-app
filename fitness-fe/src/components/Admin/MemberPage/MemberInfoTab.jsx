@@ -3,6 +3,7 @@ import {
   PhoneIcon,
   MailIcon,
   DumbbellIcon,
+  Package2Icon,
 } from "lucide-react";
 
 export default function MemberInfoTab({ member }) {
@@ -39,33 +40,53 @@ export default function MemberInfoTab({ member }) {
             className="bg-[#DBEAFE]"
             icon={<DumbbellIcon className="w-5 h-5 text-indigo-600" />}
             title="Huấn luyện viên"
-            value="Nguyen A"
+            value={
+                  member.activept?.pt?.name
+                    ? member.activept.pt.name
+                    : "--"
+                }
         />
         </div>
 
         {/* ===== Package info ===== */}
         <div className="bg-white rounded-xl p-5 shadow-sm">
-            <h3 className="font-semibold mb-3">Hạn gói tập</h3>
+            <div className="font-semibold mb-3 flex gap-2"><Package2Icon/><span>Hạn gói tập</span></div>
 
             <div className="space-y-1 text-sm">
             <p>
-                Thời hạn: <span className="font-semibold">20 ngày</span>
+                Thời hạn: <span className="font-semibold">{member.invoice?.valid_until ?? "--"}</span>
             </p>
             <p>
                 Ngày sử dụng:{" "}
                 <span className="font-semibold">
                 {/* {new Date(member.startDate).toLocaleDateString("vi-VN")} */} 
-                2/2/2025
+                {member.invoice?.start_date
+                ? member.invoice.start_date
+                : "--"}
                 </span>
             </p>
             <p className="text-red-500 font-semibold">
-                Còn lại 10 ngày
+                {member.invoice?.days_left > 0
+                ? `Còn lại ${member.invoice.days_left} ngày`
+                : "Đã hết hạn"}
             </p>
             </div>
         </div>
         {/* ===== Role info ===== */}
-        <div className="bg-white shadow-md rounded-xl p-5">
-            <p>Role...</p>
+        <div className="flex flex-wrap gap-3">
+            {member.roles && member.roles.length > 0 ? (
+                member.roles.map((role) => (
+                <span
+                    key={role.id}
+                    className="
+                    inline-flex items-center px-4 py-1.5 rounded-full bg-pink-100 text-purple-700 font-semibold text-sm shadow-sm"
+                >
+                    {role.name}
+                </span>
+                ))
+            ) : (
+                <span className="text-gray-400 text-sm">No role assigned</span>
+            )}
         </div>
     </div>
   );

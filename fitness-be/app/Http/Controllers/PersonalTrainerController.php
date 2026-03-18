@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Throwable;
@@ -13,7 +14,18 @@ class PersonalTrainerController extends Controller
     // Lấy danh sách member (PT) cho trang Admin: phân trang + tìm kiếm + lọc + sắp xếp
     public function getPT(Request $request)
     {
-        $query = Member::select('id', 'name', 'email', 'phone','birthday', 'gender','avatar','updated_at')->where('is_deleted', false);
+       $query = Member::query()
+        ->where('is_deleted', false)
+        ->whereHas('roles', function ($q) {
+            $q->where('name', 'PT');
+        })
+        ->withCount([
+                'ptClientsAsPT as active_clients_count' => function ($q) {
+                    $q->where('status', 'active');
+                }
+        ])
+        ->with(['roles:id,name']);
+
         // TÌM KIẾM (theo tên hoặc SĐT)
 
         if ($request->filled('keyword')) {
@@ -34,17 +46,13 @@ class PersonalTrainerController extends Controller
         $sort = $request->get('sort', 'desc'); // mặc định mới nhất
         $query->orderBy('created_at', $sort);
 
-        // THỐNG KÊ
-        $full = Member::count();
-
         // PHÂN TRANG (8 ITEM / TRANG)
         $members = $query->paginate(8);
 
         // TRẢ JSON CHO FRONTEND
         return response()->json([
             'success' => true,
-            'full' => $full,
-            'data' => $members
+            'data' => $members,
         ]);
     }
     public function createPT(Request $request)
@@ -70,6 +78,10 @@ class PersonalTrainerController extends Controller
                     'password' => Hash::make($request->password),
                     'is_deleted' => false,
                 ]);
+                $role = Role::where('name', 'PT')->first();
+
+                // gán role cho member
+                $member->roles()->attach($role->id);
             });
 
             return response()->json([

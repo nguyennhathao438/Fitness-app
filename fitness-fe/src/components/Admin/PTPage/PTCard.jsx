@@ -4,9 +4,16 @@ import { useState } from "react";
 import PTForm from "../PTForm";
 import DetailDialog from "../DetailDialog";
 import PTInfoTab from "./PTInfoTab";
+import PTMembersTab from "./PTMembersTab";
+import { useSelector } from "react-redux";
+import NoPermissionModal from "@/components/utils/NoPermissionModel";
 
 export default function PTCard({pt,onDeleteClick,onEditClick}) {
     const [openView, setOpenView] = useState(false);
+    const permissions = useSelector((state) => state.auth.permissions);
+    const [openNoPermission, setOpenNoPermission] = useState(false);
+    const canUpdateRole = permissions.includes("user.update");
+    const canDeleteRole = permissions.includes("user.delete");
     // Function to get initials from name
     function getInitials(name) {
     if (!name) return "";
@@ -30,9 +37,21 @@ export default function PTCard({pt,onDeleteClick,onEditClick}) {
                 <div className="text-white mr-3 grid grid-cols-1">
                     <button>
                         <Trash2Icon className="w-7 h-7 hover:bg-[#ad7aff] rounded-lg"
-                        onClick={onDeleteClick}/>
+                        onClick={() => {
+                            if (canDeleteRole) {
+                                onDeleteClick();
+                            } else {
+                                setOpenNoPermission(true);
+                            }
+                        }}/>
                     </button>
-                    <button onClick={onEditClick}>
+                    <button onClick={() => {
+                        if (canUpdateRole) {
+                            onEditClick();
+                        } else {
+                            setOpenNoPermission(true);
+                        }
+                    }}>
                         <BoltIcon className="w-7 h-7 hover:bg-[#ad7aff] rounded-lg"/>
                     </button>
                 </div>
@@ -44,7 +63,7 @@ export default function PTCard({pt,onDeleteClick,onEditClick}) {
                 </div>
                 <div className="space-x-5">
                     <span className="inline-block max-sm:text-sm">Active Member:</span>
-                    <span className="font-bold">8 members</span>
+                    <span className="font-bold">{pt.active_clients_count}</span>
                 </div>
                 <div className="flex justify-center">
                     <button className="flex justify-center gap-2 mt-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg w-2/3"
@@ -70,7 +89,7 @@ export default function PTCard({pt,onDeleteClick,onEditClick}) {
                 {
                 id: "members",
                 label: "Các hội viên",
-                // content: <PTMembersTab ptId={pt.id} />,
+                content: <PTMembersTab pt={pt} />,
                 },
                 {
                 id: "schedule",
@@ -80,6 +99,10 @@ export default function PTCard({pt,onDeleteClick,onEditClick}) {
             ]}
             />
         </Dialog>
+        <NoPermissionModal
+                open={openNoPermission}
+                onClose={() => setOpenNoPermission(false)}
+              />
         </>
     );
 };

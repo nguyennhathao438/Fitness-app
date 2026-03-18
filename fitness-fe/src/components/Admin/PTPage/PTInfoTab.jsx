@@ -35,13 +35,25 @@ export default function PTInfoTab({ pt }) {
                     <div className="bg-[#AFC8FF] px-2 py-3 rounded-xl"><UserCheckIcon className="text-[#2563EB]"/></div>
                     <span>
                         <p>Active Members</p>
-                        <p className="font-bold">8</p>
+                        <p className="font-bold">{pt.active_clients_count}</p>
                     </span>
                 </div>
             </div>
 
-            <div>
-                role...
+            <div className="flex flex-wrap gap-3">
+            {pt.roles && pt.roles.length > 0 ? (
+                pt.roles.map((role) => (
+                <span
+                    key={role.id}
+                    className="
+                    inline-flex items-center px-4 py-1.5 rounded-full bg-pink-100 text-purple-700 font-semibold text-sm shadow-sm"
+                >
+                    {role.name}
+                </span>
+                ))
+            ) : (
+                <span className="text-gray-400 text-sm">No role assigned</span>
+            )}
             </div>
         </div>
     );

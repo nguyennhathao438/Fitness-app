@@ -4,31 +4,46 @@ import { getCompareFeatures } from "../../services/member/TraningPakageService.j
 export default function CompareFeatures() {
   const [tiers, setTiers] = useState([]);
   const [features, setFeatures] = useState([]);
-
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    getCompareFeatures().then((res) => {
-      const { package_types, services } = res.data;
+    function fetchCompareFeatures() {
+      setLoading(true);
+      getCompareFeatures()
+        .then((res) => {
+          const { package_types, services } = res.data;
 
-      // Tạo danh sách tier name
-      const tierNames = package_types.map((p) => p.name);
-      setTiers(tierNames);
+          // Tạo danh sách tier name
+          const tierNames = package_types.map((p) => p.name);
+          setTiers(tierNames);
 
-      // 2️⃣ Map service -> feature object
-      const mappedFeatures = services.map((service) => {
-        const feature = {
-          name: service.name,
-        };
+          // 2️⃣ Map service -> feature object
+          const mappedFeatures = services.map((service) => {
+            const feature = {
+              name: service.name,
+            };
 
-        package_types.forEach((pkg) => {
-          feature[pkg.name] = service.packages.includes(pkg.id);
+            package_types.forEach((pkg) => {
+              feature[pkg.name] = service.packages.includes(pkg.id);
+            });
+
+            return feature;
+          });
+
+          setFeatures(mappedFeatures);
+        })
+        .finally(() => {
+          setLoading(false);
         });
-
-        return feature;
-      });
-
-      setFeatures(mappedFeatures);
-    });
-  }, []);
+    }
+    fetchCompareFeatures();
+  }, [setLoading]);
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-white">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-700"></div>
+      </div>
+    );
+  }
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50">
       <div className="max-w-5xl mx-auto">

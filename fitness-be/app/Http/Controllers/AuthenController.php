@@ -8,6 +8,64 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Invoice;
 class AuthenController extends Controller
 {
+    public function getMyInfo(Request $request)
+    {
+        $member = Member::with('roles.permissions')
+            ->find($request->user()->id);
+
+        $memberData = $member->only([
+            'id',
+            'name',
+            'email',
+            'phone',
+            'avatar'
+        ]);
+
+        $latestInvoice = Invoice::with('package.packageType.services')
+            ->where('member_id', $member->id)
+            ->latest()
+            ->first();
+
+        $serviceIds = [];
+        $validUntil = null;
+
+        if ($latestInvoice && $latestInvoice->package) {
+
+            $validUntil = $latestInvoice->valid_until;
+
+            if ($latestInvoice->package->packageType) {
+
+                $serviceIds = $latestInvoice
+                    ->package
+                    ->packageType
+                    ->services
+                    ->pluck('id');
+            }
+        }
+
+        $roles = [];
+        $permissions = [];
+
+        foreach ($member->roles as $role) {
+
+            $roles[] = $role->name;
+
+            $permissions = array_merge(
+                $permissions,
+                $role->permissions->pluck('code')->toArray()
+            );
+        }
+
+        $permissions = array_values(array_unique($permissions));
+
+        return response()->json([
+            'member' => $memberData,
+            'valid_until' => $validUntil,
+            'service_ids' => $serviceIds,
+            'roles' => $roles,
+            'permissions' => $permissions,
+        ]);
+    }
     public function login(Request $request)
     {
         $request->validate([
@@ -16,29 +74,27 @@ class AuthenController extends Controller
         ]);
 
         $member = Member::where('email', $request->email)->first();
+        $memberData = $member->only([
+            'id',
+            'name',
+            'email',
+            'phone',
+            'avatar'
+        ]);
         if (!$member) {
             return response()->json([
                 'message' => 'Tài khoản không tồn tại'
             ], 404);
         }
+
         if (!Hash::check($request->password, $member->password)) {
             return response()->json([
                 'message' => 'Mật khẩu không chính xác'
             ], 401);
         }
-        //Kiểm tra role nếu là admin và pt thì k cần 2 cái if đó
-        // if ($member->is_deleted) {
-        //     return response()->json([
-        //         'message' => 'Tài khoản đã bị khóa'
-        //     ], 403);
-        // }
-        // if ($member->valid_until == null || $member->valid_until < now()) {
-        //     return response()->json([
-        //         'message' => 'Tài khoản đã hết hạn sử dụng'
-        //     ], 403);
-        // }
 
-        //Trả về gói mua gần nhất 
+        // ===== invoice =====
+
         $latestInvoice = Invoice::with('package.packageType.services')
             ->where('member_id', $member->id)
             ->latest()
@@ -46,25 +102,50 @@ class AuthenController extends Controller
 
         $serviceIds = [];
         $validUntil = null;
-        $package = null;
 
         if ($latestInvoice && $latestInvoice->package) {
-            $validUntil = $latestInvoice->valid_until;
-            $package = $latestInvoice->package;
 
-            if ($package->packageType) {
-                $serviceIds = $package
+            $validUntil = $latestInvoice->valid_until;
+
+            if ($latestInvoice->package->packageType) {
+
+                $serviceIds = $latestInvoice
+                    ->package
                     ->packageType
                     ->services
                     ->pluck('id');
             }
         }
-        $token = $member->createToken('member-token')->plainTextToken;
+
+        // ===== roles + permissions =====
+
+        $roles = [];
+        $permissions = [];
+
+        foreach ($member->roles as $role) {
+
+            $roles[] = $role->name;
+
+            $permissions = array_merge(
+                $permissions,
+                $role->permissions->pluck('code')->toArray()
+            );
+        }
+
+        $permissions = array_values(array_unique($permissions));
+
+        // ===== token =====
+
+        $token = $member
+            ->createToken('member-token')
+            ->plainTextToken;
 
         return response()->json([
-            'member' => $member,
+            'member' => $memberData,
             'valid_until' => $validUntil,
             'service_ids' => $serviceIds,
+            'roles' => $roles,
+            'permissions' => $permissions,
             'token' => $token
         ]);
     }

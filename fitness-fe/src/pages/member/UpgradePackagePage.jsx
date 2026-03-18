@@ -1,12 +1,22 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Star, Clock, Calendar, Crown, CalendarPlus } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Star,
+  Clock,
+  Calendar,
+  Crown,
+  CalendarPlus,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { getUpgradableTypes, getUpgradablePackagesByType, getCurrentPackageInfo } from "../../services/member/TraningPakageService";
+import {
+  getUpgradableTypes,
+  getUpgradablePackagesByType,
+  getCurrentPackageInfo,
+} from "../../services/member/TraningPakageService";
 import PricingCard from "../../components/member/PricingCard";
 import CompareFeatures from "../../components/member/CompareFeature";
-import ChatBox from "../../components/member/ChatBox";
-
 
 export default function UpgradePackagePage() {
   const [packageTypes, setPackageTypes] = useState([]);
@@ -30,9 +40,9 @@ export default function UpgradePackagePage() {
 
   const handleRenew = () => {
     if (currentPackage && currentPackage.package_id) {
-        navigate(`/member/payment/${currentPackage.package_id}`, { 
-            state: { isExtend: true } 
-        });
+      navigate(`/member/payment/${currentPackage.package_id}`, {
+        state: { isExtend: true },
+      });
     }
   };
 
@@ -52,11 +62,8 @@ export default function UpgradePackagePage() {
     setCurrentPackage(null);
 
     if (member?.id) {
-      // Lấy gói hiện tại & Lấy danh sách nâng cấp
-      Promise.all([
-        getCurrentPackageInfo(),
-        getUpgradableTypes(member.id)
-      ]).then(([curPkgRes, typesRes]) => {
+      Promise.all([getCurrentPackageInfo(), getUpgradableTypes(member.id)])
+        .then(([curPkgRes, typesRes]) => {
           if (curPkgRes.data.success) {
             setCurrentPackage(curPkgRes.data.data);
           }
@@ -65,35 +72,37 @@ export default function UpgradePackagePage() {
             setPackageTypes(typesRes);
             setActiveTab(typesRes[0].id);
           } else {
-             setLoading(false);
+            setLoading(false);
           }
-      }).catch(err => {
+        })
+        .catch((err) => {
           console.error(err);
           setLoading(false);
-      });
+        });
     } else {
-        setLoading(false);
+      setLoading(false);
     }
   }, [member]);
 
-  // 2. Load Gói theo Tab
+  // Load Gói theo Tab
   useEffect(() => {
     if (!activeTab || !member?.id) return;
 
-    getUpgradablePackagesByType(member.id, activeTab).then((data) => {
-      setPackages(data);
+    getUpgradablePackagesByType(member.id, activeTab)
+      .then((data) => {
+        setPackages(data);
 
-      requestAnimationFrame(() => {
-        if (scrollRef.current) {
-          scrollRef.current.scrollLeft = 0;
-          checkScrollButtons();
-        }
-      });
-    })
-    .catch(err => console.error(err))
-    .finally(() => {
+        requestAnimationFrame(() => {
+          if (scrollRef.current) {
+            scrollRef.current.scrollLeft = 0;
+            checkScrollButtons();
+          }
+        });
+      })
+      .catch((err) => console.error(err))
+      .finally(() => {
         setLoading(false);
-    });
+      });
   }, [activeTab, member]);
 
   const scroll = (direction) => {
@@ -104,20 +113,17 @@ export default function UpgradePackagePage() {
   };
 
   const formatDate = (dateString) => {
-      if(!dateString) return "";
-      const date = new Date(dateString);
-      return new Intl.DateTimeFormat('vi-VN').format(date);
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("vi-VN").format(date);
   };
 
   if (loading) {
     return (
-      <>
-        <div className="flex flex-col items-center justify-center h-screen text-lg font-semibold text-gray-700">
-          {/* Vòng tròn xoay */}
-          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4">Đang tải trang...</p>
-        </div>
-      </>
+      <div className="flex flex-col items-center justify-center h-screen text-lg font-semibold text-gray-700">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4">Đang tải trang...</p>
+      </div>
     );
   }
 
@@ -133,7 +139,7 @@ export default function UpgradePackagePage() {
           <div className="bg-white p-10 rounded-2xl shadow-sm border border-gray-200 text-center mb-10">
             <p className="text-gray-500 mb-5">Bạn hiện chưa đăng ký gói tập nào đang hoạt động.</p>
             <button 
-              onClick={() => navigate('/pricing-packages')} // Chỉnh lại route nếu cần
+              onClick={() => navigate('/pricing-packages')}
               className="bg-purple-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-purple-500 transition-colors shadow-md shadow-blue-600/20"
             >
               Đăng Ký Ngay
@@ -142,47 +148,46 @@ export default function UpgradePackagePage() {
         ) : (
           /* TRƯỜNG HỢP ĐÃ CÓ GÓI TẬP HIỆN TẠI */
           <>
-            <div className="mb-10 relative overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-200">
+            {/* CARD GÓI TẬP HIỆN TẠI */}
+            <div className="mb-10 relative overflow-hidden rounded-2xl bg-gray-900 shadow-xl border border-yellow-500/20">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/20 blur-[80px] rounded-full pointer-events-none -mr-16 -mt-16"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-yellow-500/10 blur-[80px] rounded-full pointer-events-none -ml-16 -mb-16"></div>
+
               <div className="relative z-10 p-6 md:p-8">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                   {/* Tên gói */}
-                  <div className="flex items-center gap-4">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <Crown className="w-4 h-4 text-yellow-500" />
-                        <span className="text-gray-500 text-[10px] md:text-xs font-bold uppercase tracking-widest">
-                          Gói tập hiện tại của bạn
-                        </span>
-                      </div>
-                      <h3 className="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">
-                        {currentPackage.package_name}
-                      </h3>
-                      <p className="text-gray-500 text-xs md:text-sm">
-                        {currentPackage.description || "Tận hưởng đặc quyền gói tập"}
-                      </p>
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Crown className="w-5 h-5 text-yellow-400" />
+                      <span className="text-gray-400 text-xs font-bold uppercase tracking-widest">
+                        Gói tập hiện tại của bạn
+                      </span>
                     </div>
+                    <h3 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                      {currentPackage.package_name}
+                    </h3>
                   </div>
 
                   {/* Thông tin chi tiết */}
-                  <div className="flex flex-wrap gap-3 w-full md:w-auto">
+                  <div className="flex gap-4 w-full md:w-auto">
                     {/* Box Thời hạn */}
-                    <div className="flex-1 md:flex-none bg-gray-50 border border-gray-100 rounded-xl p-4 min-w-[140px]">
-                      <div className="flex items-center gap-2 text-gray-500 text-[10px] uppercase font-bold mb-1">
-                        <Clock className="w-3.5 h-3.5 text-rose-500" />
+                    <div className="flex-1 md:flex-none bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 min-w-[140px]">
+                      <div className="flex items-center gap-2 text-gray-400 text-xs uppercase font-bold mb-1">
+                        <Clock className="w-4 h-4" />
                         Thời hạn
                       </div>
-                      <p className="text-gray-900 text-lg font-bold">
+                      <p className="text-white text-lg font-bold">
                         Còn {currentPackage.days_remaining} ngày
                       </p>
                     </div>
 
                     {/* Box Hết hạn */}
-                    <div className="flex-1 md:flex-none bg-gray-50 border border-gray-100 rounded-xl p-4 min-w-[140px]">
-                      <div className="flex items-center gap-2 text-gray-500 text-[10px] uppercase font-bold mb-1">
-                        <Calendar className="w-3.5 h-3.5 text-blue-500" />
+                    <div className="flex-1 md:flex-none bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 min-w-[140px]">
+                      <div className="flex items-center gap-2 text-gray-400 text-xs uppercase font-bold mb-1">
+                        <Calendar className="w-4 h-4" />
                         Hết hạn
                       </div>
-                      <p className="text-gray-900 text-lg font-bold">
+                      <p className="text-yellow-400 text-lg font-bold">
                         {formatDate(currentPackage.valid_until)}
                       </p>
                     </div>
@@ -190,7 +195,7 @@ export default function UpgradePackagePage() {
                     {/* NÚT GIA HẠN */}
                     <button
                       onClick={handleRenew}
-                      className="w-full md:w-auto px-6 py-3 bg-purple-700 hover:bg-purple-500 text-white font-bold rounded-xl shadow-md shadow-blue-600/20 transition-all flex items-center justify-center gap-2 self-center"
+                      className="px-6 py-3 bg-white hover:bg-gray-100 text-purple-700 font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 border-2 border-transparent hover:border-purple-200"
                     >
                       <CalendarPlus className="w-5 h-5" />
                       Gia hạn ngay
@@ -200,7 +205,7 @@ export default function UpgradePackagePage() {
               </div>
             </div>
 
-            {/* DANH SÁCH GÓI NÂNG CẤP */}
+            {/* KIỂM TRA CÓ GÓI ĐỂ NÂNG CẤP HAY KHÔNG */}
             {packageTypes.length > 0 ? (
               <>
                 {/* Tabs */}
@@ -265,12 +270,14 @@ export default function UpgradePackagePage() {
                     />
                   ))}
                 </div>
-                <div className="mt-10  ">
-                   <CompareFeatures />
+                
+                {/* Tính năng so sánh */}
+                <div className="mt-10">
+                  <CompareFeatures />
                 </div>
               </>
             ) : (
-              /* TRƯỜNG HỢP ĐỈNH CAO */
+              /* TRƯỜNG HỢP ĐỈNH CAO (Không có tab để chọn nâng cấp) */
               <div className="text-center py-16 bg-white rounded-3xl border border-gray-200 max-w-2xl mx-auto shadow-sm">
                 <div className="w-20 h-20 bg-yellow-50 rounded-full flex items-center justify-center mb-6 mx-auto animate-bounce-slow">
                   <Star className="w-10 h-10 text-yellow-400 fill-yellow-400" />
@@ -279,7 +286,7 @@ export default function UpgradePackagePage() {
                   Bạn đang ở đỉnh cao!
                 </h3>
                 <p className="text-gray-500 mb-8 px-4">
-                  Bạn đang sở hữu gói tập cao cấp nhất hệ thống.
+                  Bạn đang sở hữu gói tập cao cấp nhất hệ thống. Không còn gói nào để nâng cấp nữa.
                 </p>
                 <button
                   onClick={() => navigate("/")}
@@ -292,7 +299,6 @@ export default function UpgradePackagePage() {
           </>
         )}
       </div>
-      <ChatBox />
     </section>
   );
 }
