@@ -32,6 +32,7 @@ import Notifications from "./pages/member/Notifications";
 import MemberDetail from "./pages/PT/MemberDetail";
 import RequirePermission from "./pages/utils/RequirePermission";
 import RequireGuest from "./pages/utils/RequireGuest";
+import NotFound from "./components/member/NotFound";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
   {
     path: "/no-permission",
     element: <NoPermissionPage />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
   {
     path: "/admin",
