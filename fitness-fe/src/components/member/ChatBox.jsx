@@ -65,7 +65,7 @@ export default function ChatBox() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-white rounded-full shadow-2xl transition-all duration-300 hover:scale-110 flex items-center justify-center relative group border-4 border-[#474274] w-24 h-24 overflow-hidden"
+          className="cursor-pointer bg-white rounded-full shadow-2xl transition-all duration-300 hover:scale-110 flex items-center justify-center relative group border-4 border-[#474274] w-24 h-24 overflow-hidden"
         >
           <video 
             src={botVideo} 

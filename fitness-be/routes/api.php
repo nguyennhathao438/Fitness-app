@@ -59,7 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/invoice-permonth', [InvoiceController::class, 'getInvoicePerMonth']);
     Route::get('/invoice-moneystat', [InvoiceController::class, 'getInvoiceMoney']);
     Route::put('/invoice_delete/{invoiceID}', [InvoiceController::class, 'deleteInvoice']);
-    
+    Route::get('/member/invoice-history', [InvoiceController::class, 'getMemberHistory']);
     //package
     Route::get('/packages', [AdminPackageController::class, 'index']);
     Route::get('/packages/stats', [AdminPackageController::class, 'stats']); 

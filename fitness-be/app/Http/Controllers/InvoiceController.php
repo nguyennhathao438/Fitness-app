@@ -272,4 +272,31 @@ class InvoiceController extends Controller
         ]);
     }
 
+    // Lấy lịch sử mua gói tập của User
+    public function getMemberHistory(Request $request)
+    {
+        $memberId = $request->user()->id; 
+
+        $invoices = Invoice::with('package:id,name') 
+            ->where('member_id', $memberId)
+            ->where('is_deleted', false)
+            ->orderBy('id', 'desc') 
+            ->get();
+
+        $historyData = $invoices->map(function ($invoice) {
+            return [
+                'name' => $invoice->package ? $invoice->package->name : 'Gói không xác định',
+                'price' => $invoice->total_price,
+                'payment_method' => $invoice->payment_method,
+                'purchaseDate' => $invoice->created_at->format('Y-m-d'),
+                'expireDate' => $invoice->valid_until ? \Carbon\Carbon::parse($invoice->valid_until)->format('Y-m-d') : null,
+                'status' => $invoice->status, 
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $historyData
+        ]);
+    }
 }

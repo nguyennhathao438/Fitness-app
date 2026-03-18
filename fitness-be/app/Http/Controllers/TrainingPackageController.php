@@ -143,7 +143,7 @@ class TrainingPackageController extends Controller
     // Lấy thông tin chi tiết gói tập hiện tại của Member
     public function getCurrentPackageInfo(Request $request)
     {
-        $memberId = $request->user()->id; // Lấy từ token
+        $memberId = $request->user()->id; 
 
         // Tìm hóa đơn đang Active 
         $activeInvoice = Invoice::where('member_id', $memberId)
@@ -168,6 +168,7 @@ class TrainingPackageController extends Controller
                     'package_name' => $activeInvoice->package->name,
                     'duration_days' => $activeInvoice->package->duration_days,
                     'price' => $activeInvoice->package->price,
+                    'description' => $activeInvoice->package->description, 
                     'valid_until' => $activeInvoice->valid_until,
                     'days_remaining' => $daysRemaining,
                 ]

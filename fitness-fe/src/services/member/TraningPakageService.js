@@ -52,6 +52,13 @@ export const getUpgradablePackagesByType = async (memberId, typeId) => {
   });
   return res.data.data; 
 };
+
 export const getCurrentPackageInfo = () => {
   return api.get("/member/current-package");
+};
+
+// Lấy danh sách lịch sử mua gói
+export const getMemberInvoiceHistory = async () => {
+  const res = await api.get("/member/invoice-history");
+  return res.data.data; 
 };
