@@ -16,17 +16,29 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            MemberSeeder::class,
-            ServiceSeeder::class,
-            PackageTypeSeeder::class,
-            TrainingPackageSeeder::class,
             RoleSeeder::class,
             PermissionSeeder::class,
             RolePermissionSeeder::class,
+
+            MemberSeeder::class,
+
+            PackageTypeSeeder::class,
+            ServiceSeeder::class,
+            TrainingPackageSeeder::class,
+
             InvoiceSeeder::class,
             MuscleGroupSeeder::class,
             ExerciseSeeder::class,
             ExerciseMuscleGroupSeeder::class,
+            BodyMetricSeeder::class,
+            MemberRoleSeeder::class,
+            SurveySeeder::class,
+            SurveyTrainingTimeSeeder::class,
+            PTClientSeeder::class,
+            NotificationSeeder::class,
+            PtScheduleSeeder::class,
+            WorkoutHistorySeeder::class,
+            WorkoutHistoryDetailSeeder::class,
         ]);
     }
 }

@@ -64,7 +64,7 @@ class PackageAiService
         $response = Http::timeout(180)
             ->connectTimeout(60)
             ->post('http://localhost:11434/api/generate', [
-                "model" => "gemma3:4b",
+                "model" => "qwen2.5:7b",
                 "prompt" => $prompt,
                 "stream" => false,
                 "options" => [

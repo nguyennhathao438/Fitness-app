@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
 import { MoveRight } from "lucide-react";
 import { getAllRoles } from "../../services/admin/Role.js";
-import RolePermissionModal from "../../components/Admin/RolePermissionModal.jsx"
-import AddRoleModal from "../../components/Admin/AddRoleModal.jsx"
+import RolePermissionModal from "../../components/Admin/RolePermissionModal.jsx";
+import AddRoleModal from "../../components/Admin/AddRoleModal.jsx";
+import NoPermissionModal from "../../components/utils/NoPermissionModel.jsx";
+import { useSelector } from "react-redux";
 // ================= MAIN PAGE =================
 export default function RoleAccessPage() {
+  const permissions = useSelector((state) => state.auth.permissions);
+
+  const canCreatePermission = permissions.includes("permission.create");
+  const [openNoPermission, setOpenNoPermission] = useState(false);
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -28,6 +34,12 @@ export default function RoleAccessPage() {
   };
   return (
     <div className="min-h-screen bg-purple-50 p-8">
+      {openNoPermission && (
+        <NoPermissionModal
+          open={openNoPermission}
+          onClose={() => setOpenNoPermission(false)}
+        />
+      )}
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-purple-800">Role & Access</h1>
@@ -38,8 +50,15 @@ export default function RoleAccessPage() {
       <div className="bg-white rounded-2xl shadow-sm border">
         <div className="flex items-center justify-between px-6 py-4 border-b">
           <h2 className="text-xl font-semibold text-gray-800">Roles</h2>
+
           <button
-            onClick={() => setOpenAdd(true)}
+            onClick={() => {
+              if (!canCreatePermission) {
+                setOpenNoPermission(true);
+                return;
+              }
+              setOpenAdd(true);
+            }}
             className="
     relative
     flex items-center gap-2

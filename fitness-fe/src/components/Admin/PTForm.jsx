@@ -1,13 +1,20 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UserIcon, UploadIcon, ShieldIcon } from "lucide-react";
+import { UserIcon, UploadIcon, ShieldIcon, InfoIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { getAllRoles } from "@/services/admin/Role";
 
 const baseSchema = {
-  name: z.string().min(3).regex(/^[A-Za-zÀ-ỹ\s]+$/),
-  phone: z.string().regex(/^0\d{9}$/),
-  email: z.string().email().regex(/\.com$/),
+  name: z
+    .string()
+    .min(3,"Tên phải có ít nhất 3 ký tự")
+    .regex(/^[A-Za-zÀ-ỹ\s]+$/,"Tên chỉ được chứa chữ cái và khoảng trắng"),
+  phone: z.string().regex(/^0\d{9}$/,"Số điện thoại phải bắt đầu bằng 0 và có 10 số"),
+  email: z
+    .string()
+    .email(("Email không hợp lệ"))
+    .regex(/\.com$/,"Email phải có đuôi .com"),
   gender: z.enum(["male", "female", "other"]).optional(),
   birthday: z.string().optional(),
 };
@@ -19,101 +26,138 @@ const addSchema = z.object({
 
 const editSchema = z.object(baseSchema);
 
-
-export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,pt,loading = false,}) {
+export default function PTForm({
+  mode = "add",
+  onSubmit: onSubmitForm,
+  onClose,
+  pt,
+  loading = false,
+}) {
   const [preview, setPreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-
+  const [roles, setRoles] = useState([]);
+  const [selectedRoles, setSelectedRoles] = useState([]);
   const handleFormSubmit = (data) => {
-  const formData = new FormData();
+    const formData = new FormData();
 
-  formData.append("name", data.name);
-  formData.append("email", data.email);
-  formData.append("phone", data.phone || "");
-  formData.append("gender", data.gender || "");
-  formData.append("birthday", data.birthday || "");
-  if (mode === "add") {
-    formData.append("password", data.password);
-  }
-  if (selectedFile) {
-    formData.append("avatar", selectedFile);
-  }
-  onSubmitForm(formData);
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("phone", data.phone || "");
+    formData.append("gender", data.gender || "");
+    formData.append("birthday", data.birthday || "");
+    selectedRoles.forEach((roleId) => {
+      formData.append("roles[]", roleId);
+    });
+
+    if (mode === "add") {
+      formData.append("password", data.password);
+    }
+    if (selectedFile) {
+      formData.append("avatar", selectedFile);
+    }
+    console.log("Form data from Form");
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+    onSubmitForm(formData);
   };
 
-
   const schema = mode === "add" ? addSchema : editSchema;
-  const { register, handleSubmit,reset,formState:{errors} } = useForm({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(schema),
-    defaultValues:  {
-    name: "",
-    phone: "",
-    email: "",
-    gender: undefined,
-    birthday: "",
-    password: "",
-  },
-  });
-  useEffect(() => {
-  if (mode === "edit" && pt) {
-    reset({
-      name: pt.name,
-      phone: pt.phone,
-      email: pt.email,
-      gender: pt.gender,
-      birthday: pt.birthday? pt.birthday.split("T")[0]: "",
-    });
-  }
-
-  if (mode === "add") {
-    reset({
+    defaultValues: {
       name: "",
       phone: "",
       email: "",
       gender: undefined,
       birthday: "",
       password: "",
-    });
-  }
+    },
+  });
+  useEffect(() => {
+    const fetchRole = async () => {
+      try {
+        const res = await getAllRoles();
+        setRoles(res.data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchRole();
+  }, []);
+  useEffect(() => {
+    if (mode === "edit" && pt) {
+      reset({
+        name: pt.name,
+        phone: pt.phone,
+        email: pt.email,
+        gender: pt.gender,
+        birthday: pt.birthday ? pt.birthday.split("T")[0] : "",
+      });
+      setSelectedRoles(pt.roles?.map((r) => r.id) || []);
+    }
+
+    if (mode === "add") {
+      reset({
+        name: "",
+        phone: "",
+        email: "",
+        gender: undefined,
+        birthday: "",
+        password: "",
+      });
+      setSelectedRoles([]);
+    }
   }, [pt, mode, reset]);
   return (
     <form
       onSubmit={handleSubmit(handleFormSubmit)}
       className="
-        sm:max-w-xl lg:min-w-4xl
-        h-[100dvh] sm:h-[90dvh] md:h-[90dvh]
-        bg-white rounded-none sm:rounded-xl
+        sm:max-w-xl lg:min-w-3xl
+        max-h-[80dvh] sm:max-h-[90dvh]
+        bg-white rounded-xl sm:rounded-xl
         flex flex-col
       "
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 text-white">
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 text-white rounded-t-xl">
         <h2 className="text-xl font-semibold">
-          {mode === "add" ? "Add New PT" : "Edit PT"}
+          {mode === "add" ? "Add New PT" : "Edit information"}
         </h2>
-        <p className="text-sm opacity-90">
-          Fill in the information details
-        </p>
+        <p className="text-sm opacity-90">Fill in the information details</p>
       </div>
 
       {/* Content */}
-      <div className="p-6 space-y-6 overflow-y-auto flex-1">
+      <div
+        className={`
+    p-6 space-y-6 overflow-y-auto
+    ${mode === "edit" ? "flex-1" : ""}
+  `}
+      >
         {/* Basic Info */}
         <div>
-          <div className="flex items-center gap-2 mb-4 ">
+          <div className="flex items-center gap-2">
             <UserIcon className="bg-[#DBEAFE] rounded-md w-7 h-7 text-purple-600" />
             <h3 className="font-semibold text-lg">Basic Information</h3>
           </div>
 
-          <div className={`grid grid-cols-1 gap-6 ${
-                mode === "edit" ? "lg:grid-cols-3" : "lg:grid-cols-2"
-              }`}>
+          <div
+            className={`grid grid-cols-1 gap-6 ${
+              mode === "edit" ? "lg:grid-cols-3" : "lg:grid-cols-2"
+            }`}
+          >
             {/* Left form */}
             <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input 
-                    label="Full Name" register={register("name")} 
-                    className="text-[#000000]"
-                    error={errors.name}
+              <Input
+                label="Full Name"
+                register={register("name")}
+                className="text-[#000000]"
+                error={errors.name}
               />
               <select
                 {...register("gender")}
@@ -126,121 +170,166 @@ export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,
                 <option value="other">Other</option>
               </select>
 
-              <Input 
-                    label="Date of birth" 
-                    register={register("birthday")} 
-                    type="date"
+              <Input
+                label="Date of birth"
+                register={register("birthday")}
+                type="date"
               />
-              <Input 
-                    label="Phone" 
-                    register={register("phone")} 
-                    type="text"
-                    error={errors.phone}
+              <Input
+                label="Phone"
+                register={register("phone")}
+                type="text"
+                error={errors.phone}
               />
 
               <Input
                 label="Email"
                 register={register("email")}
                 error={errors.email}
+                readOnly={mode === "edit"}
               />
 
-              {mode === "add" && <Input label="Password" type="password"  register={register("password")} error={errors.password} />}
+              {mode === "add" && (
+                <Input
+                  label="Password"
+                  type="password"
+                  register={register("password")}
+                  error={errors.password}
+                />
+              )}
             </div>
 
             {/* Avatar */}
             {mode === "edit" && (
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-full aspect-square bg-gray-200 rounded-lg overflow-hidden">
-                {preview ? (
-                  <img src={preview} className="w-full h-full object-cover" />
-                ) : pt?.avatar ? (
-                  <img src={pt.avatar} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
-                    No image
-                  </div>
-                )}
-              </div>
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-full aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                  {preview ? (
+                    <img src={preview} className="w-full h-full object-cover" />
+                  ) : pt?.avatar ? (
+                    <img
+                      src={pt.avatar}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                      No image
+                    </div>
+                  )}
+                </div>
 
-              <input
-                type="file"
-                accept="image/*"
-                id="avatarInput"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (file) {
-                    setSelectedFile(file);
-                    setPreview(URL.createObjectURL(file));
-                  }
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => document.getElementById("avatarInput").click()}
-                className="flex items-center gap-2 px-3 py-2 text-sm border rounded-lg"
-              >
-                <UploadIcon className="size-4" />
-                Change image
-              </button>
-            </div>
-          )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  id="avatarInput"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      setSelectedFile(file);
+                      setPreview(URL.createObjectURL(file));
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => document.getElementById("avatarInput").click()}
+                  className="flex items-center gap-2 px-3 py-2 text-sm border rounded-lg"
+                >
+                  <UploadIcon className="size-4" />
+                  Change image
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Role / Permission */}
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <ShieldIcon className="size-5 text-purple-600" />
-            <h3 className="font-semibold text-lg">Role</h3>
-          </div>
+        {mode === "edit" && (
+          <div>
+            <div className="flex items-center gap-2">
+              <ShieldIcon className="size-5 text-purple-600" />
+              <h3 className="font-semibold text-lg">Role</h3>
+            </div>
 
-          <div className="border rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-2 text-left">Permission name</th>
-                  <th className="px-4 py-2 text-left">Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="text-gray-400">
-                  <td className="px-4 py-3" colSpan={2}>
-                    No permissions yet
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+            <div className="border rounded-lg overflow-x-auto h-[110px]">
+              <table className="w-full text-sm">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left">Role name</th>
+                    <th className="px-4 py-2 text-left">Description</th>
+                    <th>CheckBox</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {roles.length > 0 ? (
+                    roles.map((role) => (
+                      <tr key={role.id} className="border-t">
+                        <td className="px-4 py-2">{role.name}</td>
+                        <td className="px-4 py-2">{role.description}</td>
+                        <td className="px-4 py-2 text-center">
+                          <input
+                            type="checkbox"
+                            checked={selectedRoles.includes(role.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedRoles((prev) => [...prev, role.id]);
+                              } else {
+                                setSelectedRoles((prev) =>
+                                  prev.filter((id) => id !== role.id),
+                                );
+                              }
+                            }}
+                            className="w-4 h-4 accent-purple-600"
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3} className="px-4 py-3 text-gray-400">
+                        Loading Role...
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
 
-          <p className="text-xs text-gray-500 mt-2">
-            Permissions auto-update based on role, but can be manually overridden
-          </p>
-        </div>
+            <div className="flex items-center mt-2 gap-1">
+              <InfoIcon className="h-5 w-5 text-gray-500" />
+              <p className="text-xs text-gray-500">
+                Role auto-update based on role, but can be manually overridden
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Footer */}
       <div className="flex gap-3 px-4 py-4 border-t sticky bottom-0 bg-white justify-center">
-      <button className="w-32 px-4 py-3 border rounded-lg hover:bg-gray-200" onClick={onClose}>
-        Huỷ
-      </button>
-      <button
-        type="submit"
-        disabled={loading}
-        className={`
+        <button
+          className="w-32 px-4 py-3 border rounded-lg hover:bg-gray-200"
+          onClick={onClose}
+        >
+          Huỷ
+        </button>
+        <button
+          type="submit"
+          disabled={loading}
+          className={`
           w-32 rounded-lg text-white
           ${loading ? "bg-purple-400 cursor-not-allowed" : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"}
         `}
-      >
-        {loading ? (
-          <div className="flex items-center justify-center gap-2">
-            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            Saving...
-          </div>
-        ) : (
-          "Xác nhận"
-        )}
-      </button>
+        >
+          {loading ? (
+            <div className="flex items-center justify-center gap-2">
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              Saving...
+            </div>
+          ) : (
+            "Xác nhận"
+          )}
+        </button>
       </div>
     </form>
   );
@@ -248,13 +337,14 @@ export default function PTForm({ mode = "add", onSubmit: onSubmitForm, onClose ,
 
 /* ---------- Small UI helpers ---------- */
 
-function Input({ label, type = "text", register, error, className = "" }) {
+function Input({ label, type = "text", register, error, className = "",readOnly = false }) {
   return (
     <div>
       <label className="text-sm font-medium">{label}</label>
 
       <input
         type={type}
+        readOnly = {readOnly}
         {...register}
         className={`
           w-full mt-1 px-3 py-2 border rounded-lg outline-none font-medium
@@ -263,13 +353,7 @@ function Input({ label, type = "text", register, error, className = "" }) {
         `}
       />
 
-      {error && (
-        <p className="mt-1 text-sm text-red-500">
-          {error.message}
-        </p>
-      )}
+      {error && <p className="mt-1 text-sm text-red-500">{error.message}</p>}
     </div>
   );
 }
-
-

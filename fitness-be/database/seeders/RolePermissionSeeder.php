@@ -13,39 +13,65 @@ class RolePermissionSeeder extends Seeder
         $admin = Role::where('name', 'Admin')->first();
         $pt = Role::where('name', 'PT')->first();
         $receptionist = Role::where('name', 'Receptionist')->first();
+        $member = Role::where('name', 'Member')->first();
 
-        if (!$admin || !$pt || !$receptionist) {
+        if (!$admin || !$pt || !$receptionist || !$member) {
             throw new \Exception('Role chưa tồn tại');
         }
 
-        // đảm bảo permission tồn tại
         if (Permission::count() === 0) {
-            throw new \Exception('Permission chưa được seed');
+            throw new \Exception('Permission chưa seed');
         }
 
-        // ADMIN
+        // ✅ ADMIN = tất cả
         $admin->permissions()->sync(
             Permission::pluck('id')->toArray()
         );
 
-        // PT
+        // ✅ PT
         $pt->permissions()->sync(
             Permission::whereIn('code', [
+
                 'user.read',
-                'service.read',
+
+                'package.read',
+
                 'invoice.read',
                 'invoice.update',
+
+                'message_pt.create',
+                'message_pt.read',
+
+                'workout.create',
+                'workout.read',
+
+                'schedule_pt.read',
+                'schedule_pt.update',
+
+                'member.read',
+
+                'exercise.read',
+
+                'statistic.read',
+
             ])->pluck('id')->toArray()
         );
 
-        // RECEPTIONIST
-        $receptionist->permissions()->sync(
+
+        // ✅ Member
+        $member->permissions()->sync(
             Permission::whereIn('code', [
-                'user.read',
-                'user.create',
-                'service.read',
-                'invoice.read',
-                'invoice.create',
+
+                'message_user.create',
+                'message_user.read',
+
+                'schedule_user.read',
+                'schedule_user.create',
+
+                'workout.read',
+                'workout.create',
+
+
             ])->pluck('id')->toArray()
         );
     }

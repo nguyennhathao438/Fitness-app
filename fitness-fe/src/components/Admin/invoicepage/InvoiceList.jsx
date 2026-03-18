@@ -5,20 +5,24 @@ import {
   CreditCardIcon,
   EyeIcon,
   TrashIcon,
+  CheckCircleIcon,
 } from "lucide-react";
-import { deleteInvoice, getInvoice } from "@/services/admin/Invoice";
+import { deleteInvoice, getInvoice, updatedInvoice } from "@/services/admin/Invoice";
 import Pagination from "../Pagination";
 import DeletedDialog from "../DeletedDialog";
 import { toast } from "react-toastify";
 import Dialog from "../Dialog";
 import InvoiceDetail from "./InvoiceDetail";
-import { set } from "zod";
+import InvoiceUpdateDialog from "./InvoiceUpdateDialog";
+import { useSelector } from "react-redux";
+import NoPermissionModal from "@/components/utils/NoPermissionModel";
 
-export default function InvoiceList() {
+export default function InvoiceList({ refreshStats }) {
     const [keyword, setkeyword] = useState("");
     const [status, setStatus] = useState("");
     const [payment_method, setpayment_method] = useState("");
     const [loading,setLoading] = useState(false);
+    const [loadingUpdate, setLoadingUpdate] = useState(false);
     const [fromDate, setFromDate] = useState("");
     const [toDate, setToDate] = useState("");
     const [page, setPage] = useState(1);
@@ -26,9 +30,13 @@ export default function InvoiceList() {
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [invoices,setInvoices] = useState([]);
     const [openDelete,setOpenDelete] = useState(false);
+    const [openUpdate,setOpenUpdate] = useState(false);
     const [selectedInvoice, setSelectedInvoice] = useState(null);
     const [openForm,setOpenForm] = useState(false);
-
+    const permissions = useSelector((state) => state.auth.permissions);
+    const [openNoPermission, setOpenNoPermission] = useState(false);
+    const canUpdateRole = permissions.includes("invoice.update");
+    const canDeleteRole = permissions.includes("invoice.delete");
     const paymentStyles = {
       momo: "bg-pink-100 text-pink-600",
       vnpay: "bg-blue-100 text-blue-600",
@@ -44,7 +52,7 @@ export default function InvoiceList() {
     const fetchInvoice = () => {
       setLoading(true);
       return getInvoice({
-        page,keyword: debouncedSearch,payment_method,status,fromDate,toDate,
+        page,keyword: debouncedSearch,payment_method,status,from_date: fromDate,to_date: toDate,
       }). then(res => {
         setInvoices(res.data.data.data);
         setMeta(res.data.data);
@@ -167,7 +175,7 @@ export default function InvoiceList() {
               <th className="px-4 py-3 text-left">Package</th>
               <th className="px-4 py-3 text-left">Payment</th>
               <th className="px-4 py-3 text-left">Status</th>
-              <th className="px-4 py-3 text-left">Action</th>
+              <th className="px-4 py-3 text-center">Action</th>
             </tr>
           </thead>
 
@@ -221,30 +229,64 @@ export default function InvoiceList() {
                     </td>
 
                     <td className="px-4 py-3">
-                        <div className="flex gap-3">
+                    <div className="flex gap-2 items-center justify-center">
+
+                      {/* PAID - chỉ hiện khi pending */}
+                      {o.status === "pending" && (
                         <button
-                            className="p-2 rounded-lg
-                                    bg-blue-100 text-blue-600
-                                    hover:bg-blue-200 transition"
-                            onClick={() => {
-                              setSelectedInvoice(o);
-                              setOpenForm(true);
-                            }}
+                          className="p-2 rounded-lg
+                                    bg-green-100 text-green-600
+                                    hover:bg-green-200 transition"
+                          onClick={() => {
+                            if (!canUpdateRole){
+                              setOpenNoPermission(true);
+                              return;
+                            }
+                            setSelectedInvoice(o);
+                            setOpenUpdate(true);
+                          }}
                         >
-                            <EyeIcon size={16} />
+                          <CheckCircleIcon size={16} />
                         </button>
+                      )}
+
+                      {/* VIEW */}
+                      <button
+                        className="p-2 rounded-lg
+                                  bg-blue-100 text-blue-600
+                                  hover:bg-blue-200 transition"
+                        onClick={() => {
+                          setSelectedInvoice(o);
+                          setOpenForm(true);
+                        }}
+                      >
+                        <EyeIcon size={16} />
+                      </button>
+
+                      {/* DELETE */}
+                      <button
+                        className="p-2 rounded-lg
+                                  bg-red-100 text-red-600
+                                  hover:bg-red-200 transition"
+                        onClick={() => {
+                          if (!canDeleteRole){
+                              setOpenNoPermission(true);
+                              return;
+                            }
+                          setSelectedInvoice(o);
+                          setOpenDelete(true);
+                        }}
+                      >
+                        <TrashIcon size={16} />
+                      </button>
+                      {o.status === "pending" && (
                         <button
-                            className="p-2 rounded-lg
-                                    bg-red-100 text-red-600
-                                    hover:bg-red-200 transition"
-                            onClick={() => {
-                              setSelectedInvoice(o);
-                              setOpenDelete(true);
-                            }}
+                          className="p-4"
                         >
-                            <TrashIcon size={16} />
                         </button>
-                        </div>
+                      )}
+
+                    </div>
                     </td>
                     </tr>
 
@@ -278,8 +320,35 @@ export default function InvoiceList() {
                   toast.error("Xóa thất bại");
                 }
               }}
-              name="đơn hàng"
+              name="Xóa đơn hàng"
             />
+      {/* Updated Dialog */}
+            <InvoiceUpdateDialog
+              open={openUpdate}
+              invoice={selectedInvoice}
+              loading={loadingUpdate}
+              onClose={() => setOpenUpdate(false)}
+              onConfirm={async (data) => {
+                try {
+                  setLoadingUpdate(true);
+                  await updatedInvoice(selectedInvoice.id, {
+                    status: data.status,
+                  });
+                  toast.success("Cập nhật invoice thành công");
+                  setOpenUpdate(false);
+                  fetchInvoice();
+                  refreshStats();
+                } catch {
+                  toast.error("Cập nhật thất bại");
+                } finally {
+                  setLoadingUpdate(false);
+                }
+              }}
+            />
+      <NoPermissionModal
+        open={openNoPermission}
+        onClose={() => setOpenNoPermission(false)}
+      />
     {/* View Dialog */}
                 <Dialog open={openForm} onClose={() => setOpenForm(false)}>         
               <InvoiceDetail invoice={selectedInvoice}/>

@@ -12,3 +12,9 @@ export const getMemberThisMonth = () => {
 export const getUserChart = (params) => {
     return api.get("/userchart",{params});
 }
+export const getUserStat = () => {
+    return api.get("/userStat");
+}
+export const getMemberHavePT = () => {
+    return api.get("/havePT");
+}
