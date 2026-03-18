@@ -85,6 +85,7 @@ class MessageController extends Controller
             ->groupBy('pt_id');
 
         $query = Member::where('members.is_deleted', false)
+            ->where('members.id', '!=', $adminId)
             ->whereHas('roles', function ($q) {
                 $q->where('name', 'PT');
             })

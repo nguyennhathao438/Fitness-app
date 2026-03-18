@@ -5,9 +5,15 @@ import PTForm from "../PTForm";
 import DetailDialog from "../DetailDialog";
 import PTInfoTab from "./PTInfoTab";
 import PTMembersTab from "./PTMembersTab";
+import { useSelector } from "react-redux";
+import NoPermissionModal from "@/components/utils/NoPermissionModel";
 
 export default function PTCard({pt,onDeleteClick,onEditClick}) {
     const [openView, setOpenView] = useState(false);
+    const permissions = useSelector((state) => state.auth.permissions);
+    const [openNoPermission, setOpenNoPermission] = useState(false);
+    const canUpdateRole = permissions.includes("user.update");
+    const canDeleteRole = permissions.includes("user.delete");
     // Function to get initials from name
     function getInitials(name) {
     if (!name) return "";
@@ -31,9 +37,21 @@ export default function PTCard({pt,onDeleteClick,onEditClick}) {
                 <div className="text-white mr-3 grid grid-cols-1">
                     <button>
                         <Trash2Icon className="w-7 h-7 hover:bg-[#ad7aff] rounded-lg"
-                        onClick={onDeleteClick}/>
+                        onClick={() => {
+                            if (canDeleteRole) {
+                                onDeleteClick();
+                            } else {
+                                setOpenNoPermission(true);
+                            }
+                        }}/>
                     </button>
-                    <button onClick={onEditClick}>
+                    <button onClick={() => {
+                        if (canUpdateRole) {
+                            onEditClick();
+                        } else {
+                            setOpenNoPermission(true);
+                        }
+                    }}>
                         <BoltIcon className="w-7 h-7 hover:bg-[#ad7aff] rounded-lg"/>
                     </button>
                 </div>
@@ -81,6 +99,10 @@ export default function PTCard({pt,onDeleteClick,onEditClick}) {
             ]}
             />
         </Dialog>
+        <NoPermissionModal
+                open={openNoPermission}
+                onClose={() => setOpenNoPermission(false)}
+              />
         </>
     );
 };

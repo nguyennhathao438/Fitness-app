@@ -26,6 +26,8 @@ import { toast } from "react-toastify";
 import PTSelectedForm from "./PTSeletedForm";
 import defaultAvatar from "@/assets/default-avatar.jpg";
 import UpdatePTSelectedForm from "./UpdatePTSelectedForm";
+import { useSelector } from "react-redux";
+import NoPermissionModal from "@/components/utils/NoPermissionModel";
 
 export default function MemberList({ onChanged }) {
   const [page, setPage] = useState(1);
@@ -44,7 +46,10 @@ export default function MemberList({ onChanged }) {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [memberList, setMemberList] = useState([]);
   const [hasPT, setHasPT] = useState("");
-
+  const permissions = useSelector((state) => state.auth.permissions);
+  const [openNoPermission, setOpenNoPermission] = useState(false);
+  const canUpdateRole = permissions.includes("user.update");
+  const canDeleteRole = permissions.includes("user.delete");
   // lấy danh sách Member
   const fetchMembers = () => {
     setLoading(true);
@@ -65,6 +70,10 @@ export default function MemberList({ onChanged }) {
   const handleupdated = async (formData) => {
     console.log("Updating member with data:", formData);
     if (isSubmitting) return;
+    else if (!canUpdateRole) {
+      setOpenNoPermission(true);
+      return;
+    }
     try {
       setIsSubmitting(true);
       await updatedUser(selectedMember.id, formData);
@@ -235,6 +244,10 @@ export default function MemberList({ onChanged }) {
                             className="p-2 rounded-lg bg-green-100 text-green-600
                                     hover:bg-green-200 transition"
                             onClick={() => {
+                              if (!canUpdateRole) {
+                                  setOpenNoPermission(true);
+                                  return;
+                                }
                               setSelectedMember(m);
                               setOpenSelectPT(true);
                             }}
@@ -256,6 +269,10 @@ export default function MemberList({ onChanged }) {
                           className="p-2 rounded-lg bg-yellow-100 text-yellow-600
                                   hover:bg-yellow-200 transition"
                           onClick={() => {
+                            if (!canUpdateRole) {
+                              setOpenNoPermission(true);
+                              return;
+                            }
                             setSelectedMember(m);
                             setOpenForm(true);
                           }}
@@ -266,6 +283,10 @@ export default function MemberList({ onChanged }) {
                           className="p-2 rounded-lg bg-red-100 text-red-600
                                   hover:bg-red-200 transition"
                           onClick={() => {
+                            if (!canDeleteRole) {
+                              setOpenNoPermission(true);
+                              return;
+                            }
                             setSelectedMember(m);
                             setOpenDelete(true);
                           }}
@@ -278,6 +299,10 @@ export default function MemberList({ onChanged }) {
                             className="p-2 rounded-lg bg-orange-100 text-orange-600
                                     hover:bg-orange-200 transition"
                             onClick={() => {
+                              if (!canUpdateRole) {
+                              setOpenNoPermission(true);
+                              return;
+                            }
                               setSelectedMember(m);
                               setOpenUpdated(true);
                             }}
@@ -401,6 +426,10 @@ export default function MemberList({ onChanged }) {
           />
         )}
       </Dialog>
+      <NoPermissionModal
+        open={openNoPermission}
+        onClose={() => setOpenNoPermission(false)}
+      />
     </>
   );
 }

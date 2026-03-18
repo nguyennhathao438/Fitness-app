@@ -70,11 +70,19 @@ const router = createBrowserRouter([
     children: [
       {
         path: "dashboard",
-        element: <Dashboard />,
+        element: (
+          <RequirePermission permission="statistic.read">
+            <Dashboard />
+          </RequirePermission>
+        ),
       },
       {
         path: "user",
-        element: <User />,
+        element: (
+          <RequirePermission permission="user.read">
+            <User />
+          </RequirePermission>
+        ),
       },
       {
         path: "role",
@@ -94,7 +102,11 @@ const router = createBrowserRouter([
       },
       {
         path: "order",
-        element: <Invoice />,
+        element: (
+          <RequirePermission permission="invoice.read">
+            <Invoice />
+          </RequirePermission>
+        ),
       },
       {
         path: "packages",
@@ -110,7 +122,11 @@ const router = createBrowserRouter([
       },
       {
         path: "message-pt",
-        element: <MessagePT />,
+        element: (
+          <RequirePermission permission="message_pt.read">
+            <MessagePT />
+          </RequirePermission>
+        ),
       },
     ],
   },

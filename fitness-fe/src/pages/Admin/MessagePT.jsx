@@ -102,7 +102,7 @@ export default function MessagePT() {
             </div>
 
             <div className="w-full bg-gray-100">
-                <MessageItem pt={selectedMember}/>
+                <MessageItem pt={selectedMember} type="pt"/>
             </div>
 
         </div>

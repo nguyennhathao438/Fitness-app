@@ -100,7 +100,7 @@ export default function Message() {
             </div>
 
             <div className="w-full bg-gray-100">
-                <MessageItem key={selectedPT?.id} pt={selectedPT}/>
+                <MessageItem key={selectedPT?.id} pt={selectedPT} type="admin"/>
             </div>
 
         </div>

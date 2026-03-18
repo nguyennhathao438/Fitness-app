@@ -646,7 +646,7 @@ if(!$waiting){
         $query->orderBy('created_at', $sort);
 
         // PHÂN TRANG (6 ITEM / TRANG)
-        $members = $query->paginate(1);
+        $members = $query->paginate(6);
 
         // append computed fields
         $members->getCollection()->transform(function ($member) {
@@ -728,9 +728,9 @@ if(!$waiting){
 {
     $memberId = auth()->id();
 
-    $pt = DB::table('pt_member')
-        ->join('members', 'pt_member.pt_id', '=', 'members.id')
-        ->where('pt_member.member_id', $memberId)
+    $pt = DB::table('pt_clients')
+        ->join('members', 'pt_clients.pt_id', '=', 'members.id')
+        ->where('pt_clients.member_id', $memberId)
         ->select('members.id', 'members.name', 'members.email')
         ->first();
 
@@ -753,7 +753,7 @@ public function choosePT(Request $request)
 
     $memberId = auth()->id();
 
-    $already = DB::table('pt_member')
+    $already = DB::table('pt_clients')
         ->where('member_id', $memberId)
         ->exists();
 
@@ -763,7 +763,7 @@ public function choosePT(Request $request)
         ], 400);
     }
 
-    DB::table('pt_member')->insert([
+    DB::table('pt_clients')->insert([
         'pt_id' => $request->pt_id,
         'member_id' => $memberId,
         'created_at' => now(),

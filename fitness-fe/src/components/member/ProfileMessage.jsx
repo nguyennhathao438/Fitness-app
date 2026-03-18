@@ -4,13 +4,17 @@ import defaultAvatar from "@/assets/default-avatar.jpg";
 import { SendHorizonalIcon } from "lucide-react";
 import { getMe } from "@/services/admin/PersonalTrainerService";
 import { getMessages, sendMessage } from "@/services/admin/Message";
+import { useSelector } from "react-redux";
+import NoPermissionModal from "../utils/NoPermissionModel";
 
 export default function ProfileMessage({ pt }) {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [userId, setUserId] = useState(null);
   const bottomRef = useRef(null);
-
+  const permissions = useSelector((state) => state.auth.permissions);
+  const [openNoPermission, setOpenNoPermission] = useState(false);
+  const canCreatePermission = permissions.includes("message_user.create");
   // lấy user hiện tại
   useEffect(() => {
     const fetchMe = async () => {
@@ -77,7 +81,8 @@ export default function ProfileMessage({ pt }) {
   if (!pt) return null;
 
   return (
-    <div className="h-[800px] flex flex-col border rounded-lg bg-white">
+    <>
+    <div className="h-full flex flex-col border rounded-lg bg-white">
       {/* HEADER */}
       <div className="flex items-center gap-3 p-4 border-b">
         <img
@@ -131,12 +136,24 @@ export default function ProfileMessage({ pt }) {
         />
 
         <button
-          onClick={handleSend}
+          onClick={() => {
+            if (canCreatePermission) {
+              handleSend();
+            } else {
+              setOpenNoPermission(true);
+            }
+          }
+          }
           className="p-2 rounded-lg hover:bg-blue-100 transition"
         >
           <SendHorizonalIcon className="w-5 h-5 text-blue-500" />
         </button>
       </div>
     </div>
+    <NoPermissionModal
+      open={openNoPermission}
+      onClose={() => setOpenNoPermission(false)}
+    />
+    </>
   );
 }

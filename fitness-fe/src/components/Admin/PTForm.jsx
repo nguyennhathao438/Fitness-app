@@ -8,13 +8,13 @@ import { getAllRoles } from "@/services/admin/Role";
 const baseSchema = {
   name: z
     .string()
-    .min(3)
-    .regex(/^[A-Za-zÀ-ỹ\s]+$/),
-  phone: z.string().regex(/^0\d{9}$/),
+    .min(3,"Tên phải có ít nhất 3 ký tự")
+    .regex(/^[A-Za-zÀ-ỹ\s]+$/,"Tên chỉ được chứa chữ cái và khoảng trắng"),
+  phone: z.string().regex(/^0\d{9}$/,"Số điện thoại phải bắt đầu bằng 0 và có 10 số"),
   email: z
     .string()
-    .email()
-    .regex(/\.com$/),
+    .email(("Email không hợp lệ"))
+    .regex(/\.com$/,"Email phải có đuôi .com"),
   gender: z.enum(["male", "female", "other"]).optional(),
   birthday: z.string().optional(),
 };

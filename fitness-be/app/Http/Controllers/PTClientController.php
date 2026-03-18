@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Member;
 use App\Models\PersonalTrainerClient;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -42,7 +43,11 @@ class PTClientController extends Controller
             'end_date'   => $invoice->valid_until,
             'status'     => 'active',
         ]);
+        $vipRole = Role::where('name', 'Member_vip')->first();
 
+        if ($vipRole) {
+            $member->roles()->syncWithoutDetaching([$vipRole->id]);
+        }
         return response()->json([
             'success' => true,
             'message' => 'Gán PT thành công',

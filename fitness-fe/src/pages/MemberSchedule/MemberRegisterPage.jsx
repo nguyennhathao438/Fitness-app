@@ -13,7 +13,8 @@ import {
   Dumbbell,
   Clock,
   Info,
-  AlertCircle
+  AlertCircle,
+  MessageCircleMoreIcon
 } from "lucide-react";
 import {
   getMyPT,
@@ -22,6 +23,11 @@ import {
   getMemberSchedules,
   registerSchedule,
 } from "../../services/member/MemberService";
+import Dialog from "@/components/Admin/Dialog";
+import { getPTChat } from "@/services/member/Message";
+import ProfileMessage from "@/components/member/ProfileMessage";
+import NoPermissionModal from "@/components/utils/NoPermissionModel";
+import { useSelector } from "react-redux";
 
 const START_HOUR = 6;
 const END_HOUR = 22;
@@ -43,10 +49,24 @@ export default function MemberRegisterPage() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState(null);
   const [scheduleLoading, setScheduleLoading] = useState(false);
-
-  useEffect(() => { checkMyPT(); }, []);
+  const [openMessage, setOpenMessage] = useState(false);
+  const [pt, setPt] = useState(null);
+  const roles = useSelector((state) => state.auth.roles);
+  const permissions = useSelector((state) => state.auth.permissions);
+  const [openNoPermission, setOpenNoPermission] = useState(false);
+  const canReadRole = roles.includes("Member_vip");
+  const canReadPermission = permissions.includes("message_user.read");
+  useEffect(() => { checkMyPT(); fetchPT();}, []);
   useEffect(() => { if (myPT) loadSchedules(); }, [weekStart, myPT]);
 
+  const fetchPT = async () => {
+    try {
+      const res = await getPTChat();
+        setPt(res.data[0]);
+    } catch (error) {
+      console.log("lỗi không lấy được pt chat",error)
+    }
+  };
   const checkMyPT = async () => {
     try {
       const res = await getMyPT();
@@ -181,6 +201,7 @@ export default function MemberRegisterPage() {
   // ===== GIAO DIỆN ĐĂNG KÝ LỊCH ==
   // ===============================
   return (
+    <>
     <div className="min-h-screen bg-[#F8FAFC] p-4 lg:p-8">
       <div className="max-w-7xl mx-auto">
         
@@ -196,7 +217,21 @@ export default function MemberRegisterPage() {
             </h1>
             <p className="text-slate-500 font-medium mt-1">Đăng ký các khung giờ trống để huấn luyện viên hướng dẫn bạn.</p>
           </div>
-
+          {/* DATE NAVIGATION */}
+          <div className="sm:ml-96 relative">
+            <button 
+              onClick={() => {
+                if (canReadRole && canReadPermission) {
+                  setOpenMessage(true);
+                } else {
+                  setOpenNoPermission(true);
+                }
+              }}
+              className="max-sm:absolute top-7 left-80 px-3 py-3 bg-purple-400 rounded-full hover:bg-purple-300"
+            >
+              <MessageCircleMoreIcon/>
+            </button>
+          </div>
           {/* DATE NAVIGATION */}
           <div className="flex items-center bg-white p-2 rounded-2xl shadow-xl shadow-slate-200/40 border border-slate-200 self-start md:self-center">
             <button 
@@ -370,5 +405,17 @@ onClick={() => !isBooked && !isPast && handleRegister(s)}                       
         )}
       </div>
     </div>
+    
+    <Dialog open={openMessage} onClose={() => setOpenMessage(false)} width="max-w-2xl">
+      <div className="p-6 h-[600px]">
+        <ProfileMessage pt={pt} />
+      </div>
+    </Dialog>
+
+    <NoPermissionModal
+      open={openNoPermission}
+      onClose={() => setOpenNoPermission(false)}
+    />
+    </>
   );
 }
