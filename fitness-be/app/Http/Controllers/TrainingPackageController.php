@@ -157,7 +157,7 @@ class TrainingPackageController extends Controller
 
         if ($activeInvoice && $activeInvoice->package) {
 
-            $daysRemaining = Carbon::now()->diffInDays($activeInvoice->valid_until, false);
+            $daysRemaining = (int) ceil(Carbon::now()->floatDiffInDays($activeInvoice->valid_until, false));
 
             // Nếu còn <= 3 ngày thì tạo notification
             if ($daysRemaining <= 3 && $daysRemaining >= 0) {
