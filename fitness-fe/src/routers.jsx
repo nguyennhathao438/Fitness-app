@@ -23,13 +23,15 @@ import Message from "./pages/Admin/Message";
 import MessagePT from "./pages/Admin/MessagePT";
 import ListMemberOfPT from "./pages/PT/ListMemberOfPT";
 import CreateSchedulePT from "./pages/PT/CreateSchedule";
-
+import NoPermissionPage from "./pages/utils/NoPermissionPage";
 import DefaultPT from "./layouts/DefaultPT";
 import ScheduleDashboardPT from "./pages/PT/ScheduleDashboard";
 import PTRegisterPage from "./pages/MemberSchedule/MemberRegisterPage";
 import MySchedulePage from "./pages/MemberSchedule/MySchedulePage";
 import Notifications from "./pages/member/Notifications";
 import MemberDetail from "./pages/PT/MemberDetail";
+import RequirePermission from "./pages/utils/RequirePermission";
+import RequireGuest from "./pages/utils/RequireGuest";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -41,7 +43,14 @@ const router = createBrowserRouter([
       { path: "member/payment/:packageId", element: <UpgradePaymentPage /> },
       { path: "register/:packageId", element: <RegisterPage /> },
       { path: "bmi", element: <BodyMaxIndex /> },
-      { path: "login", element: <Login /> },
+      {
+        path: "login",
+        element: (
+          <RequireGuest>
+            <Login />
+          </RequireGuest>
+        ),
+      },
       { path: "forgot-password", element: <ForgotPassword /> },
       { path: "waiting", element: <WaitingForRegister /> },
       { path: "profile", element: <Profile /> },
@@ -50,6 +59,10 @@ const router = createBrowserRouter([
       { path: "member/my-schedules", element: <MySchedulePage /> },
       { path: "notifications", element: <Notifications /> },
     ],
+  },
+  {
+    path: "/no-permission",
+    element: <NoPermissionPage />,
   },
   {
     path: "/admin",
@@ -65,7 +78,11 @@ const router = createBrowserRouter([
       },
       {
         path: "role",
-        element: <RoleManagement />,
+        element: (
+          <RequirePermission permission="permission.read">
+            <RoleManagement />
+          </RequirePermission>
+        ),
       },
       {
         path: "exercise",
@@ -85,7 +102,11 @@ const router = createBrowserRouter([
       },
       {
         path: "message",
-        element: <Message />,
+        element: (
+          <RequirePermission permission="message_admin.read">
+            <Message />
+          </RequirePermission>
+        ),
       },
       {
         path: "message-pt",

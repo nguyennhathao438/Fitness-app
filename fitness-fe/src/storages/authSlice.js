@@ -5,6 +5,8 @@ const initialState = {
   validUntil: null,
   serviceIds: [],
   isAuthenticated: false,
+  roles: [],
+  permissions: [],
 };
 
 const authSlice = createSlice({
@@ -12,18 +14,23 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      const { member, valid_until, service_ids } = action.payload;
+      const { member, valid_until, service_ids, roles, permissions } =
+        action.payload;
 
       state.member = member;
       state.validUntil = valid_until;
       state.serviceIds = service_ids;
       state.isAuthenticated = true;
+      state.roles = roles;
+      state.permissions = permissions;
     },
 
     logout: (state) => {
       state.member = null;
       state.validUntil = null;
       state.serviceIds = [];
+      state.roles = [];
+      state.permissions = [];
       state.isAuthenticated = false;
 
       localStorage.clear();

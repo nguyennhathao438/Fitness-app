@@ -275,7 +275,6 @@ class MemberController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:members,email,' . $memberId,
             'phone' => 'nullable|string|max:15',
             'gender' => 'nullable|in:male,female,other',
             'birthday' => 'nullable|date',
@@ -285,7 +284,6 @@ class MemberController extends Controller
         try {
             $data = [
                 'name' => $request->name,
-                'email' => $request->email,
                 'phone' => $request->phone,
                 'gender' => $request->gender,
                 'birthday' => $request->birthday,
@@ -648,7 +646,7 @@ if(!$waiting){
         $query->orderBy('created_at', $sort);
 
         // PHÂN TRANG (6 ITEM / TRANG)
-        $members = $query->paginate(6);
+        $members = $query->paginate(1);
 
         // append computed fields
         $members->getCollection()->transform(function ($member) {
