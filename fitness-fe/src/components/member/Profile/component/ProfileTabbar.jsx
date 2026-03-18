@@ -1,9 +1,7 @@
 import { useState } from "react";
-<<<<<<< HEAD:fitness-fe/src/components/member/ProfileTabbar.jsx
 import { Heart, Calendar, CheckSquare, MessageCircle,Dumbbell} from "lucide-react";
 import ProfileBMI from "./ProfileBMI";
 import ProfilePackage from "./ProfilePackage";
-=======
 import {
   Heart,
   Calendar,
@@ -14,7 +12,6 @@ import {
 import ProfileBodyMetric from "./BodyMetric/ProfileBodyMetric";
 import StatisticsWorkout from "./WorkoutHistory/StatisticsWorkout";
 import MemberRegisterPage from "@/pages/MemberSchedule/MemberRegisterPage";
->>>>>>> dev:fitness-fe/src/components/member/Profile/component/ProfileTabbar.jsx
 
 export default function ProfileTabBar() {
   const [activeTab, setActiveTab] = useState(0);
@@ -54,14 +51,11 @@ export default function ProfileTabBar() {
 
       {/* Content Area */}
       <main className="flex-1">
-<<<<<<< HEAD:fitness-fe/src/components/member/ProfileTabbar.jsx
         {tabs[activeTab].id === 0 && <ProfileBMI/>}
         {tabs[activeTab].id === 1 && <ProfilePackage />}
-=======
         {tabs[activeTab].id === 0 && <ProfileBodyMetric />}
         {tabs[activeTab].id === 2 && <MemberRegisterPage />}
         {tabs[activeTab].id === 4 && <StatisticsWorkout />}
->>>>>>> dev:fitness-fe/src/components/member/Profile/component/ProfileTabbar.jsx
       </main>
     </div>
   );
