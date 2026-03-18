@@ -35,7 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //Chatbot 
     Route::post('/chatbot', [ChatbotController::class, 'getIntent']);
     //Lấy thông tin bản thân
-    Route::get('/me', [AuthenController::class, 'getMyInfo']);
+    Route::get('/myInfo', [AuthenController::class, 'getMyInfo']);
     //survey
     Route::get('/survey-member', [SurveyTrainingController::class, 'getSurveyMember']);
     Route::post('/surveys', [SurveyController::class, 'store']);

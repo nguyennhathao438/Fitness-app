@@ -5,6 +5,8 @@ import { useRolePermissions } from "../../hooks/useRolePermissions.js";
 import { updateRoles, deleteRole } from "../../services/admin/Role.js";
 import { toast } from "react-toastify";
 import { confirmDelete } from "../utils/confirmDelete.js";
+import { useSelector } from "react-redux";
+import NoPermissionModel from "../utils/NoPermissionModel.jsx";
 export default function RolePermissionModal({
   open,
   onClose,
@@ -21,7 +23,10 @@ export default function RolePermissionModal({
     setRoleDetail,
     reset,
   } = useRolePermissions(open, roleId);
-
+  const permissions = useSelector((state) => state.auth.permissions);
+  const [openNoPermission, setOpenNoPermission] = useState(false);
+  const canDeleteRole = permissions.includes("permission.delete");
+  const canUpdateRole = permissions.includes("permission.update");
   const [loading, setLoading] = useState(false);
   const [isEditingInfo, setIsEditingInfo] = useState(false);
   if (!open) return null;
@@ -57,6 +62,10 @@ export default function RolePermissionModal({
   };
 
   const handleUpdate = async () => {
+    if (!canUpdateRole) {
+      setOpenNoPermission(true);
+      return;
+    }
     setLoading(true);
     try {
       await updateRoles(roleId, {
@@ -84,6 +93,10 @@ export default function RolePermissionModal({
   };
 
   const handleDelete = async () => {
+    if (!canDeleteRole) {
+      setOpenNoPermission(true);
+      return;
+    }
     const ok = await confirmDelete({
       title: "Xóa role?",
       text: "Role sẽ bị xóa vĩnh viễn nếu không có user sở hữu",
@@ -111,6 +124,12 @@ export default function RolePermissionModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {openNoPermission && (
+        <NoPermissionModel
+          open={openNoPermission}
+          onClose={() => setOpenNoPermission(false)}
+        />
+      )}
       {/* overlay */}
       <div className="absolute inset-0 bg-black/40" onClick={handleClose} />
 
