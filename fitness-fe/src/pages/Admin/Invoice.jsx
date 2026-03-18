@@ -11,9 +11,9 @@ import {
   TrendingUpIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function Invoice() {
-  const [activeTab, setActiveTab] = useState("statsInvoice");
   const [loading, setLoading] = useState(true);
   const [full, setFull] = useState(0);
   const [inactive, setInactive] = useState(0);
@@ -22,19 +22,27 @@ export default function Invoice() {
   last_month: 0,
   percent_change: 0,
   });
-  useEffect (() => {
-    getInvoice()
+  const permissions = useSelector((state) => state.auth.permissions);
+  const defaultTab = permissions?.includes("statistic.read") ? "statsInvoice" : "invoices";
+  const [activeTab, setActiveTab] = useState(defaultTab);
+  const fetchStats = () => {
+  setLoading(true);
+  getInvoice()
     .then((res) => {
-            setFull(res.data.full);
-            setInactive(res.data.inactive);
-            setRevenue(res.data.revenue);
-          })
-          .catch((err) => {
-            console.error("Error fetching Invoice data:", err);
-          }).finally(() => {
-            setLoading(false);
-          });
-  },[]);
+      setFull(res.data.full);
+      setInactive(res.data.inactive);
+      setRevenue(res.data.revenue);
+    })
+    .catch((err) => {
+      console.error("Error fetching Invoice data:", err);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+  };
+  useEffect(() => {
+  fetchStats();
+}, []);
   return (
     <div>
       {/* Header */}
@@ -90,7 +98,8 @@ export default function Invoice() {
         <div className="px-7">
           <div className="flex gap-6 border-b border-gray-300">
             {/* Tab: Thống kê */}
-            <button
+            {permissions?.includes("statistic.read") && (
+              <button
               onClick={() => setActiveTab("statsInvoice")}
               className={`
                             flex items-center gap-2 pb-3
@@ -106,7 +115,7 @@ export default function Invoice() {
               <LayersIcon className="size-5" />
               Thống kê
             </button>
-
+            )}
             {/* Tab: Danh sách Invoice */}
             <button
               onClick={() => setActiveTab("invoices")}
@@ -131,7 +140,7 @@ export default function Invoice() {
             {activeTab === "statsInvoice" && (
               <InvoiceStat/>
             )}
-            {activeTab === "invoices" && <InvoiceList />}
+            {activeTab === "invoices" && <InvoiceList refreshStats={fetchStats}/>}
           </div>
         </div>
     </div>

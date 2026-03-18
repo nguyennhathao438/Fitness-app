@@ -55,7 +55,7 @@ class PTScheduleController extends Controller
             'end_time' => $request->end_time
         ]);
 
-        $members = DB::table('pt_member')
+        $members = DB::table('pt_clients')
             ->where('pt_id', auth()->id())
             ->pluck('member_id');
 
@@ -84,7 +84,7 @@ class PTScheduleController extends Controller
         $schedule = PTSchedule::findOrFail($scheduleId);
 
         // 1️⃣ Kiểm tra hội viên đã chọn PT chưa
-        $hasPT = DB::table('pt_member')
+        $hasPT = DB::table('pt_clients')
             ->where('member_id', $memberId)
             ->exists();
 
@@ -111,7 +111,7 @@ class PTScheduleController extends Controller
         }
 
         // 4️⃣ Kiểm tra hội viên có thuộc PT tạo lịch không
-        $belongs = DB::table('pt_member')
+        $belongs = DB::table('pt_clients')
             ->where('pt_id', $schedule->pt_id)
             ->where('member_id', $memberId)
             ->exists();
@@ -271,8 +271,8 @@ class PTScheduleController extends Controller
     {
         $member = $request->user();
 
-        // Tìm PT của member trong bảng pt_member
-        $ptRelation = DB::table('pt_member')
+        // Tìm PT của member trong bảng pt_clients
+        $ptRelation = DB::table('pt_clients')
             ->where('member_id', $member->id)
             ->first();
 

@@ -24,7 +24,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             // thời gian tập
-            $table->date('start_date');
+            $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
 
             // trạng thái

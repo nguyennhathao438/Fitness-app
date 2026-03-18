@@ -4,12 +4,19 @@ import { getMessages, sendMessage } from "@/services/admin/Message";
 import { getMe } from "@/services/admin/PersonalTrainerService";
 import { useEffect, useRef, useState } from "react";
 import echo from "@/lib/echo";
+import { useSelector } from "react-redux";
+import NoPermissionModal from "@/components/utils/NoPermissionModel";
 
-export default function MessageItem({ pt }) {
+export default function MessageItem({ pt , type}) {
 
     const [messages, setMessages] = useState([]);
     const [text, setText] = useState("");
     const [currentUserId, setCurrentUserId] = useState(null);
+    const permissions = useSelector((state) => state.auth.permissions);
+    const [openNoPermission, setOpenNoPermission] = useState(false);
+    const canSendMessage =
+    (type === "admin" && permissions?.includes("message_admin.create")) ||
+    (type === "pt" && permissions?.includes("message_pt.create"));
     const bottomRef = useRef(null);
     useEffect(() => {
     const fetchMe = async () => {
@@ -104,6 +111,7 @@ export default function MessageItem({ pt }) {
     }
 
     return (
+        <>
         <div className="h-[825px] border rounded-lg flex flex-col">
 
             {/* header */}
@@ -163,7 +171,16 @@ export default function MessageItem({ pt }) {
                 />
 
                 <button 
-                onClick={handleSend}
+                onClick={
+                    () => {
+                        if(canSendMessage) {
+                            handleSend();
+                        }
+                        else {
+                            setOpenNoPermission(true);
+                        }
+                    }
+                }
                 className="p-2 rounded-lg hover:bg-purple-100 transition">
                     <SendHorizonalIcon className="text-fuchsia-500 w-5 h-5"/>
                 </button>
@@ -171,5 +188,10 @@ export default function MessageItem({ pt }) {
             </div>
 
         </div>
+            <NoPermissionModal
+            open={openNoPermission}
+            onClose={() => setOpenNoPermission(false)}
+            />
+        </>
     );
 }

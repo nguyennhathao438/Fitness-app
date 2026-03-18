@@ -9,8 +9,8 @@ export default function MemberSurvey() {
   const slots = ["earlymorning", "morning", "afternoon", "evening", "all_time"];
 
   const getColor = (count) => {
-    if (count < 3) return "bg-purple-200";
-    if (count <= 5) return "bg-purple-400";
+    if (count < 10) return "bg-purple-200";
+    if (count <= 20) return "bg-purple-400";
     return "bg-purple-700";
   };
 
@@ -89,15 +89,15 @@ export default function MemberSurvey() {
       <div className="flex gap-6 mt-6 text-sm">
         <div className="flex items-center gap-2">
           <span className="w-4 h-4 rounded bg-purple-200"></span>
-          <span>0-3 members</span>
+          <span>0-10 members</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="w-4 h-4 rounded bg-purple-400"></span>
-          <span>4-5 members</span>
+          <span>11-20 members</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="w-4 h-4 rounded bg-purple-700"></span>
-          <span>5+ members</span>
+          <span>21+ members</span>
         </div>
       </div>
     </div>

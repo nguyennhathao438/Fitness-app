@@ -14,8 +14,10 @@ import { toast } from "react-toastify";
 import Dialog from "../Dialog";
 import InvoiceDetail from "./InvoiceDetail";
 import InvoiceUpdateDialog from "./InvoiceUpdateDialog";
+import { useSelector } from "react-redux";
+import NoPermissionModal from "@/components/utils/NoPermissionModel";
 
-export default function InvoiceList() {
+export default function InvoiceList({ refreshStats }) {
     const [keyword, setkeyword] = useState("");
     const [status, setStatus] = useState("");
     const [payment_method, setpayment_method] = useState("");
@@ -31,7 +33,10 @@ export default function InvoiceList() {
     const [openUpdate,setOpenUpdate] = useState(false);
     const [selectedInvoice, setSelectedInvoice] = useState(null);
     const [openForm,setOpenForm] = useState(false);
-
+    const permissions = useSelector((state) => state.auth.permissions);
+    const [openNoPermission, setOpenNoPermission] = useState(false);
+    const canUpdateRole = permissions.includes("invoice.update");
+    const canDeleteRole = permissions.includes("invoice.delete");
     const paymentStyles = {
       momo: "bg-pink-100 text-pink-600",
       vnpay: "bg-blue-100 text-blue-600",
@@ -233,6 +238,10 @@ export default function InvoiceList() {
                                     bg-green-100 text-green-600
                                     hover:bg-green-200 transition"
                           onClick={() => {
+                            if (!canUpdateRole){
+                              setOpenNoPermission(true);
+                              return;
+                            }
                             setSelectedInvoice(o);
                             setOpenUpdate(true);
                           }}
@@ -260,6 +269,10 @@ export default function InvoiceList() {
                                   bg-red-100 text-red-600
                                   hover:bg-red-200 transition"
                         onClick={() => {
+                          if (!canDeleteRole){
+                              setOpenNoPermission(true);
+                              return;
+                            }
                           setSelectedInvoice(o);
                           setOpenDelete(true);
                         }}
@@ -324,6 +337,7 @@ export default function InvoiceList() {
                   toast.success("Cập nhật invoice thành công");
                   setOpenUpdate(false);
                   fetchInvoice();
+                  refreshStats();
                 } catch {
                   toast.error("Cập nhật thất bại");
                 } finally {
@@ -331,7 +345,10 @@ export default function InvoiceList() {
                 }
               }}
             />
-
+      <NoPermissionModal
+        open={openNoPermission}
+        onClose={() => setOpenNoPermission(false)}
+      />
     {/* View Dialog */}
                 <Dialog open={openForm} onClose={() => setOpenForm(false)}>         
               <InvoiceDetail invoice={selectedInvoice}/>
