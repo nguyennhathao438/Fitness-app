@@ -16,8 +16,9 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
     useEffect(() => {
         const config = listExerciseAdd.map(ex => ({
             ...ex,
-            set_count: ex.set_base || 0,
-            rep: ex.rep_base || 0
+            set_count: ex.set_base || "",
+            rep: ex.rep_base || "",
+            time_action: ex.time_action || ""
         }));
         setExerciseConfig(config);
     }, [listExerciseAdd]);
@@ -108,68 +109,72 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
     };
 
     return (
-        <div className="rounded-2xl border border-gray-700 bg-gradient-to-b from-gray-900 to-gray-950 p-6 text-white space-y-4">
+        <div className="rounded-xl bg-[#1f1b2e] border border-purple-500/40 shadow-md p-6 text-white space-y-4">
 
             {/* header */}
-            <div className="flex justify-center items-center gap-2 text-sm font-semibold">
-                <span className="uppercase font-bold text-2xl text-center">
-                    Bài tập hôm nay
-                </span>
-                <span className="text-gray-400 text-xl">
-                    ({listExerciseAdd.length} bài)
-                </span>
-            </div>
-            <div className="flex justify-center items-center gap-2 text-sm font-semibold">
-                <span className="uppercase font-bold text-2xl text-center">
-                    Mức độ hoàn thành
-                </span>
-                <span className="text-gray-400 text-xl">
-                    ({workoutToday?.completion_percentage || 0}%)
-                </span>
+            <div className="space-y-3 text-center">
+
+                <div className="flex items-center justify-center gap-3">
+                    <Dumbbell className="text-purple-400" size={25} />
+                    <h2 className="text-2xl font-bold tracking-wide">
+                        Bài tập hôm nay
+                    </h2>
+                    <span className="text-purple-300 text-sm font-semibold bg-purple-500/20 px-2 py-0.5 rounded-md">
+                        {listExerciseAdd.length} bài
+                    </span>
+                </div>
+
+                <div className="flex items-center justify-center gap-2 text-sm text-gray-300">
+                    <span>Mức độ hoàn thành</span>
+                    <span className="text-green-400 font-bold bg-green-500/10 px-2 py-1 rounded-md">
+                        {workoutToday?.completion_percentage || 0}%
+                    </span>
+                </div>
+
             </div>
 
             {/* list */}
             <div className="space-y-3">
                 {exerciseConfig.map((exercise, index) => (
-                    <div key={exercise.id || index}
-                        className="flex items-center justify-between rounded-xl bg-gray-800/60 px-4 py-2 border border-gray-700"
-                    >
-
+                    <div key={exercise.id || index} className="flex items-center justify-between rounded-lg bg-[#2a2440] px-4 py-3 border border-purple-500/20 hover:border-purple-500 transition">
                         <div className="flex items-center gap-4">
-                            <div className="flex h-15 w-15 items-center justify-center rounded-full bg-purple-600 text-sm font-bold">
+                            <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-purple-500">
                                 <img className="w-full h-full object-cover" src={getYoutubeThumbnail(exercise.video)} alt="" />
                             </div>
-
                             <div>
                                 <p className="font-semibold">{exercise.name}</p>
                                 <div className="mt-1 flex gap-4 text-xs text-gray-300">
-                                    <div className="flex items-center gap-1">
-                                        <Repeat size={12} />
-                                        <input
-                                            type="number"
-                                            min="1"
-                                            value={exercise.set_count}
-                                            onChange={(e) =>
-                                                updateExercise(index, "set_count", e.target.value)
-                                            }
-                                            className="w-12 bg-gray-700 rounded px-1 text-center"
-                                        />
-                                        sets
-                                    </div>
+                                    {exercise.set_count && (
+                                        <div className="flex items-center gap-1">
+                                            <Repeat size={12} />
+                                            <input
+                                                type="number"
+                                                min="1"
+                                                value={exercise.set_count}
+                                                onChange={(e) =>
+                                                    updateExercise(index, "set_count", e.target.value)
+                                                }
+                                                className="w-12 h-6 text-xs bg-gray-700 border border-gray-600 rounded text-center focus:outline-none focus:border-yellow-400"
+                                            />
+                                            sets
+                                        </div>
+                                    )}
 
-                                    <div className="flex items-center gap-1">
-                                        <Dumbbell size={12} />
-                                        <input
-                                            type="number"
-                                            min="1"
-                                            value={exercise.rep}
-                                            onChange={(e) =>
-                                                updateExercise(index, "rep", e.target.value)
-                                            }
-                                            className="w-12 bg-gray-700 rounded px-1 text-center"
-                                        />
-                                        reps
-                                    </div>
+                                    {exercise.rep && (
+                                        <div className="flex items-center gap-1">
+                                            <Dumbbell size={12} />
+                                            <input
+                                                type="number"
+                                                min="1"
+                                                value={exercise.rep}
+                                                onChange={(e) =>
+                                                    updateExercise(index, "rep", e.target.value)
+                                                }
+                                                className="w-12 h-6 text-xs bg-gray-700 border border-gray-600 rounded text-center focus:outline-none focus:border-yellow-400"
+                                            />
+                                            reps
+                                        </div>
+                                    )}
 
                                     {exercise.time_action && (
                                         <span className="flex items-center gap-1">
@@ -182,11 +187,11 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
                         </div>
 
                         <div className="flex items-center gap-3">
-                            <span className="text-green-500">
+                            <span className="text-green-400 font-semibold bg-green-500/10 px-2 py-1 rounded-md">
                                 {workoutToday?.details.find(d => d.exercise_id === exercise.id)?.completion_percentage || 0}%
                             </span>
                             {!workoutToday?.details.find(d => d.exercise_id === exercise.id) && (
-                                <button onClick={() => onRemove?.(exercise)} className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500/20 text-red-400 hover:bg-red-500/40 transition">
+                                <button onClick={() => onRemove?.(exercise)} className="flex h-8 w-8 items-center justify-center rounded-md bg-red-500/20 text-red-400 hover:bg-red-500/40 transition">
                                     <X size={14} />
                                 </button>
                             )}
@@ -196,9 +201,11 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
             </div>
 
             {/* start button */}
-            <button onClick={handleStartWorkout} disabled={!listExerciseAdd.length} className="mt-4 w-full rounded-xl bg-gradient-to-r from-yellow-400 to-orange-400 py-4 font-bold text-purple-900">
-                {loading ? "Đang khởi tạo ... " : "Bắt đầu tập"}
-            </button>
+            <div className="flex justify-center">
+                <button onClick={handleStartWorkout} disabled={!listExerciseAdd.length} className="mt-2 px-5 rounded-md bg-purple-500 hover:bg-purple-600 py-3 font-semibold text-white shadow-md transition">
+                    {loading ? "Đang khởi tạo ... " : "Bắt đầu tập"}
+                </button>
+            </div>
 
             {openWorkout && (
                 <WorkoutModal

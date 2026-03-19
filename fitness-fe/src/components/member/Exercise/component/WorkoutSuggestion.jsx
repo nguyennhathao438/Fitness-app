@@ -24,7 +24,7 @@ export default function WorkoutSuggestion({ onSelectGroup }) {
         <div className="py-10 rounded-2xl px-4 bg-gray-50 flex justify-center">
             <div className="w-full max-w-4xl">
                 <h2 className="text-3xl md:text-4xl font-extrabold text-center text-gray-900 mb-10">
-                    Gợi ý bài tập
+                    Thêm bài tập từ danh sách yêu thích
                 </h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 justify-items-center">
