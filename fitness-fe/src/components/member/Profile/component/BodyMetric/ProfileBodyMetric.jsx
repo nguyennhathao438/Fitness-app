@@ -70,32 +70,34 @@ export default function ProfileBodyMetric() {
                         </div>
                         <div className="flex-1">
                             <h2 className="text-center font-bold text-xl py-4">Lịch sử chỉ số cơ thể</h2>
-                            <table className="w-full">
-                                <thead>
-                                    <tr>
-                                        <th className="border border-gray-300 p-2">Ngày</th>
-                                        <th className="border border-gray-300 p-2">Chiều cao</th>
-                                        <th className="border border-gray-300 p-2">Cân nặng</th>
-                                        <th className="border border-gray-300 p-2">Tỉ lệ cơ</th>
-                                        <th className="border border-gray-300 p-2">Mỡ cơ thể</th>
-                                        <th className="border border-gray-300 p-2">Mỡ nội tạng</th>
-                                        <th className="border border-gray-300 p-2">Nước cơ thể</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {bodyMetricList.map((item) => (
-                                        <tr className="border border-gray-300 text-center">
-                                            <td>{item.created_at?.split("T")[0]}</td>
-                                            <td>{item.height} CM</td>
-                                            <td>{item.weight} KG</td>
-                                            <td>{item.muscle} KG</td>
-                                            <td>{item.body_fat} %</td>
-                                            <td>mức {item.visceral_fat}</td>
-                                            <td>{item.body_water} %</td>
+                            <div className="max-h-[300px] overflow-y-auto border">
+                                <table className="w-full">
+                                    <thead>
+                                        <tr>
+                                            <th className="border border-gray-300 p-2">Ngày</th>
+                                            <th className="border border-gray-300 p-2">Chiều cao</th>
+                                            <th className="border border-gray-300 p-2">Cân nặng</th>
+                                            <th className="border border-gray-300 p-2">Tỉ lệ cơ</th>
+                                            <th className="border border-gray-300 p-2">Mỡ cơ thể</th>
+                                            <th className="border border-gray-300 p-2">Mỡ nội tạng</th>
+                                            <th className="border border-gray-300 p-2">Nước cơ thể</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {bodyMetricList.map((item) => (
+                                            <tr className="border border-gray-300 text-center">
+                                                <td>{item.created_at?.split("T")[0]}</td>
+                                                <td>{item.height} CM</td>
+                                                <td>{item.weight} KG</td>
+                                                <td>{item.muscle} KG</td>
+                                                <td>{item.body_fat} %</td>
+                                                <td>mức {item.visceral_fat}</td>
+                                                <td>{item.body_water} %</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
