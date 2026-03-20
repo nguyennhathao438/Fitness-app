@@ -11,7 +11,7 @@ export default function Exercise() {
         fetchByMuscle,
     } = useExercise();
     return (
-        <div className="px-4 py-8">
+        <div className="p-4">
             <Header />
             <ExerciseList
                 exerciseList={exerciseList}

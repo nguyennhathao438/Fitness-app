@@ -1,114 +1,103 @@
-import { User, Save, CheckCircle } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "react-toastify";
+import { User, CheckCircle } from "lucide-react";
+import { useSelector } from "react-redux";
 import { useState } from "react";
-import { updateMember } from "@/storages/authSlice";
-import { updateProfile } from "@/services/member/MemberService";
 import ResetPassModal from "../modals/ResetPassModal";
-const memberSchema = z.object({
-    name: z.string()
-        .trim()
-        .min(1, "Họ và tên không được để trống")
-        .min("3", "Họ và tên phải có ít nhất 3 ký tự")
-        .max("100", "Tên quá dài"),
-    email: z.string()
-        .trim()
-        .min(1, "Email không được để trống")
-        .email({ message: "Email không đúng định dạng" }),
-    phone: z.string()
-        .trim()
-        .min(1, "Số điện thoại không được để trống")
-        .min(9, "Số điện thoại không hợp lệ")
-        .max(11, "Số điện thoại không hợp lệ")
-        .regex(/^[0-9]+$/, "Số điện thoại chỉ được chứa số"),
-    gender: z.string().optional(),
-})
+import EditProfileModal from "../modals/EditProfile";
+
 export default function MemberInfo() {
-    const [isEdit, setIsEdit] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [openResetPass, setOpenResetPass] = useState(false)
     const { member } = useSelector((state) => state.auth);
-    const dispatch = useDispatch();
-    const { register, handleSubmit } = useForm({
-        resolver: zodResolver(memberSchema),
-        defaultValues: {
-            name: member?.name || "",
-            email: member?.email || "",
-            phone: member?.phone || "",
-            birthday: member?.birthday || "",
-            gender: member?.gender || "",
-        }
-    });
-
-    const onSubmit = async (data) => {
-        setIsLoading(true);
-        try {
-            const response = await updateProfile(data);
-            toast.success(response.data.message || "Cập nhật thông tin thành công");
-            setIsEdit(false);
-            dispatch(updateMember(response.data.member));
-        } catch (error) {
-            const errorMessage = error.response?.data?.message || "Cập nhật thất bại";
-            toast.error(errorMessage);
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
-    const onError = (err) => {
-        const firstErr = Object.values(err)[0];
-        if (firstErr)
-            toast.error(firstErr.message);
-    };
-
+    const [openResetPass, setOpenResetPass] = useState(false);
+    const [openEditModal, setOpenEditModal] = useState(false);
     return (
         <div>
-            <div className="flex flex-col md:flex-row py-5 bg-[#000000]">
+            <div className="flex flex-col md:flex-row py-5 bg-[#1f1b2e] rounded-xl shadow-md">
+                {/* Avatar */}
                 <div className="flex flex-1 justify-center items-center">
                     {member?.avatar ? (
-                        <img className="w-50 h-50 p-5 rounded-md text-white" src={member?.avatar || "/placeholder.svg"} alt="avatar" />
-                    ) : (<div className="">
-                        <User className="w-50 h-50 p-5 rounded-md text-white" />
-                    </div>)}
+                        <img
+                            className="w-48 h-48 p-2 rounded-full border-4 border-purple-500 shadow-lg"
+                            src={member?.avatar || "/placeholder.svg"}
+                            alt="avatar"
+                        />
+                    ) : (
+                        <div className="w-48 h-48 flex justify-center items-center rounded-full bg-purple-600 border-4 border-purple-500 shadow-lg">
+                            <User className="w-20 h-20 text-white" />
+                        </div>
+                    )}
                 </div>
-                <form onSubmit={handleSubmit(onSubmit, onError)} className="flex flex-col lg:flex-row items-center flex-2">
-                    <div className="flex-2 flex flex-col">
-                        <label className="p-2 text-white">Họ và tên : <input disabled={!isEdit} {...register("name")} className="text-black bg-white rounded-2xl px-2" type="text" /> </label>
-                        <label className="p-2 text-white">Email : <input disabled={!isEdit} {...register("email")} className="text-black bg-white rounded-2xl px-2" type="text" /></label>
-                        <label className="p-2 text-white">Số điện thoại : <input disabled={!isEdit} {...register("phone")} className="text-black bg-white rounded-2xl px-2" type="text" /></label>
-                        <label className="p-2 text-white">Giới tính :
-                            <select disabled={!isEdit} {...register("gender")} className="bg-white border border-gray-300 text-black rounded-2xl ml-2 w-40 text-center">
-                                <option value="male">Nam</option>
-                                <option value="female">Nữ</option>
-                                <option value="other">Khác</option>
-                            </select>
+
+                {/* Form hiển thị thông tin (disabled) */}
+                <div className="flex flex-col lg:flex-row items-center flex-2 mt-4 md:mt-0 md:ml-10">
+                    <div className="flex-2 flex flex-col space-y-3">
+                        <label className="p-2 text-white">
+                            Họ tên :
+                            <input
+                                disabled
+                                value={member?.name || ""}
+                                className="text-black bg-white rounded-2xl ml-1 px-2"
+                                type="text"
+                            />
                         </label>
+
+                        <label className="p-2 text-white">
+                            Email :
+                            <input
+                                disabled
+                                value={member?.email || ""}
+                                className="text-black bg-white rounded-2xl ml-3 px-2"
+                                type="text"
+                            />
+                        </label>
+
+                        <label className="p-2 text-white">
+                            Phone :
+                            <input
+                                disabled
+                                value={member?.phone || ""}
+                                className="text-black bg-white rounded-2xl ml-1.5 px-2"
+                                type="text"
+                            />
+                        </label>
+
+                        <label className="p-2 text-white">
+                            Gender:
+                            <input
+                                disabled
+                                value={member?.gender === "male" ? "Nam" : member?.gender === "female" ? "Nữ" : member?.gender === "other" ? "Khác": ""}
+                                className="text-black bg-white rounded-2xl ml-1 px-2"
+                                type="text"
+                            />
+                        </label>
+
                     </div>
-                    <div className="flex-1 flex flex-col">
-                        <button
-                            type="button"
-                            onClick={() => setOpenResetPass(true)}
-                            className="flex mx-10 my-2 justify-center px-4 py-1 text-white bg-[#A49BEF] hover:bg-[#5a548c] rounded-md cursor-pointer">
-                            <CheckCircle className="w-5 mr-2" />Đổi mật khẩu
+
+                    {/* Buttons */}
+                    <div className="flex-1 flex flex-col mt-4 lg:mt-0 lg:ml-8">
+                        <button type="button" onClick={() => setOpenResetPass(true)} className="flex mx-5 my-2 justify-center px-4 py-1 text-white bg-purple-500 hover:bg-purple-600 rounded-md cursor-pointer">
+                            <CheckCircle className="w-5 mr-2" />
+                            Đổi mật khẩu
                         </button>
-                        {!isEdit && (
-                            <button onClick={() => setIsEdit(true)} className="flex mx-10 my-2 justify-center px-4 py-1 text-white bg-[#A49BEF] hover:bg-[#5a548c] rounded-md cursor-pointer "><User className="w-5 mr-2" />Chỉnh sửa thông tin</button>
-                        )}
-                        {isEdit && (
-                            <div className="mx-10">
-                                <button type="button" onClick={() => setIsEdit(false)} className="flex w-full justify-center px-4 py-1 text-white bg-[#A49BEF] hover:bg-[#5a548c] rounded-md cursor-pointer"><Save className="w-5 mr-2" />Hủy</button>
-                                <button type="submit" className="flex w-full my-2 justify-center px-4 py-1 text-white bg-[#A49BEF] hover:bg-[#5a548c] rounded-md cursor-pointer"><Save className="w-5 mr-2" />
-                                    {isLoading ? "Đang lưu..." : "Lưu thay đổi"}
-                                </button>
-                            </div>
-                        )}
+                        <button onClick={() => setOpenEditModal(true)} className="flex mx-5 my-2 justify-center px-4 py-1 text-white bg-purple-500 hover:bg-purple-600 rounded-md cursor-pointer">
+                            <User className="w-5 mr-2" />
+                            Chỉnh sửa thông tin
+                        </button>
+
                     </div>
-                </form>
+
+                </div>
             </div>
-            <ResetPassModal open={openResetPass} onClose={() => setOpenResetPass(false)}/>
+
+            {/* Modals */}
+            <ResetPassModal
+                open={openResetPass}
+                onClose={() => setOpenResetPass(false)}
+            />
+
+            <EditProfileModal
+                open={openEditModal}
+                onClose={() => setOpenEditModal(false)}
+                member={member}
+            />
         </div>
     );
 }

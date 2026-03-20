@@ -1,11 +1,6 @@
 import { useState } from "react";
-import {
-  Heart,
-  Calendar,
-  CheckSquare,
-  MessageCircle,
-  Dumbbell,
-} from "lucide-react";
+import { Heart, Calendar, CheckSquare, MessageCircle,Dumbbell} from "lucide-react";
+import ProfilePackage from "../../ProfilePackage";
 import ProfileBodyMetric from "./BodyMetric/ProfileBodyMetric";
 import StatisticsWorkout from "./WorkoutHistory/StatisticsWorkout";
 import MemberRegisterPage from "@/pages/MemberSchedule/MemberRegisterPage";
@@ -48,6 +43,7 @@ export default function ProfileTabBar() {
 
       {/* Content Area */}
       <main className="flex-1">
+        {tabs[activeTab].id === 1 && <ProfilePackage />}
         {tabs[activeTab].id === 0 && <ProfileBodyMetric />}
         {tabs[activeTab].id === 2 && <MemberRegisterPage />}
         {tabs[activeTab].id === 4 && <StatisticsWorkout />}
