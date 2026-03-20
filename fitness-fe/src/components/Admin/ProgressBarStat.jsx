@@ -47,9 +47,10 @@ export default function ProgressBarStat({ title, items = [], icon }) {
                 <span className={`size-4 rounded-full ${item.color}`} />
                 {item.label}
               </span>
-              <span>
-                {item.value} ({percent}%)
-              </span>
+              <p className="space-x-1">
+                <span>{item.value}</span> 
+                <span className="max-sm:hidden">({percent}%)</span>
+              </p>
             </div>
           );
         })}

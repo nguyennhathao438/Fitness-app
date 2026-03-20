@@ -11,7 +11,7 @@ class InvoiceController extends Controller
     // lấy danh sách hóa đơn
     public function getInvoice(Request $request){
         $query = Invoice::with([
-            'package:id,name,duration_days,price,package_type_id',
+            'package:id,name,duration_days,package_type_id',
             'member:id,name,email,avatar',
             'package.packageType.services:id,name',
         ]) -> where('is_deleted',false);
@@ -53,16 +53,16 @@ class InvoiceController extends Controller
         ->count();
     // Thống kê tiền tháng này
         $moneyThisMonth = Invoice::where('status', 'paid')
-        ->whereMonth('invoices.created_at', Carbon::now()->month)
-        ->whereYear('invoices.created_at', Carbon::now()->year)
-        ->join('training_packages', 'training_packages.id', '=', 'invoices.package_id')
-        ->sum('training_packages.price');
+        ->where('is_deleted',false)
+        ->whereMonth('created_at', Carbon::now()->month)
+        ->whereYear('created_at', Carbon::now()->year)
+        ->sum('total_price');
     // Thống kê tiền tháng trước
         $moneyLastMonth = Invoice::where('status', 'paid')
-        ->whereMonth('invoices.created_at', Carbon::now()->subMonth()->month)
-        ->whereYear('invoices.created_at', Carbon::now()->subMonth()->year)
-        ->join('training_packages', 'training_packages.id', '=', 'invoices.package_id')
-        ->sum('training_packages.price');
+        ->where('is_deleted',false)
+        ->whereMonth('created_at', Carbon::now()->subMonth()->month)
+        ->whereYear('created_at', Carbon::now()->subMonth()->year)
+        ->sum('total_price');
 
         if ($moneyLastMonth > 0) {
             $percentChange = (($moneyThisMonth - $moneyLastMonth) / $moneyLastMonth) * 100;
@@ -75,7 +75,7 @@ class InvoiceController extends Controller
     // PHÂN TRANG (6 ITEM / TRANG)
         $invoice = $query
             ->orderByDesc('created_at')
-            ->paginate(7);
+            ->paginate(6);
     // TRẢ JSON CHO FRONTEND
         return response()->json([
             'success' => true,
@@ -137,14 +137,17 @@ class InvoiceController extends Controller
     // lấy số lượng invoice theo payment
     public function getPayment(){
         $momo = Invoice::select('payment_method')
+        -> where('status','paid')
         -> where('payment_method','momo')
         -> where('is_deleted',false)
         -> count();
         $vnpay = Invoice::select('payment_method')
+        -> where('status','paid')
         -> where('payment_method','vnpay')
         -> where('is_deleted',false)
         -> count();
         $cash = Invoice::select('payment_method')
+        -> where('status','paid')
         -> where('payment_method','cash')
         -> where('is_deleted',false)
         -> count();
@@ -207,14 +210,13 @@ class InvoiceController extends Controller
         $moneyData = [];
         if ($type === 'monthly') {
             $daysInMonth = Carbon::create($year, $month)->daysInMonth;
-            $data = Invoice::join('training_packages','training_packages.id','=','invoices.package_id')
-                ->where('invoices.is_deleted', false)
-                ->where('invoices.status', 'paid')
-                ->whereYear('invoices.created_at', $year)
-                ->whereMonth('invoices.created_at', $month)
+            $data = Invoice::where('is_deleted', false)
+                ->where('status', 'paid')
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $month)
                 ->selectRaw(
-                    'DAY(invoices.created_at) as day,
-                    SUM(training_packages.price) as total'
+                    'DAY(created_at) as day,
+                    SUM(total_price) as total'
                 )
                 ->groupBy('day')
                 ->pluck('total', 'day');
@@ -227,13 +229,12 @@ class InvoiceController extends Controller
 
         elseif ($type === 'quarterly') {
             // Query 1 lần
-            $rawData = Invoice::join('training_packages','training_packages.id','=','invoices.package_id')
-                ->where('invoices.is_deleted', false)
-                ->where('invoices.status', 'paid')
-                ->whereYear('invoices.created_at', $year)
+            $rawData = Invoice::where('is_deleted', false)
+                ->where('status', 'paid')
+                ->whereYear('created_at', $year)
                 ->selectRaw(
-                    'QUARTER(invoices.created_at) as quarter,
-                    SUM(training_packages.price) as total'
+                    'QUARTER(created_at) as quarter,
+                    SUM(total_price) as total'
                 )
                 ->groupBy('quarter')
                 ->pluck('total', 'quarter');
@@ -246,13 +247,12 @@ class InvoiceController extends Controller
 
         else {
             // Query 1 lần
-            $rawData = Invoice::join('training_packages','training_packages.id','=','invoices.package_id')
-                ->where('invoices.is_deleted', false)
-                ->where('invoices.status', 'paid')
-                ->whereYear('invoices.created_at', $year)
+            $rawData = Invoice::where('is_deleted', false)
+                ->where('status', 'paid')
+                ->whereYear('created_at', $year)
                 ->selectRaw(
-                    'MONTH(invoices.created_at) as month,
-                    SUM(training_packages.price) as total'
+                    'MONTH(created_at) as month,
+                    SUM(total_price) as total'
                 )
                 ->groupBy('month')
                 ->pluck('total', 'month');
@@ -298,7 +298,7 @@ class InvoiceController extends Controller
         } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Cập nhật thất bại',
+                'message' => 'Chỉ cho cập nhật khi payment_method là cash',
                 'error' => $e->getMessage()
             ], 500);
         }

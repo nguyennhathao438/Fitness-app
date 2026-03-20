@@ -392,6 +392,7 @@ export default function MemberList({ onChanged }) {
             fetchMembers();
             onChanged?.();
           } catch (err) {
+            console.log("error",err);
             toast.error("Member đang có pt nên không thể xóa");
           }
         }}

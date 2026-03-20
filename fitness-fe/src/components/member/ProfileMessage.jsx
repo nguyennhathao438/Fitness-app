@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import echo from "@/lib/echo";
+import { getEcho } from "@/lib/echo";
 import defaultAvatar from "@/assets/default-avatar.jpg";
 import { SendHorizonalIcon } from "lucide-react";
 import { getMe } from "@/services/admin/PersonalTrainerService";
-import { getMessages, sendMessage } from "@/services/admin/Message";
+import { getMessages, sendMessage, sendTyping } from "@/services/admin/Message";
 import { useSelector } from "react-redux";
 import NoPermissionModal from "../utils/NoPermissionModel";
 
@@ -15,6 +15,21 @@ export default function ProfileMessage({ pt }) {
   const permissions = useSelector((state) => state.auth.permissions);
   const [openNoPermission, setOpenNoPermission] = useState(false);
   const canCreatePermission = permissions.includes("message_user.create");
+  const [isTyping, setIsTyping] = useState(false);
+  const typingTimeoutRef = useRef(null);
+
+  const handleTyping = (e) => {
+    setText(e.target.value);
+
+    if (!typingTimeoutRef.current) sendTyping(pt.id, true);
+
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+
+    typingTimeoutRef.current = setTimeout(() => {
+      sendTyping(pt.id, false);
+      typingTimeoutRef.current = null;
+    }, 1500);
+  };
   // lấy user hiện tại
   useEffect(() => {
     const fetchMe = async () => {
@@ -37,26 +52,40 @@ export default function ProfileMessage({ pt }) {
 
   // realtime
   useEffect(() => {
-    if (!userId || !pt) return;
+  const echo = getEcho();
+  if (!userId || !pt) return;
 
-    const channel = echo.private(`chat.${userId}`);
+  const channel = echo.private(`chat.${userId}`);
 
-    channel.listen(".MessageSent", (e) => {
-      const msg = e.message;
+  // Listener tin nhắn mới
+  const messageListener = (e) => {
+    const msg = e.message;
+    if (msg.sender_id !== pt.id && msg.receiver_id !== pt.id) return;
 
-      if (msg.sender_id !== pt.id && msg.receiver_id !== pt.id) return;
-
-      setMessages((prev) => {
-        const exists = prev.find((m) => m.id === msg.id);
-        if (exists) return prev;
-        return [...prev, msg];
-      });
+    setMessages((prev) => {
+      const exists = prev.find((m) => m.id === msg.id);
+      if (exists) return prev;
+      return [...prev, msg];
     });
+  };
 
-    return () => {
-      echo.leave(`chat.${userId}`);
-    };
-  }, [userId, pt]);
+  // Listener typing
+  const typingListener = (e) => {
+    if (e.senderId !== pt.id) return;
+    setIsTyping(e.isTyping);
+  };
+
+  // Đăng ký
+  channel.listen(".MessageSent", messageListener);
+  channel.listen(".TypingEvent", typingListener);
+
+  // Cleanup khi unmount / userId hoặc pt thay đổi
+  return () => {
+    channel.stopListening(".MessageSent", messageListener);
+    channel.stopListening(".TypingEvent", typingListener);
+    echo.leave(`private-chat.${userId}`);
+  };
+}, [userId, pt]);
 
   // send message
   const handleSend = async () => {
@@ -77,14 +106,19 @@ export default function ProfileMessage({ pt }) {
       bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     });
   }, [messages]);
-
+// clean timeout
+ useEffect(() => {
+        return () => {
+            if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+        };
+    }, []);
   if (!pt) return null;
 
   return (
     <>
     <div className="h-full flex flex-col border rounded-lg bg-white">
       {/* HEADER */}
-      <div className="flex items-center gap-3 p-4 border-b">
+      <div className="flex bg-gradient-to-r from-purple-50 via-pink-50 items-center gap-3 p-4 border-b">
         <img
           src={pt.avatar || defaultAvatar}
           alt="avatar"
@@ -108,7 +142,7 @@ export default function ProfileMessage({ pt }) {
                 className={`px-4 py-2 rounded-lg max-w-[60%] break-words
                 ${
                   isMine
-                    ? "bg-blue-500 text-white"
+                    ? "bg-gradient-to-r from-[#caa3f3] to-[#e4dbf6]"
                     : "bg-gray-200 text-gray-800"
                 }`}
               >
@@ -119,6 +153,9 @@ export default function ProfileMessage({ pt }) {
         })}
 
         <div ref={bottomRef}></div>
+        {isTyping && (
+          <p className="text-sm text-gray-500 ml-2">{pt.name} đang gõ...</p>
+        )} 
       </div>
 
       {/* INPUT */}
@@ -126,13 +163,13 @@ export default function ProfileMessage({ pt }) {
         <input
           type="text"
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={handleTyping}
           onKeyDown={(e) => {
             if (e.key === "Enter") handleSend();
           }}
           placeholder="Nhập tin nhắn..."
           className="flex-1 border rounded-lg px-4 py-2
-                     focus:outline-none focus:ring-2 focus:ring-blue-500"
+                     focus:outline-none focus:ring-2 focus:ring-fuchsia-500"
         />
 
         <button
@@ -146,7 +183,7 @@ export default function ProfileMessage({ pt }) {
           }
           className="p-2 rounded-lg hover:bg-blue-100 transition"
         >
-          <SendHorizonalIcon className="w-5 h-5 text-blue-500" />
+          <SendHorizonalIcon className="w-5 h-5 text-fuchsia-500" />
         </button>
       </div>
     </div>
