@@ -37,8 +37,7 @@ const paymentMethods = [
   },
 ];
 
-// [UPDATE] Thêm prop isExtend
-export default function StepPayment({ data, setData, next, prev, setWaiting, isUpgrade = false, isExtend = false }) {
+export default function StepPayment({ data, setData, next, prev, setWaiting, isUpgrade = false, isExtend = false, isNewPurchase = false }) {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -57,23 +56,27 @@ export default function StepPayment({ data, setData, next, prev, setWaiting, isU
     setLoading(true);
     try {
       let res;
-      // Logic xử lý Nâng cấp hoặc Gia hạn
-      if (isUpgrade || isExtend) {
+      if (isUpgrade || isExtend || isNewPurchase) {
         res = await upgradePackage({
             package_id: data.package_id,
             payment_method: data.payment_method,
             is_extend: isExtend 
         });
-        const successMsg = isExtend ? "Gia hạn thành công!" : "Nâng cấp gói thành công!";
-        toast.success(res.data.message || successMsg);
+        
+        let finalMessage = res.data.message; 
+        if (isNewPurchase) {
+            finalMessage = "Đăng ký gói thành công!"; 
+        }
+        
+        toast.success(finalMessage);
 
       } else {
-        // Logic Đăng ký mới 
         res = await register(data);
         dispatch(login(res.data));
         localStorage.setItem("token", res.data.token);
-        toast.success("Đăng ký thành công");
+        toast.success("Đăng ký tài khoản và mua gói thành công");
       }
+      
       if (res.data.waiting) {
         if(setWaiting) setWaiting(true);
       }
@@ -84,7 +87,8 @@ export default function StepPayment({ data, setData, next, prev, setWaiting, isU
       let errorMsg = "Có lỗi xảy ra";
       if (isExtend) errorMsg = "Gia hạn thất bại";
       else if (isUpgrade) errorMsg = "Nâng cấp thất bại";
-      else errorMsg = "Đăng ký thất bại";
+      else if (isNewPurchase) errorMsg = "Đăng ký gói thất bại";
+      else errorMsg = "Đăng ký tài khoản thất bại";
 
       const msg = error.response?.data?.message || errorMsg;
       toast.error(msg);
@@ -99,7 +103,7 @@ export default function StepPayment({ data, setData, next, prev, setWaiting, isU
         {/* Tiêu đề linh hoạt */}
         {isExtend 
             ? "Thanh toán Gia hạn" 
-            : (isUpgrade ? "Thanh toán Nâng cấp" : "Chọn phương thức thanh toán")
+            : (isUpgrade ? "Thanh toán Nâng cấp" : (isNewPurchase ? "Thanh toán Đăng ký" : "Chọn phương thức thanh toán"))
         }
       </h2>
 
@@ -193,7 +197,7 @@ export default function StepPayment({ data, setData, next, prev, setWaiting, isU
 
           {loading ? "Đang xử lý..." : (
               isExtend ? "Thanh toán Gia hạn" : 
-              (isUpgrade ? "Thanh toán Nâng cấp" : "Thanh toán & Đăng ký")
+              (isUpgrade ? "Thanh toán Nâng cấp" : (isNewPurchase ? "Thanh toán Ngay" : "Thanh toán & Đăng ký"))
           )}
         </button>
       </div>

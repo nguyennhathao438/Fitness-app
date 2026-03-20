@@ -515,8 +515,8 @@ Notification::create([
                 $currentInvoice = Invoice::where('member_id', $member->id)
                     ->where('status', 'paid')
                     ->where('valid_until', '>', Carbon::now())
-                    ->orderBy('valid_until', 'desc')
                     ->orderByDesc('id')
+                    ->orderBy('valid_until', 'desc')
                     ->with('package')
                     ->first();
 

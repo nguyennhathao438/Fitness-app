@@ -20,12 +20,14 @@ use App\Http\Controllers\WorkoutHistoryController;
 use App\Http\Controllers\WorkoutHistoryDetailController;
 use App\Http\Controllers\PTClientController;
 use App\Http\Controllers\SurveyTrainingController;
+use App\Http\Controllers\FavoriteExerciseController;
 
 use App\Http\Controllers\ChatbotController;
 
 use App\Http\Controllers\PTScheduleController;
 use App\Http\Controllers\PTController;
 use App\Http\Controllers\NotificationController;
+
 Route::post('/login', [AuthenController::class, 'login']);
 Route::post('/register', [MemberController::class, 'register']);
 Route::post('/check-email', [AuthenController::class, 'checkEmail']);
@@ -81,6 +83,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/invoice-moneystat', [InvoiceController::class, 'getInvoiceMoney']);
     Route::get('/invoice-memberlongtime', [InvoiceController::class, 'getMemberByInvoice']);
     Route::put('/invoice_delete/{invoiceID}', [InvoiceController::class, 'deleteInvoice']);
+    Route::get('/member/invoice-history', [InvoiceController::class, 'getMemberHistory']);
     //package
     Route::get('/packages', [AdminPackageController::class, 'index']);
     Route::get('/packages/stats', [AdminPackageController::class, 'stats']);
@@ -124,6 +127,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/workout-history-details/{id}', [WorkoutHistoryDetailController::class, 'update']);
     Route::get('/workout-history-details/history/{workoutHistoryId}', [WorkoutHistoryDetailController::class, 'indexExist']);
     Route::put('/invoice_update/{invoiceID}', [InvoiceController::class, 'updateInvoice']);
+
+    // Favorite Exercises
+    Route::get('/favorite-exercises', [FavoriteExerciseController::class, 'index']);
+    Route::post('/favorite-exercises', [FavoriteExerciseController::class, 'store']);
+    Route::delete('/favorite-exercises/{exerciseId}', [FavoriteExerciseController::class, 'destroy']);
+
     //PTClient
     Route::post('/ptclient', [PTClientController::class, 'createPTClient']);
     Route::get('/all_pt', [PTClientController::class, 'getPT']);
@@ -140,7 +149,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Typing event
     Route::post('/messages/typing', [MessageController::class, 'typing']);
     // member xem lich
-    Route::get('/member/my-pt', [MemberController::class, 'myPT']);//ok
+    Route::get('/member/my-pt', [MemberController::class, 'myPT']); //ok
 
     // Member chọn PT lần đầu
     Route::post('/member/choose-pt', [MemberController::class, 'choosePT']);
@@ -148,8 +157,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Lấy danh sách PT
     Route::get('/member/pts', [MemberController::class, 'listPTs']);
     Route::post('/member/register/{scheduleId}', [PTScheduleController::class, 'register']);
-    Route::get('/member/schedules', [PTScheduleController::class, 'memberSchedules']);//lấy lịch của PT
-    Route::get('/member/my-schedules', [PTScheduleController::class, 'myRegisteredSchedules']);// lấy lịch của mình
+    Route::get('/member/schedules', [PTScheduleController::class, 'memberSchedules']); //lấy lịch của PT
+    Route::get('/member/my-schedules', [PTScheduleController::class, 'myRegisteredSchedules']); // lấy lịch của mình
 
     Route::delete('/member/{id}/cancel', [MemberController::class, 'cancel'])
         ->middleware('auth:sanctum');
@@ -163,7 +172,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/pt/schedule/{id}', [PTScheduleController::class, 'updateSchedule']);
     Route::delete('/pt/schedule/{id}', [PTScheduleController::class, 'deleteSchedule']);
     Route::get('/pt/members/{id}', [MemberController::class, 'getMemberDetailForPT']);
-
 });
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/pt/members', [PTController::class, 'myMembers']);
@@ -182,6 +190,8 @@ Route::get('/exercises/{id}', [ExerciseController::class, 'show']);
 Route::put('/exercises/{id}', [ExerciseController::class, 'update']);
 Route::delete('/exercises/{id}', [ExerciseController::class, 'destroy']);
 Route::get('/exercises/by-muscle-group/{muscleGroupId}', [ExerciseController::class, 'getByMuscleGroup']);
+
+
 //package
 Route::get('/training-packages', [TrainingPackageController::class, 'index']);
 Route::get('/package-compare', [TrainingPackageController::class, 'getPackageCompare']);

@@ -43,20 +43,20 @@ export default function SideBar({ collapsed, setCollapsed }) {
         <ul className="mt-2 space-y-5">
           {hasPermission("statistic.read") && (
             <NavLink
-            to="/admin/dashboard"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
+              to="/admin/dashboard"
+              className={({ isActive }) =>
+                `flex items-center px-4 py-2 rounded-md cursor-pointer transition
                             hover:bg-gradient-to-r from-[#56228d] to-[#dfd2fa] hover:translate-x-1
                             ${isActive ? "bg-gradient-to-r from-[#56228d] to-[#dfd2fa]" : ""}`
-            }
-          >
-            <HouseIcon className="text-white inline-block mr-2 size-5"></HouseIcon>
-            <span
-              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+              }
             >
-              Dashboard
-            </span>
-          </NavLink>
+              <HouseIcon className="text-white inline-block mr-2 size-5"></HouseIcon>
+              <span
+                className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+              >
+                Dashboard
+              </span>
+            </NavLink>
           )}
           {hasPermission("user.read") && (
             <NavLink
@@ -107,23 +107,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
               </span>
             </NavLink>
           )}
-          {hasPermission("message_pt.read") && (
-            <NavLink
-            to="/admin/message-pt"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
-                            hover:bg-gradient-to-r from-[#56228d] to-[#dfd2fa] hover:translate-x-1
-                            ${isActive ? "bg-gradient-to-r from-[#56228d] to-[#dfd2fa]" : ""}`
-            }
-          >
-            <MessageCircleIcon className=" text-white inline-block mr-2 size-5"></MessageCircleIcon>
-            <span
-              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
-            >
-              Messages PT
-            </span>
-          </NavLink>
-          )}
+
           {hasPermission("invoice.read") && (
             <NavLink
               to="/admin/order"
@@ -158,21 +142,6 @@ export default function SideBar({ collapsed, setCollapsed }) {
               </span>
             </NavLink>
           )}
-          <NavLink
-            to="/admin/exercise"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
-                            hover:bg-gradient-to-r from-[#56228d] to-[#dfd2fa]
-                            ${isActive ? "bg-gradient-to-r from-[#56228d] to-[#dfd2fa]" : ""}`
-            }
-          >
-            <ShieldCheckIcon className=" text-white inline-block mr-2 size-5"></ShieldCheckIcon>
-            <span
-              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
-            >
-              Exercise
-            </span>
-          </NavLink>
         </ul>
       </nav>
     </div>
