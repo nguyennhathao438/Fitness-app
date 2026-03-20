@@ -127,14 +127,6 @@ const router = createBrowserRouter([
           </RequirePermission>
         ),
       },
-      {
-        path: "message-pt",
-        element: (
-          <RequirePermission permission="message_pt.read">
-            <MessagePT />
-          </RequirePermission>
-        ),
-      },
     ],
   },
   {
@@ -153,6 +145,14 @@ const router = createBrowserRouter([
       {
         path: "exercise",
         element: <Exercise />,
+      },
+      {
+        path: "message-pt",
+        element: (
+          <RequirePermission permission="message_pt.read">
+            <MessagePT />
+          </RequirePermission>
+        ),
       },
       // { path: "schedules/:scheduleId/members", element: <ScheduleMembersPT /> },
     ],

@@ -38,6 +38,7 @@ export default function PTForm({
   const [roles, setRoles] = useState([]);
   const [selectedRoles, setSelectedRoles] = useState([]);
   const handleFormSubmit = (data) => {
+    console.log("hai vkl",data)
     const formData = new FormData();
 
     formData.append("name", data.name);

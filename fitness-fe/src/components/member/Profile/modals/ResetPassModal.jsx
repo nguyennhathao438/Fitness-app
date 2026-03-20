@@ -80,7 +80,7 @@ export default function ResetPassModal({ open, onClose }) {
     }
 
     return (
-        <Modal title={"Đổi mật khẩu"} bgColor={"bg-gray-900"} open={open} txtColor={"text-white"} onClose={onClose}>
+        <Modal title={"Đổi mật khẩu"} border={"border-yellow-400 border-2 border"} bgColor={"bg-gray-900"} open={open} txtColor={"text-white"} onClose={onClose}>
             <form onSubmit={handleSubmitPass(onSubmitPass, onErrorPass)} className="flex flex-col gap-4">
                 <div>
                     <label className="text-white" >Mật khẩu hiện tại</label>
@@ -110,11 +110,11 @@ export default function ResetPassModal({ open, onClose }) {
                     />
                 </div>
                 <div className="flex justify-center gap-4 mt-2">
-                    <button type="button" className="px-4 py-1 bg-gray-300 rounded-md hover:bg-gray-400"
+                    <button type="button" className="px-4 py-1 bg-gray-300 rounded-md hover:bg-gray-400 hover:shadow-lg hover:scale-110 hover:shadow-gray-400/30"
                         onClick={() => { onClose(), handleResetPassForm() }}>
                         Hủy
                     </button>
-                    <button type="submit" className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600">
+                    <button type="submit" className="px-4 py-2 bg-yellow-400 hover:shadow-lg hover:scale-110 text-purple-900 rounded-md hover:shadow-yellow-400/30">
                         {isLoading ? "Đang lưu ..." : "Lưu"}
                     </button>
                 </div>
