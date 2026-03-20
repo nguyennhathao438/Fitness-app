@@ -12,7 +12,7 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
     const [details, setDetails] = useState([]);
     const [workoutId, setWorkoutId] = useState(null);
     const [exerciseConfig, setExerciseConfig] = useState([]);
-
+    const dateVN = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }).format(new Date());
     useEffect(() => {
         const config = listExerciseAdd.map(ex => ({
             ...ex,
@@ -53,7 +53,7 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
                 const workout = {
                     member_id: member.id,
                     total_time: 0,
-                    date: new Date().toISOString().split("T")[0],
+                    date: dateVN,
                     day_of_week: new Date().getDay() + 1,
                     completion_percentage: 0,
                 };
@@ -113,7 +113,6 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
 
             {/* header */}
             <div className="space-y-3 text-center">
-
                 <div className="flex items-center justify-center gap-3">
                     <Dumbbell className="text-purple-400" size={25} />
                     <h2 className="text-2xl font-bold tracking-wide">

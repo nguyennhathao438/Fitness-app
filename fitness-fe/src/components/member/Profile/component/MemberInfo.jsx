@@ -8,7 +8,6 @@ export default function MemberInfo() {
     const { member } = useSelector((state) => state.auth);
     const [openResetPass, setOpenResetPass] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
-
     return (
         <div>
             <div className="flex flex-col md:flex-row py-5 bg-[#1f1b2e] rounded-xl shadow-md">

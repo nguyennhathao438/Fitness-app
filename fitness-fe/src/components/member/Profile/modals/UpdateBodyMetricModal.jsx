@@ -71,7 +71,7 @@ export default function UpdateBodyMetricModal({open,onClose,onSuccess}) {
             toast.error(firstErr.message)
     };
     return (
-        <Modal open={open} onClose={onClose} title={"Cập nhật chỉ số cơ thể"} txtColor={"text-white"} bgColor={"bg-gray-900"}>
+        <Modal open={open} border={"border-yellow-400 border-2 border"} onClose={onClose} title={"Cập nhật chỉ số cơ thể"} txtColor={"text-white"} bgColor={"bg-gray-900"}>
             <form onSubmit={handleSubmit(onSubmit, onError)}>
                 <div className="space-y-8 text-center">
 
@@ -160,17 +160,10 @@ export default function UpdateBodyMetricModal({open,onClose,onSuccess}) {
                     </div>
 
                     <div className="flex justify-center space-x-3">
-                        <button
-                            type="submit"
-                            className=" border border-white/30 text-white cursor-pointer px-4 py-2 rounded-md hover:bg-white/20"
-                        >
+                        <button type="submit" className=" bg-yellow-300 text-purple-900 hover:shadow-lg hover:shadow-yellow-400/30 hover:scale-110 cursor-pointer px-4 py-2 rounded-md ">
                             {isLoading ? "Đang lưu ..." : "Xác nhận"}
                         </button>
-                        <button
-                            type="button"
-                            onClick={() => { onClose(), handleResetBodyMetricForm() }}
-                            className="bg-transparent border border-white/30 text-white cursor-pointer px-4 py-2 rounded-md hover:bg-white/10"
-                        >
+                        <button type="button" onClick={() => { onClose(), handleResetBodyMetricForm() }} className="bg-gray-300 cursor-pointer px-4 py-2 rounded-md hover:shadow-lg hover:shadow-gray-400/30 hover:scale-110">
                             Hủy
                         </button>
                     </div>
