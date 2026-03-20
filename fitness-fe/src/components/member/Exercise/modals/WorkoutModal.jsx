@@ -5,8 +5,6 @@ import ConfirmModal from "./ConfirmModal";
 import api from "@/api";
 export default function WorkoutModal({ exercises = [], open, onClose, workoutToday, workoutId, reloadWorkout }) {
     /* ================= STATE ================= */
-    console.log("exercises in modal", exercises)
-    console.log("workoutToday", workoutToday)
     // keep a local copy so we can update percentages without relying solely on props
     const [localExercises, setLocalExercises] = useState(exercises);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -63,8 +61,8 @@ export default function WorkoutModal({ exercises = [], open, onClose, workoutTod
         } catch (err) {
             console.error(err);
         }
-        setShowConfirm(false); 
-        onClose(); 
+        setShowConfirm(false);
+        onClose();
     };
 
     useEffect(() => {
@@ -276,17 +274,26 @@ export default function WorkoutModal({ exercises = [], open, onClose, workoutTod
                     )}
 
                     {/* CONTROLS */}
-                    <div className="flex gap-4">
-                        <button onClick={toggleRunning}
-                            className={`px-6 py-3 rounded-xl font-semibold flex gap-2 items-center
-                                ${isRunning ? "bg-green-600 hover:bg-green-700" : "bg-purple-600 hover:bg-purple-700"}`}>
-                            {isRunning ? <Check size={18} /> : <Play size={18} />}
-                            {isRunning ? "HOÀN THÀNH" : "BẮT ĐẦU"}
-                        </button>
-                        {/* <button onClick={skipExercise} className="px-6 py-3 rounded-xl bg-gray-700 hover:bg-gray-600 flex gap-2 items-center">
-                            <SkipForward size={18} /> BỎ QUA
-                        </button> */}
-                    </div>
+                    <button
+                        onClick={toggleRunning}
+                        className={`px-6 py-3 rounded-xl font-semibold flex gap-2 items-center ${timeLeft === 0 ? "bg-green-600 hover:bg-green-700" : isRunning ? "bg-green-600 hover:bg-green-700" : "bg-purple-600 hover:bg-purple-700"}`}>
+                        {timeLeft === 0 ? (
+                            <>
+                                <Check size={18} />
+                                HOÀN THÀNH
+                            </>
+                        ) : isRunning ? (
+                            <>
+                                <Check size={18} />
+                                HOÀN THÀNH
+                            </>
+                        ) : (
+                            <>
+                                <Play size={18} />
+                                BẮT ĐẦU
+                            </>
+                        )}
+                    </button>
                 </div>
 
                 {/* RIGHT */}
