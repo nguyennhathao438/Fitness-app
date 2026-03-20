@@ -15,7 +15,6 @@ import Dialog from "../../components/Admin/Dialog";
 import PTForm from "../../components/Admin/PTForm";
 import {
   createdUser,
-  getPersonalTrainers,
 } from "../../services/admin/PersonalTrainerService";
 import {
   getAgeUser,

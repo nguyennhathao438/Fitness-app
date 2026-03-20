@@ -3,12 +3,15 @@ import router from "./routers";
 import { RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { login } from "./storages/authSlice.js";
 import { getMyInfo } from "./services/member/MemberService.js";
+import { initEcho } from "./lib/echo";
 function App() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
+  const prevToken = useRef(null);
+
   useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem("token");
@@ -29,6 +32,26 @@ function App() {
 
     fetchUser();
   }, [dispatch]);
+  useEffect(() => {
+  const interval = setInterval(() => {
+    const token = localStorage.getItem("token");
+
+    // login hoặc đổi account
+    if (token && token !== prevToken.current) {
+      console.log("Token changed re-init Echo");
+      initEcho(token);
+      prevToken.current = token;
+    }
+
+    // logout
+    if (!token && prevToken.current) {
+      console.log("Logout disconnect WS");
+      prevToken.current = null;
+    }
+  }, 500);
+
+  return () => clearInterval(interval);
+}, []);
   if (loading) {
     return (
       <>
