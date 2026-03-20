@@ -1,7 +1,11 @@
 import { DollarSign, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux"; 
+
 export default function PricingCard({ package: pkg, isUpgrade = false }) {
   const navigate = useNavigate();
+  
+  const { member } = useSelector((state) => state.auth); 
 
   const formatVND = (price) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -10,10 +14,13 @@ export default function PricingCard({ package: pkg, isUpgrade = false }) {
     }).format(price);
   };
 
-  // Hàm xử lý khi bấm nút
   const handleAction = () => {
     if (isUpgrade) {
-      navigate(`/member/payment/${pkg.id}`); 
+      navigate(`/member/payment/${pkg.id}`, { state: { isExtend: false, isNewPurchase: false } }); 
+      
+    } else if (member) {
+      navigate(`/member/payment/${pkg.id}`, { state: { isNewPurchase: true } });
+      
     } else {
       navigate(`/register/${pkg.id}`);
     }
@@ -63,7 +70,7 @@ export default function PricingCard({ package: pkg, isUpgrade = false }) {
             onClick={handleAction}
             className="w-full bg-white text-purple-700 font-bold py-3 rounded-full hover:bg-gray-100 transition-colors mt-6"
           >
-            {isUpgrade ? "Nâng cấp ngay" : "Đăng ký ngay"}
+            {isUpgrade ? "Nâng cấp ngay" : (member ? "Thanh toán ngay" : "Đăng ký ngay")}
           </button>
         </div>
       </div>
