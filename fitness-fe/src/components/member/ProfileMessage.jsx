@@ -154,8 +154,15 @@ export default function ProfileMessage({ pt }) {
 
         <div ref={bottomRef}></div>
         {isTyping && (
-          <p className="text-sm text-gray-500 ml-2">{pt.name} đang gõ...</p>
-        )} 
+                <div className="flex items-center gap-1 ml-2">
+                    <p className="text-sm text-gray-500 mr-2">{pt.name} Đang gõ</p>
+                    <div className="flex space-x-1">
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounceDelay"></span>
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounceDelay animation-delay-150"></span>
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounceDelay animation-delay-300"></span>
+                    </div>
+                </div>
+                )}
       </div>
 
       {/* INPUT */}

@@ -73,6 +73,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/genderStat', [MemberController::class, 'memberStats']);
     Route::get('/BirthStat', [MemberController::class, 'AgeStats']);
     Route::post('/personal-trainers', [PersonalTrainerController::class, 'createPT']);
+    Route::get('/ScheduleOfPT/{ptId}',[PTScheduleController::class, 'schedulesOfPT']);
+    Route::get('/ScheduleOfMember/{memberId}',[PTScheduleController::class, 'schedulesOfMember']);
 
 
     //invoice
