@@ -81,9 +81,9 @@ class MemberController extends Controller
                 ]);
             });
             $serviceIds = $package->packageType->services->pluck('id');
-            $waiting = false;
+            $waiting = "paid";
             if ($request->payment_method == 'cash') {
-                $waiting = true;
+                $waiting = "pending";
             }
             Notification::create([
                 'user_id' => $member->id,
@@ -94,7 +94,7 @@ class MemberController extends Controller
             // Tạo token luôn sau khi đăng ký (tùy chọn)
             $token = $member->createToken('member-token')->plainTextToken;
             return response()->json([
-                'waiting' => $waiting,
+                'statusInvoice' => $waiting,
                 'message' => 'Đăng ký thành công',
                 'member' => $member,
                 'valid_until' => $invoice->valid_until,

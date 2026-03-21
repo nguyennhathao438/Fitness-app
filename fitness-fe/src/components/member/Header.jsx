@@ -6,8 +6,10 @@ import { logout } from "../../storages/authSlice.js";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import { Bell, BellDot } from "lucide-react";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { notificationService } from "../../services/notificationService";
 export default function Header() {
+  const navigate = useNavigate();
   const { member, isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [notifications, setNotifications] = useState([]);
@@ -15,6 +17,7 @@ export default function Header() {
   const unreadCount = notifications.filter((n) => !n.is_read).length;
   const handleLogout = () => {
     dispatch(logout());
+    navigate("/");
   };
   useEffect(() => {
     if (isAuthenticated) {
@@ -320,6 +323,23 @@ export default function Header() {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Đăng ký gói tập
+                  </Link>
+                )}
+
+                <Link
+                  to="/bmi"
+                  className="text-gray-300 hover:text-white hover:bg-gray-800 transition-colors text-sm py-2 px-3 rounded-lg"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  BMI
+                </Link>
+                {isAuthenticated && (
+                  <Link
+                    to="/workout"
+                    className="text-gray-300 hover:text-white hover:bg-gray-800 transition-colors text-sm py-2 px-3 rounded-lg"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Workout
                   </Link>
                 )}
               </nav>
