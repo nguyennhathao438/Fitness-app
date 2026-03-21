@@ -14,9 +14,18 @@ class InvoiceController extends Controller
     public function __construct(InvoiceService $invoiceService)
     {
         $this->invoiceService = $invoiceService;
+        $this->middleware('permission:invoice.read')
+            ->only(['getInvoice']);
+
+        $this->middleware('permission:invoice.update')
+            ->only(['updateInvoice']);
+
+        $this->middleware('permission:invoice.delete')
+            ->only(['deleteInvoice']);
     }
     // lấy danh sách hóa đơn
-    public function getInvoice(Request $request){
+    public function getInvoice(Request $request)
+    {
         $data = $this->invoiceService->getInvoices($request);
 
         return response()->json([
@@ -25,7 +34,8 @@ class InvoiceController extends Controller
         ]);
     }
     // delete invoice
-    public function deleteInvoice($invoiceId){
+    public function deleteInvoice($invoiceId)
+    {
         $result = $this->invoiceService->deleteInvoice($invoiceId);
 
         return response()->json([
@@ -34,7 +44,8 @@ class InvoiceController extends Controller
         ], $result['status']);
     }
     // lấy số lượng order tháng này
-    public function getInvoiceThisMonth(){
+    public function getInvoiceThisMonth()
+    {
         $data = $this->invoiceService->getInvoiceThisMonth();
 
         return response()->json([
@@ -43,7 +54,8 @@ class InvoiceController extends Controller
         ]);
     }
     // lấy số lượng invoice theo payment
-    public function getPayment(){
+    public function getPayment()
+    {
         $data = $this->invoiceService->getPaymentStats();
 
         return response()->json([
@@ -55,8 +67,8 @@ class InvoiceController extends Controller
     public function getInvoicePerMonth(Request $request)
     {
         $data = $this->invoiceService->getInvoicePerMonth(
-        $request->type,
-        $request->year
+            $request->type,
+            $request->year
         );
 
         return response()->json([
@@ -68,9 +80,9 @@ class InvoiceController extends Controller
     public function getInvoiceMoney(Request $request)
     {
         $data = $this->invoiceService->getInvoiceMoney(
-        $request->type,
-        $request->year,
-        $request->month
+            $request->type,
+            $request->year,
+            $request->month
         );
 
         return response()->json([
@@ -79,9 +91,10 @@ class InvoiceController extends Controller
         ]);
     }
     // chuyển đổi trạng thái đơn hàng
-    public function updateInvoice(Request $request,$invoiceId){
+    public function updateInvoice(Request $request, $invoiceId)
+    {
         $request->validate([
-        'status' => 'required|in:paid,reject',
+            'status' => 'required|in:paid,reject',
         ]);
 
         $result = $this->invoiceService->updateInvoice($request, $invoiceId);
@@ -97,12 +110,12 @@ class InvoiceController extends Controller
     // Lấy lịch sử mua gói tập của User
     public function getMemberHistory(Request $request)
     {
-        $memberId = $request->user()->id; 
+        $memberId = $request->user()->id;
 
-        $invoices = Invoice::with('package:id,name') 
+        $invoices = Invoice::with('package:id,name')
             ->where('member_id', $memberId)
             ->where('is_deleted', false)
-            ->orderBy('id', 'desc') 
+            ->orderBy('id', 'desc')
             ->get();
 
         $historyData = $invoices->map(function ($invoice) {
@@ -112,7 +125,7 @@ class InvoiceController extends Controller
                 'payment_method' => $invoice->payment_method,
                 'purchaseDate' => $invoice->created_at->format('Y-m-d'),
                 'expireDate' => $invoice->valid_until ? \Carbon\Carbon::parse($invoice->valid_until)->format('Y-m-d') : null,
-                'status' => $invoice->status, 
+                'status' => $invoice->status,
             ];
         });
 
@@ -123,7 +136,8 @@ class InvoiceController extends Controller
     }
 
     // top 5 người dùng lâu nhất 
-    public function getMemberByInvoice(){
+    public function getMemberByInvoice()
+    {
         $data = $this->invoiceService->getTopMemberByInvoice();
 
         return response()->json([

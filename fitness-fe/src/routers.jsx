@@ -34,6 +34,7 @@ import RequirePermission from "./pages/utils/RequirePermission";
 import RequireRole from "./pages/utils/RequireRole";
 import RequireGuest from "./pages/utils/RequireGuest";
 import NotFound from "./components/member/NotFound";
+import RequireMember from "./pages/utils/RequireMember";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -55,8 +56,22 @@ const router = createBrowserRouter([
       },
       { path: "forgot-password", element: <ForgotPassword /> },
       { path: "waiting", element: <WaitingForRegister /> },
-      { path: "profile", element: <Profile /> },
-      { path: "workout", element: <WorkoutPage /> },
+      {
+        path: "profile",
+        element: (
+          <RequireMember>
+            <Profile />
+          </RequireMember>
+        ),
+      },
+      {
+        path: "workout",
+        element: (
+          <RequireMember>
+            <WorkoutPage />
+          </RequireMember>
+        ),
+      },
       { path: "member/pt-register", element: <PTRegisterPage /> },
       { path: "member/my-schedules", element: <MySchedulePage /> },
       { path: "notifications", element: <Notifications /> },

@@ -29,6 +29,14 @@ class MemberController extends Controller
     public function __construct(MemberService $memberService)
     {
         $this->memberService = $memberService;
+        $this->middleware('permission:user.create')
+            ->only(['store']);
+
+        $this->middleware('permission:user.update')
+            ->only(['editUser', 'deletePT']);
+
+        $this->middleware('permission:user.delete')
+            ->only(['deletedUser', 'deletePT']);
     }
     public function register(Request $request)
     {
@@ -78,11 +86,11 @@ class MemberController extends Controller
                 $waiting = true;
             }
             Notification::create([
-    'user_id' => $member->id,
-    'type' => 'welcome',
-    'title' => 'Chào mừng đến với Gym',
-    'message' => 'Bạn đã đăng ký tài khoản thành công và bắt đầu gói ' . $package->name
-]);
+                'user_id' => $member->id,
+                'type' => 'welcome',
+                'title' => 'Chào mừng đến với Gym',
+                'message' => 'Bạn đã đăng ký tài khoản thành công và bắt đầu gói ' . $package->name
+            ]);
             // Tạo token luôn sau khi đăng ký (tùy chọn)
             $token = $member->createToken('member-token')->plainTextToken;
             return response()->json([
@@ -195,11 +203,11 @@ class MemberController extends Controller
     public function editUser(Request $request, $memberId)
     {
         $request->validate([
-        'name' => 'required|string|max:255',
-        'phone' => 'nullable|string|max:15',
-        'gender' => 'nullable|in:male,female,other',
-        'birthday' => 'nullable|date',
-        'avatar' => 'nullable|string',
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:15',
+            'gender' => 'nullable|in:male,female,other',
+            'birthday' => 'nullable|date',
+            'avatar' => 'nullable|string',
         ]);
 
         $result = $this->memberService->updateUser($request, $memberId);
@@ -224,9 +232,9 @@ class MemberController extends Controller
     public function getMemberChart(Request $request)
     {
         $data = $this->memberService->getMemberChart(
-        $request->type,
-        $request->year,
-        $request->month
+            $request->type,
+            $request->year,
+            $request->month
         );
 
         return response()->json([
@@ -262,12 +270,12 @@ class MemberController extends Controller
         $member->update([
             'password' => Hash::make($request->new_password),
         ]);
-Notification::create([
-    'user_id' => $member->id,
-    'type' => 'change_password',
-    'title' => 'Đổi mật khẩu',
-    'message' => 'Mật khẩu tài khoản của bạn đã được thay đổi'
-]);
+        Notification::create([
+            'user_id' => $member->id,
+            'type' => 'change_password',
+            'title' => 'Đổi mật khẩu',
+            'message' => 'Mật khẩu tài khoản của bạn đã được thay đổi'
+        ]);
         return response()->json([
             'message' => 'Đổi mật khẩu thành công'
         ], 200);
@@ -362,14 +370,14 @@ Notification::create([
             });
 
             $waiting = ($request->payment_method == 'cash');
-if(!$waiting){
-    Notification::create([
-        'user_id' => $member->id,
-        'type' => $isExtend ? 'extend_package' : 'upgrade_package',
-        'title' => $isExtend ? 'Gia hạn gói tập' : 'Nâng cấp gói tập',
-        'message' => ($isExtend ? 'Bạn đã gia hạn gói ' : 'Bạn đã nâng cấp lên gói ') . $newPackage->name
-    ]);
-}
+            if (!$waiting) {
+                Notification::create([
+                    'user_id' => $member->id,
+                    'type' => $isExtend ? 'extend_package' : 'upgrade_package',
+                    'title' => $isExtend ? 'Gia hạn gói tập' : 'Nâng cấp gói tập',
+                    'message' => ($isExtend ? 'Bạn đã gia hạn gói ' : 'Bạn đã nâng cấp lên gói ') . $newPackage->name
+                ]);
+            }
             return response()->json([
                 'success' => true,
                 'waiting' => $waiting,
@@ -409,181 +417,181 @@ if(!$waiting){
     {
         return response()->json($request->user());
     }
-   public function myPT()
-{
-    $memberId = auth()->id();
+    public function myPT()
+    {
+        $memberId = auth()->id();
 
-    $pt = DB::table('pt_clients')
-        ->join('members', 'pt_clients.pt_id', '=', 'members.id')
-        ->where('pt_clients.member_id', $memberId)
-        ->select('members.id', 'members.name', 'members.email')
-        ->first();
+        $pt = DB::table('pt_clients')
+            ->join('members', 'pt_clients.pt_id', '=', 'members.id')
+            ->where('pt_clients.member_id', $memberId)
+            ->select('members.id', 'members.name', 'members.email')
+            ->first();
 
-    if (!$pt) {
+        if (!$pt) {
+            return response()->json([
+                'has_pt' => false
+            ]);
+        }
+
         return response()->json([
-            'has_pt' => false
+            'has_pt' => true,
+            'pt' => $pt
+        ]);
+    }
+    public function choosePT(Request $request)
+    {
+        $request->validate([
+            'pt_id' => 'required|exists:members,id'
+        ]);
+
+        $memberId = auth()->id();
+
+        $already = DB::table('pt_clients')
+            ->where('member_id', $memberId)
+            ->exists();
+
+        if ($already) {
+            return response()->json([
+                'message' => 'Bạn đã có PT rồi'
+            ], 400);
+        }
+
+        DB::table('pt_clients')->insert([
+            'pt_id' => $request->pt_id,
+            'member_id' => $memberId,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        Notification::create([
+            'user_id' => $request->pt_id,
+            'sender_id' => $memberId,
+            'type' => 'member_choose_pt',
+            'title' => 'Member mới',
+            'message' => 'Một hội viên đã chọn bạn làm PT',
+            'data' => [
+                'member_id' => $memberId
+            ]
+        ]);
+        return response()->json([
+            'message' => 'Chọn PT thành công'
+        ]);
+    }
+    public function listPTs()
+    {
+        $pts = DB::table('members')
+            ->join('member_role', 'members.id', '=', 'member_role.member_id')
+            ->join('roles', 'roles.id', '=', 'member_role.role_id')
+            ->where('roles.name', 'PT')
+            ->select('members.id', 'members.name', 'members.email')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $pts
+        ]);
+    }
+    public function cancel($id)
+    {
+        $memberId = auth()->id();
+
+        $schedule = PTSchedule::find($id);
+
+        if (!$schedule) {
+            return response()->json([
+                'message' => 'Lịch không tồn tại'
+            ], 404);
+        }
+
+        // Chỉ cho phép hủy nếu chính member đó đã đăng ký
+        if ($schedule->member_id != $memberId) {
+            return response()->json([
+                'message' => 'Bạn không có quyền hủy lịch này'
+            ], 403);
+        }
+
+        // Không cho hủy nếu còn < 3 ngày (tuỳ luật bạn muốn)
+        if (Carbon::now()->diffInDays($schedule->date, false) < 3) {
+            return response()->json([
+                'message' => 'Chỉ được hủy trước 3 ngày'
+            ], 400);
+        }
+
+        $schedule->update([
+            'member_id' => null
+        ]);
+        Notification::create([
+            'user_id' => $schedule->pt_id,
+            'sender_id' => $memberId,
+            'type' => 'schedule_cancel',
+            'title' => 'Lịch tập bị hủy',
+            'message' => 'Một hội viên đã hủy lịch tập'
+        ]);
+        return response()->json([
+            'message' => 'Hủy lịch thành công'
         ]);
     }
 
-    return response()->json([
-        'has_pt' => true,
-        'pt' => $pt
-    ]);
-}
-public function choosePT(Request $request)
-{
-    $request->validate([
-        'pt_id' => 'required|exists:members,id'
-    ]);
+    public function getMemberDetailForPT($id)
+    {
+        $member = Member::where('id', $id)
+            ->where('is_deleted', false)
+            ->select('id', 'name', 'email', 'phone', 'gender', 'avatar', 'created_at')
+            ->first();
 
-    $memberId = auth()->id();
+        if (!$member) {
+            return response()->json([
+                'message' => 'Member không tồn tại'
+            ], 404);
+        }
 
-    $already = DB::table('pt_clients')
-        ->where('member_id', $memberId)
-        ->exists();
+        // ===== PACKAGE INFO =====
+        $invoice = Invoice::where('member_id', $id)
+            ->where('status', 'paid')
+            ->latest()
+            ->first();
 
-    if ($already) {
+        $package = null;
+
+        if ($invoice) {
+            $package = TrainingPackage::find($invoice->package_id);
+        }
+
+        // ===== SESSIONS =====
+        $totalSessions = PTSchedule::where('member_id', $id)->count();
+
+        $completedSessions = PTSchedule::where('member_id', $id)
+            ->where('date', '<', now())
+            ->count();
+
+        $remainingSessions = $totalSessions - $completedSessions;
+
+        // ===== UPCOMING SESSIONS =====
+        $upcoming = PTSchedule::where('member_id', $id)
+            ->where('date', '>=', now())
+            ->orderBy('date')
+            ->take(3)
+            ->get(['id', 'date', 'start_time', 'end_time']);
+        $bodyMetrics = BodyMetric::where('member_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->first();
         return response()->json([
-            'message' => 'Bạn đã có PT rồi'
-        ], 400);
+            'member' => $member,
+
+            'package' => [
+                'name' => $package?->name,
+                'valid_until' => $invoice?->valid_until
+            ],
+
+            'sessions' => [
+                'total' => $totalSessions,
+                'completed' => $completedSessions,
+                'remaining' => $remainingSessions
+            ],
+
+            'upcoming_sessions' => $upcoming,
+
+            // thêm phần này
+            'body_metrics' => $bodyMetrics
+        ]);
     }
-
-    DB::table('pt_clients')->insert([
-        'pt_id' => $request->pt_id,
-        'member_id' => $memberId,
-        'created_at' => now(),
-        'updated_at' => now()
-    ]);
-Notification::create([
-    'user_id' => $request->pt_id,
-    'sender_id' => $memberId,
-    'type' => 'member_choose_pt',
-    'title' => 'Member mới',
-    'message' => 'Một hội viên đã chọn bạn làm PT',
-    'data' => [
-        'member_id' => $memberId
-    ]
-]);
-    return response()->json([
-        'message' => 'Chọn PT thành công'
-    ]);
-}
-public function listPTs()
-{
-    $pts = DB::table('members')
-        ->join('member_role', 'members.id', '=', 'member_role.member_id')
-        ->join('roles', 'roles.id', '=', 'member_role.role_id')
-        ->where('roles.name', 'PT')
-        ->select('members.id', 'members.name', 'members.email')
-        ->get();
-
-    return response()->json([
-        'success' => true,
-        'data' => $pts
-    ]);
-}
-public function cancel($id)
-{
-    $memberId = auth()->id();
-
-    $schedule = PTSchedule::find($id);
-
-    if (!$schedule) {
-        return response()->json([
-            'message' => 'Lịch không tồn tại'
-        ], 404);
-    }
-
-    // Chỉ cho phép hủy nếu chính member đó đã đăng ký
-    if ($schedule->member_id != $memberId) {
-        return response()->json([
-            'message' => 'Bạn không có quyền hủy lịch này'
-        ], 403);
-    }
-
-    // Không cho hủy nếu còn < 3 ngày (tuỳ luật bạn muốn)
-    if (Carbon::now()->diffInDays($schedule->date, false) < 3) {
-        return response()->json([
-            'message' => 'Chỉ được hủy trước 3 ngày'
-        ], 400);
-    }
-
-    $schedule->update([
-        'member_id' => null
-    ]);
-Notification::create([
-    'user_id' => $schedule->pt_id,
-    'sender_id' => $memberId,
-    'type' => 'schedule_cancel',
-    'title' => 'Lịch tập bị hủy',
-    'message' => 'Một hội viên đã hủy lịch tập'
-]);
-    return response()->json([
-        'message' => 'Hủy lịch thành công'
-    ]);
-}
-
-public function getMemberDetailForPT($id)
-{
-    $member = Member::where('id', $id)
-        ->where('is_deleted', false)
-        ->select('id','name','email','phone','gender','avatar','created_at')
-        ->first();
-
-    if(!$member){
-        return response()->json([
-            'message' => 'Member không tồn tại'
-        ],404);
-    }
-
-    // ===== PACKAGE INFO =====
-    $invoice = Invoice::where('member_id',$id)
-        ->where('status','paid')
-        ->latest()
-        ->first();
-
-    $package = null;
-
-    if($invoice){
-        $package = TrainingPackage::find($invoice->package_id);
-    }
-
-    // ===== SESSIONS =====
-    $totalSessions = PTSchedule::where('member_id',$id)->count();
-
-    $completedSessions = PTSchedule::where('member_id',$id)
-        ->where('date','<',now())
-        ->count();
-
-    $remainingSessions = $totalSessions - $completedSessions;
-
-    // ===== UPCOMING SESSIONS =====
-    $upcoming = PTSchedule::where('member_id',$id)
-        ->where('date','>=',now())
-        ->orderBy('date')
-        ->take(3)
-        ->get(['id','date','start_time','end_time']);
-$bodyMetrics = BodyMetric::where('member_id', $id)
-    ->orderBy('created_at', 'desc')
-    ->first();
-    return response()->json([
-    'member' => $member,
-
-    'package' => [
-        'name' => $package?->name,
-        'valid_until' => $invoice?->valid_until
-    ],
-
-    'sessions' => [
-        'total' => $totalSessions,
-        'completed' => $completedSessions,
-        'remaining' => $remainingSessions
-    ],
-
-    'upcoming_sessions' => $upcoming,
-
-    // thêm phần này
-    'body_metrics' => $bodyMetrics
-]);
-}
 }

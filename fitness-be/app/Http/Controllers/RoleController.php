@@ -9,6 +9,20 @@ use App\Models\Permission;
 use DB;
 class RoleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:permission.read')
+            ->only(['index', 'show']);
+
+        $this->middleware('permission:permission.create')
+            ->only(['store']);
+
+        $this->middleware('permission:permission.update')
+            ->only(['update']);
+
+        $this->middleware('permission:permission.delete')
+            ->only(['destroy']);
+    }
     public function index()
     {
         $roles = Role::withCount('members')

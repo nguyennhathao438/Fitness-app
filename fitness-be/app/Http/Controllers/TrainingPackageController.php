@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\TrainingPackage;
 use App\Models\PackageType;
 use App\Models\Service;
@@ -146,7 +145,7 @@ class TrainingPackageController extends Controller
     // Lấy thông tin chi tiết gói tập hiện tại của Member
     public function getCurrentPackageInfo(Request $request)
     {
-        $memberId = $request->user()->id; 
+        $memberId = $request->user()->id;
 
         $activeInvoice = Invoice::where('member_id', $memberId)
             ->where('status', 'paid')
@@ -184,7 +183,7 @@ class TrainingPackageController extends Controller
                     'package_name' => $activeInvoice->package->name,
                     'duration_days' => $activeInvoice->package->duration_days,
                     'price' => $activeInvoice->package->price,
-                    'description' => $activeInvoice->package->description, 
+                    'description' => $activeInvoice->package->description,
                     'valid_until' => $activeInvoice->valid_until,
                     'days_remaining' => $daysRemaining,
                 ]
