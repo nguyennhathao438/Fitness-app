@@ -9,10 +9,8 @@ export const deletedUser = (memberID) => {
 export const deletedPT = (ptID) => {
   return api.put(`/deleted_pt/${ptID}`);
 };
-export const updatedUser = (memberID, formData) => {
-  formData.append("_method", "PUT");
-
-  return api.post(`/update/${memberID}`, formData);
+export const updatedUser = (memberID, data) => {
+  return api.put(`/update/${memberID}`, data);
 };
 export const createdUser = (data) => {
   return api.post(`/personal-trainers`, data);
