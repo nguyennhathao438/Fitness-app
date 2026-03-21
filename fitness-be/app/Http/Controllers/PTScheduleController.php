@@ -17,29 +17,35 @@ class PTScheduleController extends Controller
     public function __construct(PTScheduleService $scheduleService)
     {
         $this->scheduleService = $scheduleService;
+        $this->middleware('permission:schedule_pt.create')
+            ->only(['createSchedule']);
+        $this->middleware('permission:schedule_pt.update')
+            ->only(['updateSchedule']);
+        $this->middleware('permission:schedule_pt.delete')
+            ->only(['deleteSchedule']);
     }
 
     public function createSchedule(Request $request)
     {
         $request->validate([
-        'date' => 'required|date',
-        'start_time' => 'required',
-        'end_time' => 'required',
-    ]);
-
-    try {
-        $schedule = $this->scheduleService->create($request);
-
-        return response()->json([
-            'message' => 'Tạo lịch thành công',
-            'data' => $schedule
+            'date' => 'required|date',
+            'start_time' => 'required',
+            'end_time' => 'required',
         ]);
 
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => $e->getMessage()
-        ], 400);
-    }
+        try {
+            $schedule = $this->scheduleService->create($request);
+
+            return response()->json([
+                'message' => 'Tạo lịch thành công',
+                'data' => $schedule
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
 
     public function register($scheduleId)
@@ -71,12 +77,12 @@ class PTScheduleController extends Controller
     public function updateSchedule(Request $request, $id)
     {
         try {
-        $schedule = $this->scheduleService->updateSchedule($request, $id);
+            $schedule = $this->scheduleService->updateSchedule($request, $id);
 
-        return response()->json([
-            'message' => 'Cập nhật thành công',
-            'data' => $schedule
-        ]);
+            return response()->json([
+                'message' => 'Cập nhật thành công',
+                'data' => $schedule
+            ]);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -87,11 +93,11 @@ class PTScheduleController extends Controller
     public function deleteSchedule($id)
     {
         try {
-        $this->scheduleService->deleteSchedule($id);
+            $this->scheduleService->deleteSchedule($id);
 
-        return response()->json([
-            'message' => 'Xóa thành công'
-        ]);
+            return response()->json([
+                'message' => 'Xóa thành công'
+            ]);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -168,7 +174,8 @@ class PTScheduleController extends Controller
         ]);
     }
     //admin xem lịch hội viên
-    public function schedulesOfMember($memberId){
+    public function schedulesOfMember($memberId)
+    {
         $schedules = PTSchedule::with('member')
             ->where('member_id', $memberId)
             ->orderBy('date')

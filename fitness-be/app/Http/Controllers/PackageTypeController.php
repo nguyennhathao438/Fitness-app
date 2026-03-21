@@ -10,8 +10,22 @@ use Illuminate\Support\Facades\DB;
 
 class PackageTypeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:package.read')
+            ->only(['index', 'show']);
+
+        $this->middleware('permission:package.create')
+            ->only(['store']);
+
+        $this->middleware('permission:package.update')
+            ->only(['update']);
+
+        $this->middleware('permission:package.delete')
+            ->only(['destroy']);
+    }
     // Lấy danh sách Loại gói + Dịch vụ đi kèm
-     
+
     public function index(Request $request)
     {
         $query = PackageType::with('services');
@@ -30,15 +44,15 @@ class PackageTypeController extends Controller
     }
 
     // Lấy danh sách tất cả Dịch vụ (để đổ vào Checkbox Form)
-     
+
     public function getAllService()
     {
-        
+
         $services = Service::select('id', 'name')->orderBy('name', 'asc')->get();
 
         return response()->json([
             'status' => true,
-            'data' => $services 
+            'data' => $services
         ]);
     }
     // Xem chi tiết 1 Loại gói
@@ -58,13 +72,13 @@ class PackageTypeController extends Controller
     }
 
     // Tạo mới Loại gói
-     
+
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'service_ids' => 'array',        
-            'service_ids.*' => 'exists:services,id' 
+            'service_ids' => 'array',
+            'service_ids.*' => 'exists:services,id'
         ]);
 
         try {
@@ -131,15 +145,15 @@ class PackageTypeController extends Controller
     }
 
     // Xóa Loại gói
-     
+
     public function destroy($id)
     {
         try {
             $packageType = PackageType::findOrFail($id);
-            
+
             if ($packageType->trainingPackages()->count() > 0) {
                 return response()->json([
-                    'status' => false, 
+                    'status' => false,
                     'message' => 'Không thể xóa! Đang có gói tập thuộc loại này.'
                 ], 400);
             }
@@ -154,7 +168,7 @@ class PackageTypeController extends Controller
             ]);
         } catch (\Throwable $e) {
             return response()->json([
-                'status' => false, 
+                'status' => false,
                 'message' => 'Lỗi hệ thống: ' . $e->getMessage()
             ], 500);
         }
