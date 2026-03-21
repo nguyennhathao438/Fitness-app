@@ -3,12 +3,14 @@ import { useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 export default function RequireMember({ children }) {
-  const { statusInvoice, validUntil } = useSelector((state) => state.auth);
+  const { statusInvoice, validUntil, member } = useSelector(
+    (state) => state.auth,
+  );
 
   const navigate = useNavigate();
 
   const now = new Date();
-  if (statusInvoice === null && validUntil === null) {
+  if (!member) {
     return <Navigate to="/" replace />;
   }
   // pending -> waiting
