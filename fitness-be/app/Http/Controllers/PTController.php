@@ -27,7 +27,7 @@ class PTController extends Controller
     $ptId = auth()->id();
 
     // kiểm tra đã tồn tại chưa
-    $exists = DB::table('pt_member')
+    $exists = DB::table('pt_clients')
         ->where('pt_id', $ptId)
         ->where('member_id', $request->member_id)
         ->exists();
@@ -38,7 +38,7 @@ class PTController extends Controller
         ], 400);
     }
 
-    DB::table('pt_member')->insert([
+    DB::table('pt_clients')->insert([
         'pt_id' => $ptId,
         'member_id' => $request->member_id,
         'created_at' => now(),
@@ -65,7 +65,7 @@ public function removeMember($memberId)
 {
     $ptId = auth()->id();
 
-    DB::table('pt_member')
+    DB::table('pt_clients')
         ->where('pt_id', $ptId)
         ->where('member_id', $memberId)
         ->delete();

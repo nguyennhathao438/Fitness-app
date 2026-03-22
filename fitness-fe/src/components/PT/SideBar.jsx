@@ -39,6 +39,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
         <ul className="mt-2 space-y-5">
           <NavLink
             to="/pt"
+            end
             className={({ isActive }) =>
               `flex items-center px-4 py-2 rounded-md cursor-pointer transition
                             hover:bg-purple-500 hover:translate-x-1
@@ -78,18 +79,24 @@ export default function SideBar({ collapsed, setCollapsed }) {
     Schedules
   </span>
 </NavLink> */}
-          <li className="px-4 py-2 cursor-pointer rounded-md hover:bg-purple-500 hover:translate-x-1">
+          <NavLink
+            to="/pt/message-pt"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
+                            hover:bg-purple-500
+                            ${isActive ? "bg-purple-600" : ""}`
+            }
+          >
             <MessageCircleIcon className=" text-white inline-block mr-2 size-5"></MessageCircleIcon>
             <span
               className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
             >
               Messages
             </span>
-          </li>
-         
-         
+          </NavLink>
+
           <NavLink
-            to="/pt"
+            to="/pt/exercise"
             className={({ isActive }) =>
               `flex items-center px-4 py-2 rounded-md cursor-pointer transition
                             hover:bg-purple-500

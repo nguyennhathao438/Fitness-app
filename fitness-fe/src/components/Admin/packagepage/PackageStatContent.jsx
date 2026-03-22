@@ -9,11 +9,8 @@ import {
   Legend,
 } from "chart.js";
 import { Trophy, Users, TrendingUp } from "lucide-react";
-
-// [MỚI] Import API từ service của bạn (Kiểm tra lại đường dẫn nếu cần)
 import { getPackageStat } from "../../../services/admin/Package"; 
 
-// Đăng ký các module của Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -27,7 +24,6 @@ export default function PackageStatContent() {
   const [topPackages, setTopPackages] = useState([]);
 
   useEffect(() => {
-    // [MỚI] Gọi API thực tế
     getPackageStat()
       .then((res) => {
         const { labels, data } = res.data.data;
@@ -74,7 +70,6 @@ export default function PackageStatContent() {
     return (
       <div className="h-[400px] flex items-center justify-center text-gray-400 bg-white rounded-xl border border-gray-100">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mr-3"></div>
-        Đang tải biểu đồ...
       </div>
     );
   }

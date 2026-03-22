@@ -7,6 +7,7 @@ const initialState = {
   isAuthenticated: false,
   roles: [],
   permissions: [],
+  statusInvoice: null,
 };
 
 const authSlice = createSlice({
@@ -14,14 +15,21 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      const { member, valid_until, service_ids, roles, permissions } =
-        action.payload;
+      const {
+        member,
+        valid_until,
+        service_ids,
+        roles,
+        permissions,
+        statusInvoice,
+      } = action.payload;
 
       state.member = member;
       state.validUntil = valid_until;
       state.serviceIds = service_ids;
       state.isAuthenticated = true;
       state.roles = roles;
+      state.statusInvoice = statusInvoice;
       state.permissions = permissions;
     },
 

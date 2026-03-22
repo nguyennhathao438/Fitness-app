@@ -4,9 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Exercise;
 use Illuminate\Http\Request;
-
 class ExerciseController extends Controller
 {
+    public function __construct()
+    {
+
+        $this->middleware('permission:exercise.create')
+            ->only(['store']);
+
+        $this->middleware('permission:exercise.update')
+            ->only(['update']);
+
+        $this->middleware('permission:exercise.delete')
+            ->only(['destroy']);
+    }
     /**
      * GET /exercises
      * Lấy danh sách exercise

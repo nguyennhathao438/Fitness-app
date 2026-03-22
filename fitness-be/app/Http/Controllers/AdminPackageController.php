@@ -6,18 +6,29 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TrainingPackage;
 use App\Models\PackageType;
-use App\Models\Service; 
-use App\Models\Invoice; 
-use Illuminate\Support\Facades\DB; 
+use App\Models\Service;
+use App\Models\Invoice;
+use Illuminate\Support\Facades\DB;
 
 class AdminPackageController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:package.create')
+            ->only(['store']);
+
+        $this->middleware('permission:package.update')
+            ->only(['update']);
+
+        $this->middleware('permission:package.delete')
+            ->only(['destroy']);
+    }
     // Lấy danh sách gói tập.
-     
+
     public function index(Request $request)
     {
         $query = TrainingPackage::with('packageType:id,name')
-                    ->where('is_deleted', false);
+            ->where('is_deleted', false);
 
         // Lọc và tìm kiếm giữ nguyên logic cũ
         if ($request->filled('search')) {
@@ -31,34 +42,34 @@ class AdminPackageController extends Controller
         $packages = $query->orderBy('created_at', 'desc')->paginate(5);
 
         return response()->json([
-            'success' => true, 
-            'data' => $packages 
+            'success' => true,
+            'data' => $packages
         ]);
     }
 
     // Xem chi tiết gói tập.
-     
+
     public function show($id)
     {
         $package = TrainingPackage::with('packageType:id,name')
-                    ->where('is_deleted', false) 
-                    ->find($id);
+            ->where('is_deleted', false)
+            ->find($id);
 
         if (!$package) {
             return response()->json([
-                'success' => false, 
+                'success' => false,
                 'message' => 'Gói tập không tồn tại'
             ], 404);
         }
 
         return response()->json([
-            'success' => true, 
+            'success' => true,
             'data' => $package
         ]);
     }
 
     // Tạo gói tập mới.
-     
+
     public function store(Request $request)
     {
         $request->validate([
@@ -84,18 +95,18 @@ class AdminPackageController extends Controller
         ]);
 
         return response()->json([
-            'success' => true, 
-            'message' => 'Thêm gói tập thành công', 
+            'success' => true,
+            'message' => 'Thêm gói tập thành công',
             'data' => $package
         ]);
     }
 
     // Cập nhật thông tin gói tập.
-     
+
     public function update(Request $request, $id)
     {
         $package = TrainingPackage::where('is_deleted', false)->find($id);
-        
+
         if (!$package) {
             return response()->json([
                 'success' => false,
@@ -114,14 +125,14 @@ class AdminPackageController extends Controller
         $package->update($request->all());
 
         return response()->json([
-            'success' => true, 
-            'message' => 'Cập nhật thành công', 
+            'success' => true,
+            'message' => 'Cập nhật thành công',
             'data' => $package
         ]);
     }
 
     // Xóa mềm gói tập.
-     
+
     public function destroy($id)
     {
         $package = TrainingPackage::where('is_deleted', false)->find($id);
@@ -136,13 +147,13 @@ class AdminPackageController extends Controller
         $package->update(['is_deleted' => true]);
 
         return response()->json([
-            'success' => true, 
+            'success' => true,
             'message' => 'Đã xóa gói tập thành công'
         ]);
     }
 
     // Lấy danh sách Loại gói.
-     
+
     public function getTypes()
     {
         $types = PackageType::select('id', 'name')->get();
@@ -150,7 +161,7 @@ class AdminPackageController extends Controller
     }
 
     //Thống kê Dashboard.
-     
+
     public function stats()
     {
         try {
@@ -164,7 +175,7 @@ class AdminPackageController extends Controller
                 'status' => true,
                 'data' => [
                     'total_packages' => $totalPackages,
-                    'total_types'    => $totalTypes,
+                    'total_types' => $totalTypes,
                     'total_services' => $totalServices,
                 ]
             ]);
@@ -180,13 +191,15 @@ class AdminPackageController extends Controller
     {
         try {
             $packages = TrainingPackage::select('id', 'name')
-                ->where('is_deleted', false) 
+                ->where('is_deleted', false)
                 ->whereHas('invoices', function ($query) {
                     $query->where('status', 'paid'); // Phải có hóa đơn paid
                 })
-                ->withCount(['invoices as registered_count' => function ($query) {
-                    $query->where('status', 'paid'); // Đếm số lượng hóa đơn paid
-                }])
+                ->withCount([
+                    'invoices as registered_count' => function ($query) {
+                        $query->where('status', 'paid'); // Đếm số lượng hóa đơn paid
+                    }
+                ])
                 ->get();
 
             $labels = [];

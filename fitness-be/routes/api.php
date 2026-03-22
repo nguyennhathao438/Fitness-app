@@ -8,7 +8,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PersonalTrainerController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\OtpController;
-use App\Http\Controllers\TrainingPackageController;
+use App\Http\Controllers\Train;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\MessageController;
@@ -21,13 +21,15 @@ use App\Http\Controllers\WorkoutHistoryDetailController;
 use App\Http\Controllers\PTClientController;
 use App\Http\Controllers\SurveyTrainingController;
 use App\Http\Controllers\FavoriteExerciseController;
-
+use App\Http\Controllers\TrainingPackageController;
 use App\Http\Controllers\ChatbotController;
 
 use App\Http\Controllers\PTScheduleController;
 use App\Http\Controllers\PTController;
 use App\Http\Controllers\NotificationController;
 
+
+use App\Http\Controllers\PaymentController;
 Route::post('/login', [AuthenController::class, 'login']);
 Route::post('/register', [MemberController::class, 'register']);
 Route::post('/check-email', [AuthenController::class, 'checkEmail']);
@@ -73,6 +75,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/genderStat', [MemberController::class, 'memberStats']);
     Route::get('/BirthStat', [MemberController::class, 'AgeStats']);
     Route::post('/personal-trainers', [PersonalTrainerController::class, 'createPT']);
+    Route::get('/ScheduleOfPT/{ptId}', [PTScheduleController::class, 'schedulesOfPT']);
+    Route::get('/ScheduleOfMember/{memberId}', [PTScheduleController::class, 'schedulesOfMember']);
 
 
     //invoice
@@ -83,6 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/invoice-moneystat', [InvoiceController::class, 'getInvoiceMoney']);
     Route::get('/invoice-memberlongtime', [InvoiceController::class, 'getMemberByInvoice']);
     Route::put('/invoice_delete/{invoiceID}', [InvoiceController::class, 'deleteInvoice']);
+    Route::get('/member/invoice-history', [InvoiceController::class, 'getMemberHistory']);
     //package
     Route::get('/packages', [AdminPackageController::class, 'index']);
     Route::get('/packages/stats', [AdminPackageController::class, 'stats']);
@@ -145,6 +150,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/chatWithPt', [MessageController::class, 'getChatPartners']);
     Route::get('/chatFromPt', [MessageController::class, 'getPTClients']);
     Route::get('/getChatPt', [MessageController::class, 'getChatWithPT']);
+    // Typing event
+    Route::post('/messages/typing', [MessageController::class, 'typing']);
     // member xem lich
     Route::get('/member/my-pt', [MemberController::class, 'myPT']); //ok
 
@@ -217,3 +224,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
 });
+
+
+//payment
+Route::post('/momo_payment', [PaymentController::class, 'momo_payment']);
+Route::post('/vnpay_payment', [PaymentController::class, 'vnpay_payment']);

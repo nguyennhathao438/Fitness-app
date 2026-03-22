@@ -23,3 +23,9 @@ export const getAdminAndMemberListChat = (keyword) => {
         }
     });
 }
+export const sendTyping = (receiverId, isTyping) => {
+    return api.post("/messages/typing", {
+        receiver_id: receiverId,
+        is_typing: isTyping
+    });
+}

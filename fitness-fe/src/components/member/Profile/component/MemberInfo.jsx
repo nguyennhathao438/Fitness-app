@@ -16,7 +16,7 @@ export default function MemberInfo() {
                 <div className="flex flex-1 justify-center items-center">
                     {member?.avatar ? (
                         <img
-                            className="w-48 h-48 p-2 rounded-full border-4 border-purple-500 shadow-lg"
+                            className="w-48 h-48 p-2 rounded-full object-cover border-4 border-purple-500 shadow-lg"
                             src={member?.avatar || "/placeholder.svg"}
                             alt="avatar"
                         />
