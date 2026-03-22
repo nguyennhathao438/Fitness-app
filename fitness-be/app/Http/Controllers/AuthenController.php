@@ -18,7 +18,8 @@ class AuthenController extends Controller
             'name',
             'email',
             'phone',
-            'avatar'
+            'avatar',
+            'gender'
         ]);
 
         $latestInvoice = Invoice::with('package.packageType.services')
