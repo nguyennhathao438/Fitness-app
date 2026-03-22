@@ -1,16 +1,25 @@
 import { MessageCircle, SendHorizonalIcon } from "lucide-react";
 import defaultAvatar from "@/assets/default-avatar.jpg";
-import { getMessages, sendMessage } from "@/services/admin/Message";
+import { getMessages, sendMessage, sendTyping } from "@/services/admin/Message";
 import { getMe } from "@/services/admin/PersonalTrainerService";
 import { useEffect, useRef, useState } from "react";
-import echo from "@/lib/echo";
+import { getEcho } from "@/lib/echo";
+import { useSelector } from "react-redux";
+import NoPermissionModal from "@/components/utils/NoPermissionModel";
 
-export default function MessageItem({ pt }) {
+export default function MessageItem({ pt , type}) {
 
     const [messages, setMessages] = useState([]);
     const [text, setText] = useState("");
     const [currentUserId, setCurrentUserId] = useState(null);
+    const permissions = useSelector((state) => state.auth.permissions);
+    const [openNoPermission, setOpenNoPermission] = useState(false);
+    const canSendMessage =
+    (type === "admin" && permissions?.includes("message_admin.create")) ||
+    (type === "pt" && permissions?.includes("message_pt.create"));
     const bottomRef = useRef(null);
+    const [isTyping, setIsTyping] = useState(false);
+    const typingTimeoutRef = useRef(null);
     useEffect(() => {
     const fetchMe = async () => {
         try {
@@ -38,13 +47,25 @@ export default function MessageItem({ pt }) {
         console.error("Send message error:", err);
     }
 };
+    const handleTyping = (e) => {
+        setText(e.target.value);
+
+        // gửi trạng thái đang gõ
+        // gửi true chỉ khi chưa gõ
+        if (!typingTimeoutRef.current) sendTyping(pt.id, true);
+
+        // Xóa timeout cũ
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+
+        // Nếu ngừng gõ 1.5s, gửi isTyping=false
+        typingTimeoutRef.current = setTimeout(() => {
+            sendTyping(pt.id, false);
+            typingTimeoutRef.current = null;
+        }, 1500);
+    };
     useEffect(() => {
         if (!pt) return;
-
-        fetchMessages();
-    }, [pt]);
-
-    const fetchMessages = async () => {
+        const fetchMessages = async () => {
         try {
             const res = await getMessages(pt.id);
             setMessages(res.data);
@@ -52,10 +73,15 @@ export default function MessageItem({ pt }) {
             console.error(err);
         }
     };
+        fetchMessages();
+    }, [pt]);
+
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
+
     useEffect(() => {
+    const echo = getEcho();
     if (!currentUserId || !pt) return;
 
     const channel = echo.private(`chat.${currentUserId}`);
@@ -71,10 +97,26 @@ export default function MessageItem({ pt }) {
             return [...prev, msg];
         });
     };
+    const typingListener = (e) => {
+            if (e.senderId !== pt.id) return;
+            // ví dụ dùng state để hiển thị "User đang gõ..."
+            setIsTyping(e.isTyping);
+        };
 
+    channel.listen(".TypingEvent", typingListener);
     channel.listen(".MessageSent", listener);
-
+    return () => {
+            channel.stopListening(".MessageSent", listener);
+            channel.stopListening(".TypingEvent", typingListener);
+            echo.leave(channel);
+        };
 }, [currentUserId, pt]);
+
+    useEffect(() => {
+        return () => {
+            if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+        };
+    }, []);
     if (!pt) {
         return (
             <div className="relative rounded-lg">
@@ -104,10 +146,11 @@ export default function MessageItem({ pt }) {
     }
 
     return (
+        <>
         <div className="h-[825px] border rounded-lg flex flex-col">
 
             {/* header */}
-            <div className="p-4 border-b font-medium flex gap-5 bg-white">
+            <div className="p-4 border-b font-medium flex gap-5 bg-gradient-to-r from-purple-50 via-pink-50">
                 <div>
                     <img
                     src={pt.avatar || defaultAvatar}
@@ -132,7 +175,7 @@ export default function MessageItem({ pt }) {
                             <div
                             className={`px-3 py-2 rounded-lg max-w-[60%] max-md:max-w-[80%]
                             ${isMine 
-                                ? "bg-purple-500 text-white" 
+                                ? "bg-gradient-to-r from-[#caa3f3] to-[#e4dbf6]" 
                                 : "bg-gray-200 text-gray-800"
                             }`}
                             >
@@ -144,6 +187,16 @@ export default function MessageItem({ pt }) {
                     );
                 })}
                 <div ref={bottomRef}></div>
+                {isTyping && (
+                <div className="flex items-center gap-1 ml-2">
+                    <p className="text-sm text-gray-500 mr-2">{pt.name} Đang gõ</p>
+                    <div className="flex space-x-1">
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounceDelay"></span>
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounceDelay animation-delay-150"></span>
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounceDelay animation-delay-300"></span>
+                    </div>
+                </div>
+                )}
             </div>
             {/* input */}
             <div className="p-4 border-t bg-white flex items-center gap-3">
@@ -151,7 +204,7 @@ export default function MessageItem({ pt }) {
                 <input
                     type="text"
                     value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    onChange={handleTyping}
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
                             handleSend();
@@ -163,7 +216,16 @@ export default function MessageItem({ pt }) {
                 />
 
                 <button 
-                onClick={handleSend}
+                onClick={
+                    () => {
+                        if(canSendMessage) {
+                            handleSend();
+                        }
+                        else {
+                            setOpenNoPermission(true);
+                        }
+                    }
+                }
                 className="p-2 rounded-lg hover:bg-purple-100 transition">
                     <SendHorizonalIcon className="text-fuchsia-500 w-5 h-5"/>
                 </button>
@@ -171,5 +233,10 @@ export default function MessageItem({ pt }) {
             </div>
 
         </div>
+            <NoPermissionModal
+            open={openNoPermission}
+            onClose={() => setOpenNoPermission(false)}
+            />
+        </>
     );
 }

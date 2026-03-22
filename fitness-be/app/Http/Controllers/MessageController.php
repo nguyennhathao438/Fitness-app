@@ -41,7 +41,6 @@ class MessageController extends Controller
     public function getMessages(Request $request, $userId)
     {
         $currentUser = $request->user()->id;
-        $keyword = $request->query('keyword');
 
         $messages = Message::where(function ($q) use ($currentUser, $userId) {
             $q->where('sender_id', $currentUser)
@@ -85,6 +84,7 @@ class MessageController extends Controller
             ->groupBy('pt_id');
 
         $query = Member::where('members.is_deleted', false)
+            ->where('members.id', '!=', $adminId)
             ->whereHas('roles', function ($q) {
                 $q->where('name', 'PT');
             })
@@ -103,7 +103,8 @@ class MessageController extends Controller
                 'members.name',
                 'members.avatar',
                 'message.content as last_message',
-                'lm.last_time'
+                'lm.last_time',
+                'message.sender_id as last_sender_id'
             );
 
         if ($keyword) {
@@ -176,7 +177,8 @@ class MessageController extends Controller
                 'members.name',
                 'members.avatar',
                 'message.content as last_message',
-                'lm.last_time'
+                'lm.last_time',
+                'message.sender_id as last_sender_id'
             );
 
         if ($keyword) {
@@ -210,5 +212,15 @@ class MessageController extends Controller
             ->get();
 
         return response()->json($pts);
+    }
+    public function typing(Request $request)
+    {
+        $senderId = auth()->id();
+        $receiverId = $request->receiver_id;
+        $isTyping = $request->is_typing; // true/false từ FE
+
+        broadcast(new \App\Events\TypingEvent($senderId, $receiverId, $isTyping))->toOthers();
+
+        return response()->json(['success' => true]);
     }
 }

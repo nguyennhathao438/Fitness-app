@@ -71,7 +71,7 @@ class Member extends Authenticatable
     {
         return $this->belongsToMany(
             Member::class,
-            'pt_member',
+            'pt_clients',
             'pt_id',
             'member_id'
         );
@@ -81,7 +81,7 @@ class Member extends Authenticatable
     {
         return $this->belongsToMany(
             Member::class,
-            'pt_member',
+            'pt_clients',
             'member_id',
             'pt_id'
         );

@@ -36,7 +36,6 @@ class DatabaseSeeder extends Seeder
             SurveyTrainingTimeSeeder::class,
             PTClientSeeder::class,
             NotificationSeeder::class,
-            PtMemberSeeder::class,
             PtScheduleSeeder::class,
             WorkoutHistorySeeder::class,
             WorkoutHistoryDetailSeeder::class,

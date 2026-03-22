@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { updateMember } from "@/storages/authSlice";
 import { updateProfile } from "@/services/member/MemberService";
-
+import defaultAvatar from "@/assets/default-avatar.jpg"
 const memberSchema = z.object({
     name: z.string()
         .trim()
@@ -22,17 +22,19 @@ const memberSchema = z.object({
         .regex(/^[0-9]{9,11}$/, "Số điện thoại không hợp lệ"),
 
     gender: z.enum(["male", "female", "other"]).optional(),
+    avatar: z.any().optional(),
 });
 
 export default function EditProfileModal({ open, onClose, member }) {
 
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
-
+    const [preview, setPreview] = useState(null);
     const {
         register,
         handleSubmit,
-        reset
+        reset,
+        setValue
     } = useForm({
         resolver: zodResolver(memberSchema)
     });
@@ -44,6 +46,7 @@ export default function EditProfileModal({ open, onClose, member }) {
             phone: "",
             gender: "male"
         });
+        setPreview(null);
     };
 
     // load data khi mở modal
@@ -61,11 +64,38 @@ export default function EditProfileModal({ open, onClose, member }) {
     const onSubmit = async (data) => {
         setIsLoading(true);
         try {
-            const res = await updateProfile(data);
-            dispatch(updateMember(res.data.member));
-            toast.success(res.data.message || "Cập nhật thông tin thành công");
-            handleResetForm();
-            onClose();
+            let avatarUrl = null;
+
+        //  nếu có chọn file thì upload trước
+        if (data.avatar instanceof File) {
+            const formData = new FormData();
+            formData.append("file", data.avatar);
+            formData.append("upload_preset", "avatar_upload");
+
+            const resCloud = await fetch(
+                "https://api.cloudinary.com/v1_1/dcmko66fp/image/upload",
+                {
+                    method: "POST",
+                    body: formData,
+                }
+            );
+
+            const cloudData = await resCloud.json();
+            avatarUrl = cloudData.secure_url;
+            console.log(cloudData);
+        }
+
+        // gửi về BE
+        const res = await updateProfile({
+            ...data,
+            avatar: avatarUrl // gửi URL chứ không phải file
+        });
+
+        dispatch(updateMember(res.data.member));
+        toast.success(res.data.message || "Cập nhật thành công");
+
+        handleResetForm();
+        onClose();
         } catch (error) {
             toast.error("Cập nhật thất bại",error);
         } finally {
@@ -87,6 +117,31 @@ export default function EditProfileModal({ open, onClose, member }) {
             open={open}
             onClose={onClose}>
             <form onSubmit={handleSubmit(onSubmit, onError)} className="flex flex-col gap-4" >
+                <div className="flex flex-col items-center gap-2">
+                    <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-yellow-400">
+                        <img
+                            src={preview || member?.avatar || defaultAvatar}
+                            alt="avatar"
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
+
+                    <label className="cursor-pointer text-sm text-yellow-300 hover:underline">
+                        Chọn ảnh
+                        <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                    setPreview(URL.createObjectURL(file));
+                                    setValue("avatar", file);
+                                }
+                            }}
+                        />
+                    </label>
+                </div>
                 <div>
                     <label className="text-white">Họ và tên</label>
                     <input

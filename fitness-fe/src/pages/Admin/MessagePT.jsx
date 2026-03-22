@@ -1,6 +1,6 @@
 import ConversationItem from "@/components/Admin/messagepage/ConversationItem";
 import MessageItem from "@/components/Admin/messagepage/MessageItem";
-import echo from "@/lib/echo";
+import { getEcho } from "@/lib/echo";
 import { getAdminAndMemberListChat} from "@/services/admin/Message";
 import { getMe } from "@/services/admin/PersonalTrainerService";
 import { useEffect, useState } from "react";
@@ -23,6 +23,7 @@ export default function MessagePT() {
         fetchMe();
     }, []);
     useEffect(() => {
+        const echo = getEcho();
         if (!currentUserId) return;
 
         const channel = echo.private(`chat.${currentUserId}`);
@@ -45,7 +46,8 @@ export default function MessagePT() {
                             return {
                                 ...user,
                                 last_message: msg.content,
-                                last_time: msg.created_at
+                                last_time: new Date(msg.created_at).toLocaleString("sv-SE"),
+                                last_sender_id: msg.sender_id
                             };
                         }
                     }
@@ -78,10 +80,7 @@ export default function MessagePT() {
     }, [keyword]);
 
     useEffect(() => {
-        fetchAdminAndMember(debouncedKeyword);
-    }, [debouncedKeyword]);
-    
-    const fetchAdminAndMember = async (keyword = "") => {
+        const fetchAdminAndMember = async (keyword = "") => {
         try {
             const res = await getAdminAndMemberListChat(keyword);
             setListMember(res.data);
@@ -89,6 +88,8 @@ export default function MessagePT() {
             console.error(err);
         }
     }
+        fetchAdminAndMember(debouncedKeyword);
+    }, [debouncedKeyword]);
 
     return(
         <div className="md:flex ">
@@ -98,11 +99,12 @@ export default function MessagePT() {
                     ptList={listMember}
                     onSelectPT={setSelectedMember}
                     onSearch={setKeyword}
+                    currentUserId={currentUserId}
                 />
             </div>
 
             <div className="w-full bg-gray-100">
-                <MessageItem pt={selectedMember}/>
+                <MessageItem pt={selectedMember} type="pt"/>
             </div>
 
         </div>

@@ -41,28 +41,30 @@ export default function SideBar({ collapsed, setCollapsed }) {
       </div>
       <nav className="mt-4 border-t border-gray-300 px-2">
         <ul className="mt-2 space-y-5">
-          <NavLink
-            to="/admin/dashboard"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
-                            hover:bg-purple-500 hover:translate-x-1
-                            ${isActive ? "bg-purple-600" : ""}`
-            }
-          >
-            <HouseIcon className="text-white inline-block mr-2 size-5"></HouseIcon>
-            <span
-              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+          {hasPermission("statistic.read") && (
+            <NavLink
+              to="/admin/dashboard"
+              className={({ isActive }) =>
+                `flex items-center px-4 py-2 rounded-md cursor-pointer transition
+                            hover:bg-gradient-to-r from-[#56228d] to-[#dfd2fa] hover:translate-x-1
+                            ${isActive ? "bg-gradient-to-r from-[#56228d] to-[#dfd2fa]" : ""}`
+              }
             >
-              Dashboard
-            </span>
-          </NavLink>
+              <HouseIcon className="text-white inline-block mr-2 size-5"></HouseIcon>
+              <span
+                className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+              >
+                Dashboard
+              </span>
+            </NavLink>
+          )}
           {hasPermission("user.read") && (
             <NavLink
               to="/admin/user"
               className={({ isActive }) =>
                 `flex items-center px-4 py-2 rounded-md cursor-pointer transition
-                            hover:bg-purple-500 hover:translate-x-1
-                            ${isActive ? "bg-purple-600" : ""}`
+                            hover:bg-gradient-to-r from-[#56228d] to-[#dfd2fa] hover:translate-x-1
+                            ${isActive ? "bg-gradient-to-r from-[#56228d] to-[#dfd2fa]" : ""}`
               }
             >
               <CircleUserRoundIcon className="mr-2 size-5" />
@@ -74,8 +76,8 @@ export default function SideBar({ collapsed, setCollapsed }) {
               to="/admin/packages"
               className={({ isActive }) =>
                 `flex items-center px-4 py-2 rounded-md cursor-pointer transition
-                            hover:bg-purple-500 hover:translate-x-1
-                            ${isActive ? "bg-purple-600" : ""}`
+                            hover:bg-gradient-to-r from-[#56228d] to-[#dfd2fa] hover:translate-x-1
+                            ${isActive ? "bg-gradient-to-r from-[#56228d] to-[#dfd2fa]" : ""}`
               }
             >
               <PackageIcon className="text-white inline-block mr-2 size-5"></PackageIcon>
@@ -93,8 +95,8 @@ export default function SideBar({ collapsed, setCollapsed }) {
               to="/admin/message"
               className={({ isActive }) =>
                 `flex items-center px-4 py-2 rounded-md cursor-pointer transition
-                            hover:bg-purple-500 hover:translate-x-1
-                            ${isActive ? "bg-purple-600" : ""}`
+                            hover:bg-gradient-to-r from-[#56228d] to-[#dfd2fa] hover:translate-x-1
+                            ${isActive ? "bg-gradient-to-r from-[#56228d] to-[#dfd2fa]" : ""}`
               }
             >
               <MessageCircleIcon className=" text-white inline-block mr-2 size-5"></MessageCircleIcon>
@@ -105,28 +107,14 @@ export default function SideBar({ collapsed, setCollapsed }) {
               </span>
             </NavLink>
           )}
-          <NavLink
-            to="/admin/message-pt"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
-                            hover:bg-purple-500 hover:translate-x-1
-                            ${isActive ? "bg-purple-600" : ""}`
-            }
-          >
-            <MessageCircleIcon className=" text-white inline-block mr-2 size-5"></MessageCircleIcon>
-            <span
-              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
-            >
-              Messages PT
-            </span>
-          </NavLink>
+
           {hasPermission("invoice.read") && (
             <NavLink
               to="/admin/order"
               className={({ isActive }) =>
                 `flex items-center px-4 py-2 rounded-md cursor-pointer transition
-                            hover:bg-purple-500 hover:translate-x-1
-                            ${isActive ? "bg-purple-600" : ""}`
+                            hover:bg-gradient-to-r from-[#56228d] to-[#dfd2fa] hover:translate-x-1
+                            ${isActive ? "bg-gradient-to-r from-[#56228d] to-[#dfd2fa]" : ""}`
               }
             >
               <ShoppingCartIcon className=" text-white inline-block mr-2 size-5"></ShoppingCartIcon>
@@ -142,8 +130,8 @@ export default function SideBar({ collapsed, setCollapsed }) {
               to="/admin/role"
               className={({ isActive }) =>
                 `flex items-center px-4 py-2 rounded-md cursor-pointer transition
-                                  hover:bg-purple-500 hover:translate-x-1
-                                  ${isActive ? "bg-purple-600" : ""}`
+                                  hover:bg-gradient-to-r from-[#56228d] to-[#dfd2fa] hover:translate-x-1
+                                  ${isActive ? "bg-gradient-to-r from-[#56228d] to-[#dfd2fa]" : ""}`
               }
             >
               <ShieldCheckIcon className=" text-white inline-block mr-2 size-5"></ShieldCheckIcon>
@@ -154,21 +142,6 @@ export default function SideBar({ collapsed, setCollapsed }) {
               </span>
             </NavLink>
           )}
-          <NavLink
-            to="/admin/exercise"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
-                            hover:bg-purple-500
-                            ${isActive ? "bg-purple-600" : ""}`
-            }
-          >
-            <ShieldCheckIcon className=" text-white inline-block mr-2 size-5"></ShieldCheckIcon>
-            <span
-              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
-            >
-              Exercise
-            </span>
-          </NavLink>
         </ul>
       </nav>
     </div>

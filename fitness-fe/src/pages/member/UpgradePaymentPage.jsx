@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom"; 
+import { useState, useEffect } from "react"; 
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import StepPayment from "../../components/member/StepPayment";
 import backgroundImage from "../../assets/background.jpg";
-import { AlertTriangle, CheckCircle } from "lucide-react"; 
+import { CheckCircle, Info } from "lucide-react"; 
 
 export default function UpgradePaymentPage() {
   const { packageId } = useParams();
@@ -10,11 +10,19 @@ export default function UpgradePaymentPage() {
   const location = useLocation(); 
 
   const isExtend = location.state?.isExtend || false;
+  const isNewPurchase = location.state?.isNewPurchase || false; 
 
   const [data, setData] = useState({
     payment_method: "",
     package_id: packageId,
   });
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+    });
+  }, []);
 
   const handleSuccess = () => {
     navigate("/"); 
@@ -23,6 +31,48 @@ export default function UpgradePaymentPage() {
   const handleBack = () => {
     navigate(-1); 
   };
+
+  let pageConfig = {
+    title: "Xác nhận Nâng cấp",
+    alertBg: "bg-purple-500/10 border-purple-500/50", 
+    alertIcon: <Info className="w-6 h-6 text-purple-400 shrink-0 mt-0.5" />,
+    alertTitleColor: "text-purple-400",
+    alertTitle: "Chính sách nâng cấp",
+    alertContent: (
+      <span>
+        Gói hiện tại của bạn sẽ kết thúc. <span className="text-purple-400 font-bold">Giá trị sử dụng còn lại</span> của gói cũ sẽ được hệ thống tính toán và <span className="text-purple-400 font-bold">trừ trực tiếp vào hóa đơn</span> thanh toán của gói mới.
+      </span>
+    )
+  };
+
+  if (isNewPurchase) {
+    pageConfig = {
+      title: "Xác nhận Đăng ký",
+      alertBg: "bg-blue-500/10 border-blue-500/50",
+      alertIcon: <Info className="w-6 h-6 text-blue-500 shrink-0 mt-0.5" />,
+      alertTitleColor: "text-blue-400",
+      alertTitle: "Thông tin đăng ký",
+      alertContent: (
+        <span>
+          Gói tập của bạn sẽ được kích hoạt và tính ngày <span className="text-blue-400 font-bold">ngay sau khi thanh toán</span> thành công.
+        </span>
+      )
+    };
+  } 
+  else if (isExtend) {
+    pageConfig = {
+      title: "Xác nhận Gia hạn",
+      alertBg: "bg-green-500/10 border-green-500/50",
+      alertIcon: <CheckCircle className="w-6 h-6 text-green-500 shrink-0 mt-0.5" />,
+      alertTitleColor: "text-green-400",
+      alertTitle: "Thông tin gia hạn",
+      alertContent: (
+        <span>
+          Thời gian của gói mới sẽ được <span className="text-green-400 font-bold">cộng dồn</span> tiếp vào ngày hết hạn hiện tại của bạn.
+        </span>
+      )
+    };
+  }
 
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4">
@@ -38,7 +88,7 @@ export default function UpgradePaymentPage() {
         {/* HEADER */}
         <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-white uppercase tracking-wider drop-shadow-md">
-                {isExtend ? "Xác nhận Gia hạn" : "Xác nhận Nâng cấp"}
+                {pageConfig.title}
             </h2>
         </div>
 
@@ -46,35 +96,16 @@ export default function UpgradePaymentPage() {
         <div className="bg-gray-900/80 backdrop-blur-sm border-2 border-yellow-400 rounded-2xl px-6 py-8 shadow-2xl">
           
             {/* KHỐI THÔNG BÁO*/}
-            <div className={`mb-6 border rounded-xl p-4 flex items-start gap-3 ${
-                isExtend 
-                ? "bg-green-500/10 border-green-500/50" 
-                : "bg-red-500/10 border-red-500/50"
-            }`}>
-                {/* Icon thay đổi */}
-                {isExtend ? (
-                    <CheckCircle className="w-6 h-6 text-green-500 shrink-0 mt-0.5" />
-                ) : (
-                    <AlertTriangle className="w-6 h-6 text-red-500 shrink-0 mt-0.5" />
-                )}
+            <div className={`mb-6 border rounded-xl p-4 flex items-start gap-3 ${pageConfig.alertBg}`}>
+                {pageConfig.alertIcon}
                 
                 <div className="text-sm text-left">
-                    <p className={`font-bold mb-1 uppercase text-xs tracking-wide ${
-                        isExtend ? "text-green-400" : "text-red-400"
-                    }`}>
-                        {isExtend ? "Thông tin gia hạn" : "Lưu ý quan trọng"}
+                    <p className={`font-bold mb-1 uppercase text-xs tracking-wide ${pageConfig.alertTitleColor}`}>
+                        {pageConfig.alertTitle}
                     </p>
                     
                     <div className="text-gray-200 leading-relaxed text-sm">
-                        {isExtend ? (
-                            <span>
-                                Thời gian của gói mới sẽ được <span className="text-green-400 font-bold">cộng dồn</span> tiếp vào ngày hết hạn hiện tại của bạn.
-                            </span>
-                        ) : (
-                            <span>
-                                Khi nâng cấp, gói hiện tại sẽ <span className="text-red-400 font-bold">kết thúc ngay</span> và <span className="text-red-400 font-bold">không bảo lưu</span> số ngày còn lại.
-                            </span>
-                        )}
+                        {pageConfig.alertContent}
                     </div>
                 </div>
             </div>
@@ -85,8 +116,9 @@ export default function UpgradePaymentPage() {
                 setData={setData}
                 next={handleSuccess}
                 prev={handleBack}
-                isUpgrade={!isExtend} 
+                isUpgrade={!isExtend && !isNewPurchase} 
                 isExtend={isExtend}
+                isNewPurchase={isNewPurchase}
             />
         </div>
       </div>
