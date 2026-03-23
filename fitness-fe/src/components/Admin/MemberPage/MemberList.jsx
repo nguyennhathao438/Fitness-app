@@ -28,6 +28,7 @@ import defaultAvatar from "@/assets/default-avatar.jpg";
 import UpdatePTSelectedForm from "./UpdatePTSelectedForm";
 import { useSelector } from "react-redux";
 import NoPermissionModal from "@/components/utils/NoPermissionModel";
+import MemberScheduleInfoTab from "./MemberScheduleInfoTab";
 
 export default function MemberList({ onChanged }) {
   const [page, setPage] = useState(1);
@@ -67,8 +68,8 @@ export default function MemberList({ onChanged }) {
       .finally(() => setLoading(false));
   };
   // Sửa thông tin member
-  const handleupdated = async (formData) => {
-    console.log("Updating member with data:", formData);
+  const handleupdated = async (data) => {
+    console.log("Updating member with data:", data);
     if (isSubmitting) return;
     else if (!canUpdateRole) {
       setOpenNoPermission(true);
@@ -76,14 +77,14 @@ export default function MemberList({ onChanged }) {
     }
     try {
       setIsSubmitting(true);
-      await updatedUser(selectedMember.id, formData);
+      await updatedUser(selectedMember.id, data);
       toast.success("Updated Success");
       setOpenForm(false);
       setSelectedMember(null);
       fetchMembers();
       onChanged?.();
     } catch (error) {
-      toast.error("Fail to updated");
+      toast.error("Fail to updated",error);
     } finally {
       setIsSubmitting(false);
     }
@@ -392,6 +393,7 @@ export default function MemberList({ onChanged }) {
             fetchMembers();
             onChanged?.();
           } catch (err) {
+            console.log("error",err);
             toast.error("Member đang có pt nên không thể xóa");
           }
         }}
@@ -417,6 +419,7 @@ export default function MemberList({ onChanged }) {
               {
                 id: "schedule",
                 label: "Lịch tập",
+                content:< MemberScheduleInfoTab member={selectedMember.id} />
               },
               {
                 id: "food",

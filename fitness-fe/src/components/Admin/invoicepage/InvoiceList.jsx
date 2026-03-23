@@ -317,6 +317,7 @@ export default function InvoiceList({ refreshStats }) {
                   setOpenDelete(false);
                   fetchInvoice();
                 } catch (err) {
+                  console.log("error",err)
                   toast.error("Xóa thất bại");
                 }
               }}
@@ -339,7 +340,7 @@ export default function InvoiceList({ refreshStats }) {
                   fetchInvoice();
                   refreshStats();
                 } catch {
-                  toast.error("Cập nhật thất bại");
+                  toast.error("Cập nhật khi phương thức là cash");
                 } finally {
                   setLoadingUpdate(false);
                 }

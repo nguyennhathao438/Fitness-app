@@ -37,29 +37,38 @@ export default function PTForm({
   const [selectedFile, setSelectedFile] = useState(null);
   const [roles, setRoles] = useState([]);
   const [selectedRoles, setSelectedRoles] = useState([]);
-  const handleFormSubmit = (data) => {
-    const formData = new FormData();
+  const handleFormSubmit = async (data) => {
+    try {
+      let avatarUrl = pt?.avatar || null;
 
-    formData.append("name", data.name);
-    formData.append("email", data.email);
-    formData.append("phone", data.phone || "");
-    formData.append("gender", data.gender || "");
-    formData.append("birthday", data.birthday || "");
-    selectedRoles.forEach((roleId) => {
-      formData.append("roles[]", roleId);
-    });
+      //  nếu có chọn file thì upload Cloudinary
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("upload_preset", "avatar_upload");
 
-    if (mode === "add") {
-      formData.append("password", data.password);
+        const res = await fetch(
+          "https://api.cloudinary.com/v1_1/dcmko66fp/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const cloudData = await res.json();
+        avatarUrl = cloudData.secure_url;
+      }
+
+      // gửi JSON về BE
+      onSubmitForm({
+        ...data,
+        avatar: avatarUrl,
+        roles: selectedRoles,
+      });
+
+    } catch (err) {
+      console.log(err);
     }
-    if (selectedFile) {
-      formData.append("avatar", selectedFile);
-    }
-    console.log("Form data from Form");
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
-    onSubmitForm(formData);
   };
 
   const schema = mode === "add" ? addSchema : editSchema;
@@ -161,7 +170,7 @@ export default function PTForm({
               />
               <select
                 {...register("gender")}
-                className=" w-full mt-1 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none
+                className=" w-full max-md:p-3.5 md:mt-6.5 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none
                 focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
               >
                 <option value="">Select gender</option>
@@ -347,7 +356,7 @@ function Input({ label, type = "text", register, error, className = "",readOnly 
         readOnly = {readOnly}
         {...register}
         className={`
-          w-full mt-1 px-3 py-2 border rounded-lg outline-none font-medium
+          w-full mt-1 px-3 py-3 border rounded-lg outline-none font-medium
           ${error ? "border-red-500 bg-red-50" : "border-gray-300 bg-[#eeeeee]"}
           ${className}
         `}

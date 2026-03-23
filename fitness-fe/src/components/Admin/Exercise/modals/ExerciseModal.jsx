@@ -13,13 +13,13 @@ export default function ExerciseModal({ open, onClose, title, item, onSuccess })
         name: z.string().min(2),
         muscle: z.array(z.coerce.number()).min(1, "Vui lòng chọn ít nhất 1 nhóm cơ"),
         description: z.string().min(5),
-        rep_base: z.number().min(1),
-        set_base: z.number().min(1),
-        time_action: z.number().min(1),
+        rep_base: z.coerce.number().min(0).optional(),
+        set_base: z.coerce.number().min(0).optional(),
+        time_action: z.coerce.number().min(0).optional(),
         video: z.string().url().optional().or(z.literal("")),
     });
 
-    const {muscleList} = useExercise();
+    const { muscleList } = useExercise();
 
     const { register, handleSubmit, reset, watch, formState: { errors }, } = useForm({
         resolver: zodResolver(exerciseSchema),
@@ -44,8 +44,12 @@ export default function ExerciseModal({ open, onClose, title, item, onSuccess })
         setIsLoading(true);
         const dataObject = {
             ...data,
+            rep_base: data.rep_base || null,
+            set_base: data.set_base || null,
+            time_action: data.time_action || null,
             muscle_group_ids: data.muscle,
         };
+        console.log("object", dataObject)
         try {
             if (title === "Thêm bài tập") {
                 await createExercise(dataObject);
@@ -128,7 +132,7 @@ export default function ExerciseModal({ open, onClose, title, item, onSuccess })
                             <label className="block text-sm text-gray-600 mb-1">Số Rep</label>
                             <input
                                 type="number"
-                                {...register("rep_base", { valueAsNumber: true })}
+                                {...register("rep_base")}
                                 placeholder="VD: 12"
                                 className="border px-3 py-2 rounded w-full"
                             />
@@ -138,7 +142,7 @@ export default function ExerciseModal({ open, onClose, title, item, onSuccess })
                             <label className="block text-sm text-gray-600 mb-1">Số Set</label>
                             <input
                                 type="number"
-                                {...register("set_base", { valueAsNumber: true })}
+                                {...register("set_base")}
                                 placeholder="VD: 4"
                                 className="border px-3 py-2 rounded w-full"
                             />
@@ -151,7 +155,7 @@ export default function ExerciseModal({ open, onClose, title, item, onSuccess })
                         <label className="block text-sm text-gray-600 mb-1">Thời gian thực hiện (giây)</label>
                         <input
                             type="number"
-                            {...register("time_action", { valueAsNumber: true })}
+                            {...register("time_action")}
                             placeholder="VD: 60"
                             className="w-full border px-3 py-2 rounded"
                         />

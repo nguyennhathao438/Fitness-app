@@ -1,13 +1,22 @@
-import { Timer, Repeat, Dumbbell, Plus } from "lucide-react";
+import { Timer, Repeat, Dumbbell, Plus, Heart } from "lucide-react";
 
-export default function ExerciseGridCard({ exercise, onSelectExercise, onAddExercise }) {
-  
+export default function ExerciseGridCard({
+  exercise,
+  onSelectExercise,
+  onAddExercise,
+  isFavorite,
+  onToggleFavorite
+}) {
+
   const getYoutubeThumbnail = (url) => {
     if (!url) return "/placeholder.jpg";
+
     const regExp =
       /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+
     const match = url.match(regExp);
     const videoId = match && match[2].length === 11 ? match[2] : null;
+
     return videoId
       ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
       : "/placeholder.jpg";
@@ -20,8 +29,28 @@ export default function ExerciseGridCard({ exercise, onSelectExercise, onAddExer
       onClick={() => onSelectExercise(exercise)}
       className="cursor-pointer overflow-hidden rounded-2xl bg-gray-900/90 border-2 border-yellow-400 text-white shadow-lg hover:shadow-xl transition-all"
     >
+
       {/* image */}
-      <div className="aspect-video w-full overflow-hidden">
+      <div className="aspect-video w-full overflow-hidden relative">
+
+        {/* FAVORITE BUTTON */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite(exercise);
+          }}
+          className="absolute top-3 right-3 z-10 bg-black/50 p-2 rounded-full hover:scale-110 transition"
+        >
+          <Heart
+            size={18}
+            className={
+              isFavorite
+                ? "text-red-500 fill-red-500"
+                : "text-white"
+            }
+          />
+        </button>
+
         <img
           src={thumbnail}
           alt={exercise.name}
@@ -31,10 +60,12 @@ export default function ExerciseGridCard({ exercise, onSelectExercise, onAddExer
 
       {/* content */}
       <div className="p-4 space-y-3">
+
         <h3 className="text-lg font-bold">{exercise.name}</h3>
 
         {/* stats */}
         <div className="flex flex-wrap gap-2 text-xs">
+
           {exercise.set_base && (
             <span className="flex items-center gap-1 rounded-full bg-purple-800/60 px-3 py-1">
               <Repeat size={14} />
@@ -55,13 +86,14 @@ export default function ExerciseGridCard({ exercise, onSelectExercise, onAddExer
               {exercise.time_action}s
             </span>
           )}
+
         </div>
 
         {/* button */}
         <button
           onClick={(e) => {
-            e.stopPropagation(); //tránh click mở overlay
-            onAddExercise(exercise)
+            e.stopPropagation();
+            onAddExercise(exercise);
           }}
           className="w-full py-3 rounded-full font-bold text-sm transition-all
           bg-yellow-400 text-purple-900
@@ -71,6 +103,7 @@ export default function ExerciseGridCard({ exercise, onSelectExercise, onAddExer
           <Plus size={16} />
           Thêm bài tập
         </button>
+
       </div>
     </div>
   );

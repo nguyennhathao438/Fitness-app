@@ -31,8 +31,10 @@ import MySchedulePage from "./pages/MemberSchedule/MySchedulePage";
 import Notifications from "./pages/member/Notifications";
 import MemberDetail from "./pages/PT/MemberDetail";
 import RequirePermission from "./pages/utils/RequirePermission";
+import RequireRole from "./pages/utils/RequireRole";
 import RequireGuest from "./pages/utils/RequireGuest";
 import NotFound from "./components/member/NotFound";
+import RequireMember from "./pages/utils/RequireMember";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -54,8 +56,22 @@ const router = createBrowserRouter([
       },
       { path: "forgot-password", element: <ForgotPassword /> },
       { path: "waiting", element: <WaitingForRegister /> },
-      { path: "profile", element: <Profile /> },
-      { path: "workout", element: <WorkoutPage /> },
+      {
+        path: "profile",
+        element: (
+          <RequireMember>
+            <Profile />
+          </RequireMember>
+        ),
+      },
+      {
+        path: "workout",
+        element: (
+          <RequireMember>
+            <WorkoutPage />
+          </RequireMember>
+        ),
+      },
       { path: "member/pt-register", element: <PTRegisterPage /> },
       { path: "member/my-schedules", element: <MySchedulePage /> },
       { path: "notifications", element: <Notifications /> },
@@ -71,7 +87,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <DefaultAdmin />,
+    element: (
+      <RequireRole role="Admin">
+        <DefaultAdmin />
+      </RequireRole>
+    ),
     children: [
       {
         path: "dashboard",
@@ -97,10 +117,7 @@ const router = createBrowserRouter([
           </RequirePermission>
         ),
       },
-      {
-        path: "exercise",
-        element: <Exercise />,
-      },
+
       {
         path: "muscle",
         element: <MuscleGroup />,
@@ -125,6 +142,25 @@ const router = createBrowserRouter([
           </RequirePermission>
         ),
       },
+    ],
+  },
+  {
+    path: "/pt",
+    element: (
+      <RequireRole role="PT">
+        <DefaultPT />
+      </RequireRole>
+    ),
+    children: [
+      { index: true, element: <ListMemberOfPT /> },
+      { path: "schedules", element: <ScheduleDashboardPT /> },
+
+      { path: "schedules/create", element: <CreateSchedulePT /> },
+      { path: "members/:id", element: <MemberDetail /> },
+      {
+        path: "exercise",
+        element: <Exercise />,
+      },
       {
         path: "message-pt",
         element: (
@@ -133,17 +169,6 @@ const router = createBrowserRouter([
           </RequirePermission>
         ),
       },
-    ],
-  },
-  {
-    path: "/pt",
-    element: <DefaultPT />,
-    children: [
-      { index: true, element: <ListMemberOfPT /> },
-      { path: "schedules", element: <ScheduleDashboardPT /> },
-
-      { path: "schedules/create", element: <CreateSchedulePT /> },
-      { path: "members/:id", element: <MemberDetail /> },
       // { path: "schedules/:scheduleId/members", element: <ScheduleMembersPT /> },
     ],
   },

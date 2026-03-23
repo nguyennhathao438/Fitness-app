@@ -14,8 +14,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'web'),
-        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+        'guard' => 'sanctum',
+        'passwords' => 'users',
     ],
 
     /*
@@ -44,9 +44,9 @@ return [
             'driver' => 'sanctum',
             'provider' => 'users',
         ],
-            'member' => [
-        'driver' => 'sanctum',
-        'provider' => 'members',
+        'member' => [
+            'driver' => 'sanctum',
+            'provider' => 'members',
         ],
     ],
 
@@ -73,9 +73,9 @@ return [
             'model' => env('AUTH_MODEL', App\Models\Member::class),
         ],
         'members' => [
-                'driver' => 'eloquent',
-                'model' => App\Models\Member::class,
-            ],
+            'driver' => 'eloquent',
+            'model' => App\Models\Member::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

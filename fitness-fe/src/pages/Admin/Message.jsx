@@ -1,6 +1,6 @@
 import ConversationItem from "@/components/Admin/messagepage/ConversationItem";
 import MessageItem from "@/components/Admin/messagepage/MessageItem";
-import echo from "@/lib/echo";
+import { getEcho } from "@/lib/echo";
 import { getPTListChat } from "@/services/admin/Message";
 import { getMe } from "@/services/admin/PersonalTrainerService";
 import { useEffect, useState } from "react";
@@ -22,6 +22,7 @@ export default function Message() {
         fetchMe();
     }, []);
     useEffect(() => {
+        const echo = getEcho();
         if (!currentUserId) return;
 
         const channel = echo.private(`chat.${currentUserId}`);
@@ -43,7 +44,8 @@ export default function Message() {
                             return {
                                 ...user,
                                 last_message: msg.content,
-                                last_time: msg.created_at
+                                last_time: new Date(msg.created_at).toLocaleString("sv-SE"),
+                                last_sender_id: msg.sender_id
                             };
                         }
                     }
@@ -53,7 +55,6 @@ export default function Message() {
 
                 // đưa conversation vừa nhắn lên đầu
                 updated.sort((a,b)=> new Date(b.last_time) - new Date(a.last_time));
-
                 return [...updated];
 
             });
@@ -76,10 +77,7 @@ export default function Message() {
     }, [keyword]);
 
     useEffect(() => {
-        fetchPT(debouncedKeyword);
-    }, [debouncedKeyword]);
-    
-    const fetchPT = async (keyword = "") => {
+        const fetchPT = async (keyword = "") => {
         try {
             const res = await getPTListChat(keyword);
             setListPT(res.data);
@@ -87,6 +85,8 @@ export default function Message() {
             console.error(err);
         }
     }
+        fetchPT(debouncedKeyword);
+    }, [debouncedKeyword]);    
 
     return(
         <div className="md:flex ">
@@ -96,6 +96,7 @@ export default function Message() {
                     ptList={listPT}
                     onSelectPT={setSelectedPT}
                     onSearch={setKeyword}
+                    currentUserId={currentUserId}
                 />
             </div>
 

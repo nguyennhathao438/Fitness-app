@@ -7,6 +7,7 @@ import PTInfoTab from "./PTInfoTab";
 import PTMembersTab from "./PTMembersTab";
 import { useSelector } from "react-redux";
 import NoPermissionModal from "@/components/utils/NoPermissionModel";
+import PTScheduleTab from "./PTScheduleTab";
 
 export default function PTCard({pt,onDeleteClick,onEditClick}) {
     const [openView, setOpenView] = useState(false);
@@ -94,7 +95,7 @@ export default function PTCard({pt,onDeleteClick,onEditClick}) {
                 {
                 id: "schedule",
                 label: "Lịch tập",
-                // content: <PTScheduleTab ptId={pt.id} />,
+                content: <PTScheduleTab ptId={pt.id} />,
                 },
             ]}
             />
