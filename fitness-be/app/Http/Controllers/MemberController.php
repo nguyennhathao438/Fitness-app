@@ -498,20 +498,16 @@ Notification::create([
 
         try {
             DB::transaction(function () use ($request, $member, &$invoice, &$newPackage, $isExtend) {
-                // Lấy thông tin gói muốn mua
                 $newPackage = TrainingPackage::findOrFail($request->package_id);
 
-                // Xác định trạng thái thanh toán
                 $status = 'paid';
                 if ($request->payment_method == 'cash') {
                     $status = 'pending';
                 }
 
-                // TÍNH TOÁN NGÀY BẮT ĐẦU VÀ GIÁ TIỀN
                 $startDate = Carbon::now();
                 $totalPrice = $newPackage->price;
 
-                // Tìm hóa đơn đang sử dụng (nếu có)
                 $currentInvoice = Invoice::where('member_id', $member->id)
                     ->where('status', 'paid')
                     ->where('valid_until', '>', Carbon::now())
@@ -521,26 +517,20 @@ Notification::create([
                     ->first();
 
                 if ($isExtend) {
-                    // NẾU LÀ GIA HẠN: Nối tiếp ngày, giá tiền giữ nguyên
                     if ($currentInvoice) {
                         $startDate = Carbon::parse($currentInvoice->valid_until);
                     }
                 } else {
-                    // NẾU LÀ NÂNG CẤP: Tính tiền dư để trừ đi
                     if ($currentInvoice && $currentInvoice->package) {
                         $oldPackage = $currentInvoice->package;
 
-                        // Tính số ngày còn lại (chỉ lấy phần nguyên ngày)
                         $daysRemaining = max(0, Carbon::now()->startOfDay()->diffInDays(Carbon::parse($currentInvoice->valid_until)->startOfDay(), false));
 
                         if ($daysRemaining > 0 && $oldPackage->duration_days > 0) {
-                            // Giá trị của 1 ngày ở gói cũ
                             $dailyRate = $oldPackage->price / $oldPackage->duration_days;
 
-                            // Tổng tiền dư chưa dùng tới
                             $remainingValue = $daysRemaining * $dailyRate;
 
-                            // Số tiền khách phải đóng = Giá gói mới - Tiền dư gói cũ 
                             $totalPrice = max(0, round($newPackage->price - $remainingValue));
                         }
                     }
