@@ -74,6 +74,12 @@ class AuthenController extends Controller
         ]);
 
         $member = Member::where('email', $request->email)->first();
+
+        if (!$member) {
+            return response()->json([
+                'message' => 'Tài khoản không tồn tại'
+            ], 404);
+        }
         $memberData = $member->only([
             'id',
             'name',
@@ -81,12 +87,6 @@ class AuthenController extends Controller
             'phone',
             'avatar'
         ]);
-        if (!$member) {
-            return response()->json([
-                'message' => 'Tài khoản không tồn tại'
-            ], 404);
-        }
-
         if (!Hash::check($request->password, $member->password)) {
             return response()->json([
                 'message' => 'Mật khẩu không chính xác'
@@ -102,7 +102,7 @@ class AuthenController extends Controller
 
         $serviceIds = [];
         $validUntil = null;
-
+        $status = null;
         if ($latestInvoice && $latestInvoice->package) {
 
             $validUntil = $latestInvoice->valid_until;
@@ -115,6 +115,7 @@ class AuthenController extends Controller
                     ->services
                     ->pluck('id');
             }
+            $status = $latestInvoice ? $latestInvoice->status : null;
         }
 
         // ===== roles + permissions =====
@@ -145,6 +146,7 @@ class AuthenController extends Controller
             'valid_until' => $validUntil,
             'service_ids' => $serviceIds,
             'roles' => $roles,
+            'statusInvoice' => $status,
             'permissions' => $permissions,
             'token' => $token
         ]);

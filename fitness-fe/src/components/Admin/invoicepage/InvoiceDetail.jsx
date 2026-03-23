@@ -195,7 +195,7 @@ export default function InvoiceDetail({ invoice }) {
                 ">
                 <span className="text-sm text-gray-500">Total</span>
                 <span className="text-xl sm:text-2xl font-bold text-purple-600">
-                    {Number(invoice.package.price).toLocaleString()} ₫
+                    {Number(invoice.total_price).toLocaleString()} ₫
                 </span>
             </div>
         </div>

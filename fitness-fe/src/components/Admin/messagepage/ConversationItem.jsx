@@ -2,7 +2,7 @@ import { SearchIcon } from "lucide-react";
 import { useState } from "react";
 import defaultAvatar from "@/assets/default-avatar.jpg";
 
-export default function ConversationItem({ ptList, onSelectPT, onSearch}) {
+export default function ConversationItem({ ptList, onSelectPT, onSearch, currentUserId}) {
 
     const [selectedId, setSelectedId] = useState(null);
     
@@ -64,7 +64,9 @@ export default function ConversationItem({ ptList, onSelectPT, onSearch}) {
                             
                             <div className="flex justify-between">
                                 <p className="text-xs text-gray-500 truncate">
-                                {pt.last_message}
+                                    {pt.last_sender_id === currentUserId 
+                                        ? `Bạn: ${pt.last_message}` 
+                                        : pt.last_message}
                                 </p>
                                 <p className="text-xs text-gray-500 truncate">
                                 {pt.last_time ? pt.last_time.slice(11, 16) : ""}

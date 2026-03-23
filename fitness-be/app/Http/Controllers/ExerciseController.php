@@ -4,9 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Exercise;
 use Illuminate\Http\Request;
-
 class ExerciseController extends Controller
 {
+    public function __construct()
+    {
+
+        $this->middleware('permission:exercise.create')
+            ->only(['store']);
+
+        $this->middleware('permission:exercise.update')
+            ->only(['update']);
+
+        $this->middleware('permission:exercise.delete')
+            ->only(['destroy']);
+    }
     /**
      * GET /exercises
      * Lấy danh sách exercise
@@ -15,24 +26,17 @@ class ExerciseController extends Controller
     {
         $query = Exercise::query()
             ->with('muscleGroups');
-
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
-
         if ($request->filled('muscles')) {
-
             $muscleIds = explode(',', $request->muscles);
-
             $query->whereHas('muscleGroups', function ($q) use ($muscleIds) {
                 $q->whereIn('muscle_groups.id', $muscleIds);
             });
         }
-
         $perPage = $request->input('per_page', 8);
-
         $exercises = $query->paginate($perPage);
-
         return response()->json($exercises);
     }
 

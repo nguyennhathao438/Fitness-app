@@ -7,7 +7,7 @@ export default function MemberStatContent({ genderStats , ageStats , havePTStats
   return (
     <div className="space-y-2">
       <div className="bg-gray-50 p-3 flex justify-between items-center w-full md:w-[560px] lg:w-[900px] xl:w-auto gap-5 rounded-xl">
-            <div className="bg-white w-[200px] lg:w-[400px] xl:w-[550px] rounded-xl">
+            <div className="bg-white w-[190px] lg:w-[400px] xl:w-[550px] rounded-xl">
               <ProgressBarStat
               icon={<TransgenderIcon/>}
               title="Phân bố theo giới tính"
@@ -22,8 +22,8 @@ export default function MemberStatContent({ genderStats , ageStats , havePTStats
               icon={<UserCheck/>}
               title="Phân bố theo hội viên"
               items={[
-              { label: "đã có PT", value: havePTStats.withPT.havePT, color: "bg-green-500" },
-              { label: "chưa có", value: havePTStats.withPT.noPT, color: "bg-yellow-500" },
+              { label: "có PT", value: havePTStats.withPT.havePT, color: "bg-green-500" },
+              { label: "không PT", value: havePTStats.withPT.noPT, color: "bg-yellow-500" },
               ]}
             />
             </div>

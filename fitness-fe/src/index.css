@@ -1,6 +1,22 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@keyframes bounceDelay {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+.animate-bounceDelay {
+  animation: bounceDelay 1.4s infinite ease-in-out both;
+}
+
+.animation-delay-150 {
+  animation-delay: 0.15s;
+}
+
+.animation-delay-300 {
+  animation-delay: 0.3s;
+}
 @custom-variant dark (&:is(.dark *));
 .scrollbar-hidden::-webkit-scrollbar {
   display: none;

@@ -37,10 +37,19 @@ const useWorkoutHistory = () => {
   }, []);
 
   // Lấy workout cho ngày cụ thể
+  function formatDateLocal(date) {
+    const d = new Date(date)
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, "0")
+    const day = String(d.getDate()).padStart(2, "0")
+    return `${year}-${month}-${day}`
+  }
+
   const getWorkoutByDate = (date) => {
-    const dateString = date.toISOString().split("T")[0];
+    const dateString = formatDateLocal(date);
+
     return workoutHistories.filter((w) => {
-      const workoutDate = new Date(w.created_at).toISOString().split("T")[0];
+      const workoutDate = formatDateLocal(w.created_at);
       return workoutDate === dateString;
     });
   };

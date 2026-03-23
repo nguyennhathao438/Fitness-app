@@ -93,7 +93,7 @@ class ExerciseAiService
                 "options" => [
                     "temperature" => 0.2,
                     "num_predict" => 120,
-                    "num_ctx" => 2048,
+                    "num_ctx" => 8192,
                     "top_p" => 0.9,
                     "repeat_penalty" => 1.1
                 ]

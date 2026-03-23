@@ -2,7 +2,11 @@ import momoimg from "../../assets/momo.png";
 import vnpayimg from "../../assets/vnpay.png";
 import cardimg from "../../assets/creditcard.png";
 import { toast } from "react-toastify";
-import { register, upgradePackage } from "../../services/member/MemberService.js";
+import {
+  register,
+  upgradePackage,
+} from "../../services/member/MemberService.js";
+import { createPaymentUrl } from "../../services/member/PaymentService.js";
 import { useDispatch } from "react-redux";
 import { login } from "../../storages/authSlice.js";
 import { useState } from "react";
@@ -37,7 +41,16 @@ const paymentMethods = [
   },
 ];
 
-export default function StepPayment({ data, setData, next, prev, setWaiting, isUpgrade = false, isExtend = false, isNewPurchase = false }) {
+export default function StepPayment({
+  data,
+  setData,
+  next,
+  prev,
+  setWaiting,
+  isUpgrade = false,
+  isExtend = false,
+  isNewPurchase = false,
+}) {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -55,33 +68,55 @@ export default function StepPayment({ data, setData, next, prev, setWaiting, isU
     }
     setLoading(true);
     try {
+      if (["momo", "vnpay", "credit_card"].includes(data.payment_method)) {
+        localStorage.setItem("temp_register_data", JSON.stringify(data));
+
+        let bankCode = "";
+        if (data.payment_method === "vnpay") {
+          bankCode = "NCB";
+        } else if (data.payment_method === "cash") {
+          bankCode = "";
+        }
+
+        const res = await createPaymentUrl(
+          data.payment_method,
+          data.package_id,
+          bankCode,
+        );
+
+        if (res.data && res.data.payUrl) {
+          window.location.href = res.data.payUrl;
+          return;
+        } else {
+          toast.error("Không lấy được link thanh toán");
+          setLoading(false);
+        }
+      }
       let res;
       if (isUpgrade || isExtend || isNewPurchase) {
         res = await upgradePackage({
-            package_id: data.package_id,
-            payment_method: data.payment_method,
-            is_extend: isExtend 
+          package_id: data.package_id,
+          payment_method: data.payment_method,
+          is_extend: isExtend,
         });
-        
-        let finalMessage = res.data.message; 
-        if (isNewPurchase) {
-            finalMessage = "Đăng ký gói thành công!"; 
-        }
-        
-        toast.success(finalMessage);
 
+        let finalMessage = res.data.message;
+        if (isNewPurchase) {
+          finalMessage = "Đăng ký gói thành công!";
+        }
+
+        toast.success(finalMessage);
       } else {
         res = await register(data);
         dispatch(login(res.data));
         localStorage.setItem("token", res.data.token);
         toast.success("Đăng ký tài khoản và mua gói thành công");
       }
-      
+
       if (res.data.waiting) {
-        if(setWaiting) setWaiting(true);
+        if (setWaiting) setWaiting(true);
       }
       next();
-
     } catch (error) {
       console.error(error);
       let errorMsg = "Có lỗi xảy ra";
@@ -101,10 +136,13 @@ export default function StepPayment({ data, setData, next, prev, setWaiting, isU
     <div className="space-y-6">
       <h2 className="text-xl md:text-2xl text-yellow-400 text-center font-semibold">
         {/* Tiêu đề linh hoạt */}
-        {isExtend 
-            ? "Thanh toán Gia hạn" 
-            : (isUpgrade ? "Thanh toán Nâng cấp" : (isNewPurchase ? "Thanh toán Đăng ký" : "Chọn phương thức thanh toán"))
-        }
+        {isExtend
+          ? "Thanh toán Gia hạn"
+          : isUpgrade
+            ? "Thanh toán Nâng cấp"
+            : isNewPurchase
+              ? "Thanh toán Đăng ký"
+              : "Chọn phương thức thanh toán"}
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -114,15 +152,15 @@ export default function StepPayment({ data, setData, next, prev, setWaiting, isU
             type="button"
             onClick={() => choosePayment(method.id)}
             className={`
-        relative p-5 rounded-2xl border-2 transition-all duration-300
-        flex flex-col items-center gap-3
-        hover:scale-105
-        ${
-          data.payment_method === method.id
-            ? `${method.borderColor} ${method.bgColor}`
-            : "border-gray-600 bg-gray-800/50 hover:border-gray-400"
-        }
-      `}
+                relative p-5 rounded-2xl border-2 transition-all duration-300
+                flex flex-col items-center gap-3
+                hover:scale-105
+                ${
+                  data.payment_method === method.id
+                    ? `${method.borderColor} ${method.bgColor}`
+                    : "border-gray-600 bg-gray-800/50 hover:border-gray-400"
+                }
+            `}
           >
             {data.payment_method === method.id && (
               <div
@@ -195,10 +233,15 @@ export default function StepPayment({ data, setData, next, prev, setWaiting, isU
             <span className="w-5 h-5 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
           )}
 
-          {loading ? "Đang xử lý..." : (
-              isExtend ? "Thanh toán Gia hạn" : 
-              (isUpgrade ? "Thanh toán Nâng cấp" : (isNewPurchase ? "Thanh toán Ngay" : "Thanh toán & Đăng ký"))
-          )}
+          {loading
+            ? "Đang xử lý..."
+            : isExtend
+              ? "Thanh toán Gia hạn"
+              : isUpgrade
+                ? "Thanh toán Nâng cấp"
+                : isNewPurchase
+                  ? "Thanh toán Ngay"
+                  : "Thanh toán & Đăng ký"}
         </button>
       </div>
     </div>
