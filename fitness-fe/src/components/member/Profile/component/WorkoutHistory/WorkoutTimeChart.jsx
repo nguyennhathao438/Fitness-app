@@ -67,7 +67,6 @@ export default function WorkoutTimeChart({ currentWeek = new Date() }) {
     useEffect(() => {
         console.log("Chart Data:", chartData);
     }, [chartData]);
-
     const totalTimeWeek = chartData.reduce((sum, d) => sum + d.time, 0);
     const avgTimePerDay = totalTimeWeek > 0 ? Math.round(totalTimeWeek / 7) : 0;
     const maxTime = Math.max(...chartData.map(d => d.time), 0);

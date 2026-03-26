@@ -8,6 +8,7 @@ export default function MemberInfo() {
     const { member } = useSelector((state) => state.auth);
     const [openResetPass, setOpenResetPass] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
+    console.log("member hiện tại là",member)
     return (
         <div>
             <div className="flex flex-col md:flex-row py-5 bg-[#1f1b2e] rounded-xl shadow-md">
@@ -15,7 +16,7 @@ export default function MemberInfo() {
                 <div className="flex flex-1 justify-center items-center">
                     {member?.avatar ? (
                         <img
-                            className="w-48 h-48 p-2 rounded-full border-4 border-purple-500 shadow-lg"
+                            className="w-48 h-48 p-2 rounded-full object-cover border-4 border-purple-500 shadow-lg"
                             src={member?.avatar || "/placeholder.svg"}
                             alt="avatar"
                         />
