@@ -16,7 +16,7 @@ use App\Models\BodyMetric;
 use App\Models\PTSchedule;
 use App\Models\Notification;
 use Cloudinary\Cloudinary;
-
+use App\Models\Role;
 class MemberController extends Controller
 {
     /*
@@ -79,6 +79,11 @@ class MemberController extends Controller
                     'valid_until' => now()->addDays($package->duration_days),
                     'status' => $status,
                 ]);
+                $vipRole = Role::where('name', 'Member')->first();
+
+                if ($vipRole) {
+                    $member->roles()->syncWithoutDetaching([$vipRole->id]);
+                }
             });
             $serviceIds = $package->packageType->services->pluck('id');
             $waiting = "paid";
