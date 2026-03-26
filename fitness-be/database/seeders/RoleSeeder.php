@@ -15,7 +15,7 @@ class RoleSeeder extends Seeder
     {
         Role::updateOrCreate(
             ['name' => 'Admin'],
-            ['description' => 'Quản trị hệ thống']
+            ['description' => 'Quả tnrị hệ thống']
         );
 
         Role::updateOrCreate(
@@ -24,8 +24,8 @@ class RoleSeeder extends Seeder
         );
 
         Role::updateOrCreate(
-            ['name' => 'Receptionist'],
-            ['description' => 'Lễ tân']
+            ['name' => 'MemberVip'],
+            ['description' => 'Hội viên vip']
         );
         Role::updateOrCreate(
             ['name' => 'Member'],

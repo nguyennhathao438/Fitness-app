@@ -120,7 +120,7 @@ export default function RoleAccessPage() {
                     </td>
                     <td className="px-6 py-4">
                       <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 text-sm font-semibold text-purple-700">
-                        {role.users_count || 0}
+                        {role.members_count || 0}
                       </span>
                     </td>
                     <td
