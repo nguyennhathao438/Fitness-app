@@ -182,7 +182,7 @@ export default function EditProfileModal({ open, onClose, member }) {
                 </div>
 
                 <div className="flex justify-center gap-4 mt-2">
-                    <button type="button" className="px-6 py-1 bg-gray-300 rounded-md hover:shadow-lg hover:shadow-gray-400/30 hover:bg-gray-400" onClick={() => { onClose();handleResetForm();}}>
+                    <button type="button" className="px-6 py-1 bg-gray-300 rounded-md hover:shadow-lg hover:shadow-gray-400/30 hover:scale-110 hover:bg-gray-400" onClick={() => { onClose();handleResetForm();}}>
                         Hủy
                     </button>
                     <button type="submit" className="px-6 py-2 bg-yellow-300 text-purple-900 hover:shadow-lg hover:shadow-yellow-400/30 rounded-md hover:scale-110">

@@ -216,7 +216,6 @@ class MemberController extends Controller
         ]);
 
         $result = $this->memberService->updateUser($request, $memberId);
-
         return response()->json([
             'success' => $result['success'],
             'message' => $result['message'],
@@ -389,7 +388,6 @@ class MemberController extends Controller
                 'message' => $isExtend ? 'Gia hạn thành công!' : 'Nâng cấp thành công!',
                 'invoice' => $invoice,
             ], 200);
-
         } catch (Throwable $e) {
             return response()->json([
                 'success' => false,
@@ -403,12 +401,12 @@ class MemberController extends Controller
     public function getMember(Request $request)
     {
         $members = $this->memberService->getMembers($request);
-
         return response()->json([
             'success' => true,
             'data' => $members
         ]);
     }
+
     public function getStatUser()
     {
         $data = $this->memberService->getStatUser();
@@ -425,7 +423,6 @@ class MemberController extends Controller
     public function myPT()
     {
         $memberId = auth()->id();
-
         $pt = DB::table('pt_clients')
             ->join('members', 'pt_clients.pt_id', '=', 'members.id')
             ->where('pt_clients.member_id', $memberId)
@@ -448,9 +445,7 @@ class MemberController extends Controller
         $request->validate([
             'pt_id' => 'required|exists:members,id'
         ]);
-
         $memberId = auth()->id();
-
         $already = DB::table('pt_clients')
             ->where('member_id', $memberId)
             ->exists();
@@ -460,7 +455,6 @@ class MemberController extends Controller
                 'message' => 'Bạn đã có PT rồi'
             ], 400);
         }
-
         DB::table('pt_clients')->insert([
             'pt_id' => $request->pt_id,
             'member_id' => $memberId,
