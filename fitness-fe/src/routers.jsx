@@ -35,6 +35,7 @@ import RequireRole from "./pages/utils/RequireRole";
 import RequireGuest from "./pages/utils/RequireGuest";
 import NotFound from "./components/member/NotFound";
 import RequireMember from "./pages/utils/RequireMember";
+import NutritionManager from "./pages/Nutrition/NutritionManager";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
       { path: "member/payment/:packageId", element: <UpgradePaymentPage /> },
       { path: "register/:packageId", element: <RegisterPage /> },
       { path: "bmi", element: <BodyMaxIndex /> },
+      { path: "CaloAI", element: <NutritionManager /> },
       {
         path: "login",
         element: (
