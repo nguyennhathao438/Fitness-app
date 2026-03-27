@@ -68,7 +68,7 @@ export default function PricingCard({ package: pkg, isUpgrade = false }) {
           <button
             type="button"
             onClick={handleAction}
-            className="w-full bg-white text-purple-700 font-bold py-3 rounded-full hover:bg-gray-100 transition-colors mt-6"
+            className="cursor-pointer w-full bg-white text-purple-700 font-bold py-3 rounded-full hover:bg-gray-100 transition-colors mt-6"
           >
             {isUpgrade ? "Nâng cấp ngay" : (member ? "Thanh toán ngay" : "Đăng ký ngay")}
           </button>

@@ -1,6 +1,6 @@
 import api from "../../api"; 
 
-export const createPaymentUrl = (paymentMethod, packageId, bankCode = '') => {
+export const createPaymentUrl = (paymentMethod, packageId, bankCode = '', returnUrl = '') => {
   let endpoint = '';
 
   if (paymentMethod === 'momo') {
@@ -9,9 +9,15 @@ export const createPaymentUrl = (paymentMethod, packageId, bankCode = '') => {
     endpoint = '/vnpay_payment';
   }
 
-  return api.post(endpoint, { 
+  const payload = { 
     method: paymentMethod,
     package_id: packageId,
     bank_code: bankCode 
-  });
+  };
+
+  if (returnUrl) {
+    payload.return_url = returnUrl;
+  }
+
+  return api.post(endpoint, payload);
 };

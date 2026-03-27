@@ -82,6 +82,7 @@ class TrainingPackageController extends Controller
             return 0;
 
         $lastInvoice = Invoice::where('member_id', $memberId)
+            ->where('status', 'paid') 
             ->where('is_deleted', false)
             ->whereDate('valid_until', '>', Carbon::now())
             ->orderBy('id', 'desc')
@@ -95,13 +96,11 @@ class TrainingPackageController extends Controller
     }
 
     // Lấy danh sách LOẠI GÓI có thể nâng cấp (Để hiện Tabs)
-
     public function getUpgradableTypes(Request $request)
     {
         $memberId = $request->input('member_id');
         $currentLevel = $this->getCurrentMemberLevel($memberId);
 
-        // Chỉ lấy các Loại gói có ID lớn hơn Level hiện tại
         $types = PackageType::where('id', '>', $currentLevel)
             ->select('id', 'name')
             ->orderBy('id', 'asc')

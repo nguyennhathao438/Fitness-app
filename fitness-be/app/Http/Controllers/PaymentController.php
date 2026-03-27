@@ -46,7 +46,7 @@ class PaymentController extends Controller
         $orderId = time() . ""; 
         $requestId = time() . "";
         
-        $redirectUrl = "http://localhost:5173/register/" . $packageId; 
+        $redirectUrl = $request->input('return_url', "http://localhost:5173/register/" . $packageId);
         $ipnUrl = "http://localhost:8000/api/momo-ipn"; 
         $extraData = "";
 
@@ -80,7 +80,6 @@ class PaymentController extends Controller
             'requestType' => $requestType,
             'signature' => $signature
         );
-
         
         $result = $this->execPostRequest($endpoint, json_encode($data));
         $jsonResult = json_decode($result, true); 
@@ -105,10 +104,11 @@ class PaymentController extends Controller
 
         //  CẤU HÌNH VNPAY
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        $vnp_Returnurl = "http://localhost:5173/register/" . $packageId;
         
-        $vnp_TmnCode = "Z93211NZ"; 
-        $vnp_HashSecret = "V73N81OUL7L418T3F1BXT007GLFAE6J0"; 
+        $vnp_Returnurl = $request->input('return_url', "http://localhost:5173/register/" . $packageId);
+        
+        $vnp_TmnCode = "MHQW7PB9"; 
+        $vnp_HashSecret = "BF1S5L2MGHJR5LLXV1328OY92EGTYMSK"; 
 
         $vnp_TxnRef = time() . ""; 
         $vnp_OrderInfo = "Thanh toan goi " . $package->name;
@@ -164,6 +164,4 @@ class PaymentController extends Controller
             'payUrl' => $vnp_Url
         ]);
     }
-
-
 }
