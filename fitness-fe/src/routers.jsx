@@ -94,7 +94,8 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "dashboard",
+        index: true,
+        path: "",
         element: (
           <RequirePermission permission="statistic.read">
             <Dashboard />

@@ -7,10 +7,19 @@ import {
   ShoppingCartIcon,
   StarIcon,
   TextAlignJustifyIcon,
+  LogOutIcon,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../storages/authSlice.js";
 export default function SideBar({ collapsed, setCollapsed }) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    navigate("/");
+    dispatch(logout());
+  };
   return (
     <div
       className={`fixed top-0 left-0 h-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white transition-all duration-300 ${collapsed ? "w-24" : "w-64"}`}
@@ -108,6 +117,17 @@ export default function SideBar({ collapsed, setCollapsed }) {
               className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
             >
               Bài tập
+            </span>
+          </NavLink>
+          <NavLink
+            className="flex items-center px-4 py-2 rounded-md cursor-pointer transition hover:bg-purple-500"
+            onClick={handleLogout}
+          >
+            <LogOutIcon className="text-white inline-block mr-2 size-5"></LogOutIcon>
+            <span
+              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+            >
+              Đăng xuất
             </span>
           </NavLink>
         </ul>

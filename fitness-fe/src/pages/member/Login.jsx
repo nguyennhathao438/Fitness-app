@@ -48,6 +48,7 @@ export default function Login() {
       const res = await loginService(formData);
       localStorage.setItem("token", res.data.token);
       dispatch(login(res.data));
+
       toast.success("Đăng nhập thành công");
       navigate("/");
     } catch (error) {
