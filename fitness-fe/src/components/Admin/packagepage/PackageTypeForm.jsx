@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X, Loader2 } from "lucide-react";
 import { getAllServiceForForm } from "../../../services/admin/PackageTypeService"; 
 
@@ -10,6 +10,9 @@ export default function PackageTypeForm({ mode = "add", initialData, onClose, on
   });
   const [services, setServices] = useState([]); 
   const [isFetching, setIsFetching] = useState(true);
+
+  const [error, setError] = useState("");
+  const nameRef = useRef(null);
 
   useEffect(() => {
     getAllServiceForForm()
@@ -31,11 +34,18 @@ export default function PackageTypeForm({ mode = "add", initialData, onClose, on
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    if (!name.trim()) {
+      setError("Vui lòng nhập tên loại gói.");
+      nameRef.current.focus();
+      return; 
+    }
+
     onSubmit({ name, service_ids: selectedServices });
   };
 
   return (
-    <div className="w-[520px] max-w-full bg-white rounded-xl   border-gray-100 overflow-hidden">
+    <div className="w-[520px] max-w-full bg-white rounded-xl border border-gray-100 overflow-hidden">
       {/* Header */}
       <div className="bg-purple-600 px-6 py-4 flex justify-between items-center">
         <h2 className="text-white font-bold uppercase tracking-tight">
@@ -49,20 +59,27 @@ export default function PackageTypeForm({ mode = "add", initialData, onClose, on
       <form onSubmit={handleSubmit} className="p-6 space-y-5">
         {/* Tên loại gói */}
         <div className="space-y-1">
-          <label className="text-xs font-bold text-gray-500 uppercase px-1">Tên loại gói</label>
+          <label className="text-xs font-bold text-gray-500 uppercase px-1">Tên loại gói <span className="text-red-500">*</span></label>
           <input
+            ref={nameRef} 
             type="text"
-            required
             placeholder="Nhập tên loại gói..."
-            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition-all text-sm"
+            className={`w-full px-4 py-2.5 bg-gray-50 border rounded-lg focus:ring-2 outline-none transition-all text-sm
+              ${error ? "border-red-500 focus:ring-red-200" : "border-gray-200 focus:ring-purple-500"}
+            `}
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value);
+              if (error) setError(""); 
+            }}
           />
+          {/* Hiện chữ đỏ báo lỗi */}
+          {error && <p className="text-red-500 text-xs mt-1.5 font-medium px-1">{error}</p>}
         </div>
 
         {/* Danh sách dịch vụ */}
         <div className="space-y-2">
-          <label className="text-xs font-bold text-gray-500 uppercase  px-1">
+          <label className="text-xs font-bold text-gray-500 uppercase px-1">
             Dịch vụ đi kèm ({selectedServices.length})
           </label>
           <div className="border border-gray-200 rounded-lg p-3 max-h-52 overflow-y-auto bg-gray-50 custom-scrollbar">
