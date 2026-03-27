@@ -58,7 +58,7 @@ export default function InvoiceDetail({ invoice }) {
         </div>
         <div>
         <h2 className="text-base sm:text-lg font-bold text-gray-800">
-            Order Details
+            Chi tiết đơn hàng
         </h2>
         <p className="text-xs sm:text-sm text-gray-500">
             ID: <span className="font-mono">#{invoice.id}</span>
@@ -89,7 +89,7 @@ export default function InvoiceDetail({ invoice }) {
           <section>
             <h3 className="text-xs font-semibold text-gray-400 uppercase mb-3 flex items-center gap-2">
                 <UserIcon size={14} className="text-purple-500" />
-                Customer Information
+                Thông tin hội viên
             </h3>
 
             <div className="flex items-center gap-3">
@@ -117,13 +117,13 @@ export default function InvoiceDetail({ invoice }) {
           <section>
             <h3 className="text-xs font-semibold text-gray-400 uppercase mb-3 flex items-center gap-2">
                 <CreditCardIcon size={14} className="text-indigo-500" />
-                Payment Details
+                Chi tiết thanh toán
             </h3>
 
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div className="items-center gap-2 space-y-2">
-                    <p className="text-xs text-gray-500">Created_date</p>
+                    <p className="text-xs text-gray-500">Ngày mua</p>
                     <div className="flex gap-2 items-center">
                         <CalendarIcon size={14} className="text-gray-400" />
                         <p className="font-medium">
@@ -133,7 +133,7 @@ export default function InvoiceDetail({ invoice }) {
                 </div>
 
                 <div className="items-center gap-2 space-y-2">
-                    <p className="text-xs text-gray-500">Payment Method</p>
+                    <p className="text-xs text-gray-500">Phương thức thanh toán</p>
                     <div
                         className={`flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold w-fit
                             ${getPaymentStyle(invoice.payment_method)}
@@ -153,18 +153,18 @@ export default function InvoiceDetail({ invoice }) {
           <section className="space-y-4">
             <h3 className="text-xs font-semibold text-gray-400 uppercase flex items-center gap-2">
                 <PackageIcon size={14} className="text-pink-500" />
-                Package Summary
+                Tóm tắt gói tập
             </h3>
 
 
             <div className="bg-white rounded-xl border p-4 space-y-2 text-sm">
               <div className="flex items-center justify-between">
-                <p className="text-gray-500">Package</p>
+                <p className="text-gray-500">Gói tập</p>
                 <p className="font-semibold">{invoice.package.name}</p>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-gray-500">Type</span>
+                <span className="text-gray-500">Dịch vụ</span>
                 <span className="font-medium text-right">
                   {invoice.package.package_type.services?.length > 0
                   ? invoice.package.package_type.services
@@ -176,10 +176,10 @@ export default function InvoiceDetail({ invoice }) {
               </div>
 
                 <div className="flex justify-between items-center">
-                    <span className="text-gray-500">Duration</span>
+                    <span className="text-gray-500">Thời hạn</span>
                     <span className="font-medium flex items-center gap-1">
                         <ClockIcon size={14} className="text-gray-400" />
-                        {invoice.package.duration_days} days
+                        {invoice.package.duration_days} ngày
                     </span>
                 </div>
 
@@ -193,7 +193,7 @@ export default function InvoiceDetail({ invoice }) {
                 flex justify-between items-center
                 bg-gradient-to-r from-transparent via-purple-50 to-transparent
                 ">
-                <span className="text-sm text-gray-500">Total</span>
+                <span className="text-sm text-gray-500">Tổng tiền</span>
                 <span className="text-xl sm:text-2xl font-bold text-purple-600">
                     {Number(invoice.total_price).toLocaleString()} ₫
                 </span>

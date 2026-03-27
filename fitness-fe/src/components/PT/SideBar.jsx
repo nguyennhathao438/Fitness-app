@@ -26,7 +26,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
         <h2
           className={`max-sm:hidden text-xl font-bold ${collapsed ? "hidden" : "inline"}`}
         >
-          Admin Panel
+          PT Panel
         </h2>
         <div
           className="bg-fuchsia-100 p-1 rounded-lg max-sm:hidden h-6 sm:h-8"
@@ -50,7 +50,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
             <span
               className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
             >
-              Member
+              Các hội viên
             </span>
           </NavLink>
           <NavLink
@@ -62,7 +62,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
             }
           >
             <CircleUserRoundIcon className="mr-2 size-5" />
-            {!collapsed && <span className="text-lg">Schedules</span>}
+            {!collapsed && <span className="text-lg">Lịch tập</span>}
           </NavLink>
           {/* <NavLink
   to="/pt/schedules/create"
@@ -91,7 +91,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
             <span
               className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
             >
-              Messages
+              Nhắn tin
             </span>
           </NavLink>
 
@@ -107,7 +107,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
             <span
               className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
             >
-              Exercise
+              Bài tập
             </span>
           </NavLink>
         </ul>

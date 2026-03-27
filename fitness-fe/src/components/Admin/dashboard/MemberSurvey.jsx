@@ -33,10 +33,10 @@ export default function MemberSurvey() {
       {/* Header */}
       <div className="mb-4 max-sm:-ml-3">
         <h3 className="font-semibold text-lg">
-          Member Training Time Destiny
+          Thống kê khảo sát các buổi tập
         </h3>
         <p className="text-sm text-gray-500">
-          Analyze popular training days and time slots
+          Phân tích các ngày và khung giờ đào tạo phổ biến.
         </p>
       </div>
 
@@ -89,15 +89,15 @@ export default function MemberSurvey() {
       <div className="flex gap-6 mt-6 text-sm">
         <div className="flex items-center gap-2">
           <span className="w-4 h-4 rounded bg-purple-200"></span>
-          <span>0-10 members</span>
+          <span>0-10 hội viên</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="w-4 h-4 rounded bg-purple-400"></span>
-          <span>11-20 members</span>
+          <span>11-20 hội viên</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="w-4 h-4 rounded bg-purple-700"></span>
-          <span>21+ members</span>
+          <span>21+ hội viên</span>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import defaultAvatar from "@/assets/default-avatar.jpg";
 
 export default function DetailDialog({ title, avatar, tabs }) {
   const [activeTab, setActiveTab] = useState(tabs[0]?.id);
@@ -11,7 +12,7 @@ export default function DetailDialog({ title, avatar, tabs }) {
      text-white p-4 flex items-center gap-4 shrink-0 rounded-t-xl">
         <div className="w-14 h-14 rounded-full overflow-hidden bg-white/30 flex items-center justify-center">
           <img
-            src={avatar || "/avatar-default.png"}
+            src={avatar || defaultAvatar}
             alt="Avatar"
             className="w-full h-full object-cover"
           />
