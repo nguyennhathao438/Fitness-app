@@ -139,7 +139,7 @@ export default function ProfileMessage({ pt }) {
               className={`flex ${isMine ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`px-4 py-2 rounded-lg max-w-[60%] break-words
+                className={`px-4 py-2 rounded-lg max-w-[35%] break-words
                 ${
                   isMine
                     ? "bg-gradient-to-r from-[#caa3f3] to-[#e4dbf6]"

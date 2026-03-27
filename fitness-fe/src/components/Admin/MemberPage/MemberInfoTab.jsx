@@ -15,7 +15,7 @@ export default function MemberInfoTab({ member }) {
         <InfoCard
             className="bg-[#DBEAFE]"
             icon={<UserIcon className="w-5 h-5 text-blue-600" />}
-            title="Age/Gender"
+            title="Tuổi/Giới tính"
             value={`${member?.age > 0 ? member.age : "--"} / ${member?.gender ?? "--"}`}
         />
 
@@ -23,7 +23,7 @@ export default function MemberInfoTab({ member }) {
         <InfoCard
             className="bg-[#DCFCE7]"    
             icon={<PhoneIcon className="w-5 h-5 text-green-600" />}
-            title="Phone"
+            title="Số điện thoại"
             value={member.phone}
         />
 

@@ -130,13 +130,13 @@ export default function MessageItem({ pt , type}) {
                     </div>
 
                     {/* title */}
-                    <p className="mt-4 font-semibold text-gray-700">
-                        Select a conversation
+                    <p className="mt-4 font-semibold text-gray-700 text-center">
+                        Chọn các cuộc trò chuyện
                     </p>
 
                     {/* description */}
                     <p className="text-sm text-gray-500 mt-1">
-                        Choose a user from the list to start messaging
+                        Chọn 1 trong những người dùng để bắt đầu 1 cuộc trò chuyện
                     </p>
 
                 </div>
@@ -147,7 +147,7 @@ export default function MessageItem({ pt , type}) {
 
     return (
         <>
-        <div className="h-[825px] border rounded-lg flex flex-col">
+        <div className="h-[825px] border rounded-lg flex flex-col ">
 
             {/* header */}
             <div className="p-4 border-b font-medium flex gap-5 bg-gradient-to-r from-purple-50 via-pink-50">
@@ -164,7 +164,7 @@ export default function MessageItem({ pt , type}) {
             </div>
 
             {/* message list */}
-            <div className="flex-1 p-4 overflow-y-auto space-y-2 max-sm:w-full max-md:w-[510px]">
+            <div className="flex-1 p-4 overflow-y-auto space-y-2 max-sm:w-full">
                 {messages.map((msg) => {
                     const isMine = msg.sender_id === currentUserId;
                     return (
@@ -173,7 +173,7 @@ export default function MessageItem({ pt , type}) {
                             className={`flex ${isMine ? "justify-end" : "justify-start"}`}
                         >
                             <div
-                            className={`px-3 py-2 rounded-lg max-w-[60%] max-md:max-w-[80%]
+                            className={`px-3 py-2 rounded-lg md:max-w-[150px] lg:max-w-[200px] xl:max-w-[250px] max-md:max-w-[40%]
                             ${isMine 
                                 ? "bg-gradient-to-r from-[#caa3f3] to-[#e4dbf6]" 
                                 : "bg-gray-200 text-gray-800"
@@ -210,7 +210,7 @@ export default function MessageItem({ pt , type}) {
                             handleSend();
                         }
                     }}
-                    placeholder="Type a message..."
+                    placeholder="Nhập tin nhắn..."
                     className="flex-1 border rounded-lg px-4 py-2 
                             focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
