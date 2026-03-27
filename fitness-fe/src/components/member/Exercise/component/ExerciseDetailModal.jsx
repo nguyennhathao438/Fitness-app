@@ -2,11 +2,6 @@ import { X } from "lucide-react";
 
 export default function ExerciseDetailModal({ exercise, onClose }) {
   if (!exercise) return null;
-
-  const getYoutubeId = (url) => {
-    return url?.split("v=")[1]?.split("&")[0];
-  };
-
   return (
     <div
       className="
@@ -48,14 +43,16 @@ export default function ExerciseDetailModal({ exercise, onClose }) {
           {/* LEFT - video */}
           <div className="bg-black flex items-center justify-center p-4">
             <div className="w-full aspect-video">
-              <iframe
-                className="w-full h-full rounded-xl"
-                src={`https://www.youtube.com/embed/${getYoutubeId(
-                  exercise.video,
-                )}`}
-                title="video"
-                allowFullScreen
-              />
+              {exercise.video ? (
+                <video
+                  className="w-full h-full rounded-xl"
+                  src={exercise.video}
+                  controls
+                  autoPlay
+                />
+              ) : (
+                <div className="text-white">Không có video</div>
+              )}
             </div>
           </div>
 

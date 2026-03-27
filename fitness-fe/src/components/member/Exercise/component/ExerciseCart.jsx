@@ -13,6 +13,12 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
     const [workoutId, setWorkoutId] = useState(null);
     const [exerciseConfig, setExerciseConfig] = useState([]);
     const dateVN = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }).format(new Date());
+    const getCloudinaryThumbnail = (url) => {
+        if (!url) return "";
+        return url
+            .replace("/video/upload/", "/video/upload/so_15/")
+            .replace(".mp4", ".jpg");
+    };
     useEffect(() => {
         const config = listExerciseAdd.map(ex => ({
             ...ex,
@@ -29,18 +35,6 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
             newData[index][field] = value === "" ? "" : Number(value);
             return newData;
         });
-    };
-
-    const getYoutubeThumbnail = (url) => {
-        if (!url) return "/placeholder.jpg";
-        const regExp =
-            /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-        const match = url.match(regExp);
-        const videoId = match && match[2].length === 11 ? match[2] : null;
-
-        return videoId
-            ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-            : "/placeholder.jpg";
     };
 
     const addWorkoutHistory = async () => {
@@ -138,7 +132,7 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
                     <div key={exercise.id || index} className="flex items-center justify-between rounded-lg bg-[#2a2440] px-4 py-3 border border-purple-500/20 hover:border-purple-500 transition">
                         <div className="flex items-center gap-4">
                             <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-purple-500">
-                                <img className="w-full h-full object-cover" src={getYoutubeThumbnail(exercise.video)} alt="" />
+                                <img className="w-full h-full object-cover" src={getCloudinaryThumbnail(exercise.video)} alt="" />
                             </div>
                             <div>
                                 <p className="font-semibold">{exercise.name}</p>
