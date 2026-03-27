@@ -20,6 +20,13 @@ export default function ExerciseList({
     const [page, setPage] = useState(1);
     const pageSize = 8;
 
+    const getCloudinaryThumbnail = (url) => {
+        if (!url) return "";
+        return url
+            .replace("/video/upload/", "/video/upload/so_15/")
+            .replace(".mp4", ".jpg");
+    };
+
     const toggleMuscle = (name) => {
         setPage(1);
         if (selectedMuscles.includes(name)) {
@@ -48,13 +55,6 @@ export default function ExerciseList({
         const start = (page - 1) * pageSize;
         return filteredExercises.slice(start, start + pageSize);
     }, [filteredExercises, page]);
-
-    const getYoutubeThumbnail = (url) => {
-        if (!url) return "";
-        const regExp = /(?:youtube\.com\/(?:.*v=|v\/|embed\/)|youtu\.be\/)([^&\n?#]+)/;
-        const match = url.match(regExp);
-        return match ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg` : "";
-    };
 
     return (
         <div className="max-w-6xl mx-auto space-y-6">
@@ -107,7 +107,7 @@ export default function ExerciseList({
                             <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
                                 {item.video ? (
                                     <img
-                                        src={getYoutubeThumbnail(item.video)}
+                                        src={getCloudinaryThumbnail(item.video)}
                                         alt={item.name}
                                         onClick={() => {
                                             setVideoUrl(item.video);
