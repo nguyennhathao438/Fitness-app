@@ -26,7 +26,7 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
     const updateExercise = (index, field, value) => {
         setExerciseConfig(prev => {
             const newData = [...prev];
-            newData[index][field] = Number(value);
+            newData[index][field] = value === "" ? "" : Number(value);
             return newData;
         });
     };
@@ -143,7 +143,7 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
                             <div>
                                 <p className="font-semibold">{exercise.name}</p>
                                 <div className="mt-1 flex gap-4 text-xs text-gray-300">
-                                    {exercise.set_count && (
+                                    {exercise.set_count !== null && exercise.set_count !== undefined && (
                                         <div className="flex items-center gap-1">
                                             <Repeat size={12} />
                                             <input
@@ -159,7 +159,7 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
                                         </div>
                                     )}
 
-                                    {exercise.rep && (
+                                    {exercise.rep !== null && exercise.rep !== undefined && (
                                         <div className="flex items-center gap-1">
                                             <Dumbbell size={12} />
                                             <input

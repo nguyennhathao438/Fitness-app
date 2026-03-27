@@ -30,8 +30,7 @@ export default function ExerciseDetailModal({ exercise, onClose }) {
         {/* close */}
         <button
           onClick={onClose}
-          className="
-    absolute top-3 right-3
+          className="absolute top-3 right-3
     bg-purple-950 text-white
     p-2 rounded-full
     transition-all duration-200
