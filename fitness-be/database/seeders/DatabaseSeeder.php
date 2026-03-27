@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             PtScheduleSeeder::class,
             WorkoutHistorySeeder::class,
             WorkoutHistoryDetailSeeder::class,
+            NutritionLogSeeder::class,
         ]);
     }
 }

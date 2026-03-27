@@ -91,6 +91,14 @@ export default function Header() {
                   Workout
                 </Link>
               )}
+              {isAuthenticated && (
+                <Link
+                  to="/CaloAI"
+                  className="text-gray-300 hover:text-white transition-colors font-bold text-md "
+                >
+                  Dinh Dưỡng
+                </Link>
+              )}
             </nav>
 
             {/* Desktop Right Section */}
@@ -342,6 +350,15 @@ export default function Header() {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Workout
+                  </Link>
+                )}
+                {isAuthenticated && (
+                  <Link
+                    to="/CaloAI"
+                    className="text-gray-300 hover:text-white hover:bg-gray-800 transition-colors text-sm py-2 px-3 rounded-lg"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Dinh dưỡng
                   </Link>
                 )}
               </nav>

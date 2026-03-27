@@ -101,4 +101,8 @@ class Member extends Authenticatable
     {
         return $this->hasMany(PTSchedule::class, 'pt_id');
     }
+    public function nutritionLogs()
+    {
+        return $this->hasMany(NutritionLog::class, 'member_id');
+    }
 }
