@@ -6,7 +6,7 @@ import EditProfileModal from "../modals/EditProfile";
 import { useNavigate } from "react-router-dom";
 export default function MemberInfo() {
   const navigate = useNavigate();
-  const roles = useSelector((state) => state.auth.roles);
+  const roles = useSelector((state) => state.auth.roles) || [];
   const { member } = useSelector((state) => state.auth);
   const [openResetPass, setOpenResetPass] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
