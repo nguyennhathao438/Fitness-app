@@ -60,47 +60,24 @@ export default function PackageList({ refreshKey, onChanged }) {
     }
   };
 
-  // LOGIC PHÂN TRANG  ...
-
   const renderPageNumbers = () => {
-    const { currentPage, lastPage } = pagination;
-    let pageRange = [];
-
-    if (lastPage <= 5) {
-      for (let i = 1; i <= lastPage; i++) pageRange.push(i);
-    } else {
-      if (currentPage <= 3) {
-        pageRange = [1, 2, 3, 4, "...", lastPage];
-      } else if (currentPage >= lastPage - 2) {
-        pageRange = [1, "...", lastPage - 3, lastPage - 2, lastPage - 1, lastPage];
-      } else {
-        pageRange = [1, "...", currentPage - 1, currentPage, currentPage + 1, "...", lastPage];
-      }
-    }
-
-    return pageRange.map((page, index) => {
-      if (page === "...") {
-        return (
-          <span key={`ellipsis-${index}`} className="px-2 text-gray-400 font-bold tracking-widest">
-            ...
-          </span>
-        );
-      }
-
-      return (
+    const pages = [];
+    for (let i = 1; i <= pagination.lastPage; i++) {
+      pages.push(
         <button
-          key={`page-${page}`}
-          onClick={() => goToPage(page)}
+          key={i}
+          onClick={() => goToPage(i)}
           className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold transition-all border ${
-            currentPage === page
+            pagination.currentPage === i
               ? "bg-purple-600 text-white border-purple-600 shadow-md scale-110"
               : "bg-white text-gray-500 border-gray-200 hover:border-purple-300 hover:text-purple-600"
           }`}
         >
-          {page}
+          {i}
         </button>
       );
-    });
+    }
+    return pages;
   };
 
   const handleConfirmDelete = async () => {
@@ -151,71 +128,64 @@ export default function PackageList({ refreshKey, onChanged }) {
 
       {/* --- BẢNG DANH SÁCH --- */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-        
-        <div className="overflow-x-auto w-full custom-scrollbar">
-          <table className="w-full min-w-[800px] text-left border-collapse">
-            <thead className="bg-gray-50 text-xs uppercase font-semibold text-gray-600 whitespace-nowrap">
-              <tr>
-                <th className="p-4">Package</th>
-                <th className="p-4">Type</th>
-                <th className="p-4 text-center">Price</th>
-                <th className="p-4 text-center">Duration</th>
-                <th className="p-4 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 text-sm">
-              {loading ? (
-                <tr><td colSpan="5" className="p-12 text-center"><Loader2 className="animate-spin inline text-purple-600"/></td></tr>
-              ) : packages.length === 0 ? (
-                <tr><td colSpan="5" className="p-12 text-center text-gray-400 italic">No packages found.</td></tr>
-              ) : (
-                packages.map((pkg) => (
-                  <tr key={pkg.id} className="hover:bg-purple-50 transition-colors duration-150 group">
-                    <td className="p-4 font-medium text-gray-800">{pkg.name}</td>
-                    <td className="p-4">
-                      <span className="bg-indigo-50 text-indigo-600 px-2 py-1 rounded text-[12px] font-medium uppercase border border-indigo-100 whitespace-nowrap">
-                        {pkg.package_type?.name || "N/A"}
-                      </span>
-                    </td>
-                    <td className="p-4 text-gray-600 font-medium text-center whitespace-nowrap">
-                      {parseInt(pkg.price).toLocaleString('vi-VN')} đ
-                    </td>
-                    <td className="p-4 text-gray-600 font-medium text-center whitespace-nowrap">
-                      {pkg.duration_days} days
-                    </td>
-                    <td className="p-4">
-                      <div className="flex justify-center gap-2">
-                        <button onClick={() => setViewData(pkg) || setOpenView(true)} className="cursor-pointer p-2 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors"><Eye size={16} /></button>
-                        <button onClick={() => { setEditData(pkg); setOpenEdit(true); }} className="cursor-pointer p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"><Edit size={16} /></button>
-                        <button onClick={() => { setDeleteId(pkg.id); setOpenDelete(true); }} className="cursor-pointer p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"><Trash2 size={16} /></button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        <table className="w-full text-left border-collapse">
+          <thead className="bg-gray-50 text-xs uppercase font-semibold text-gray-600">
+            <tr>
+              <th className="p-4">Package</th>
+              <th className="p-4">Type</th>
+              <th className="p-4 text-center">Price</th>
+              <th className="p-4 text-center">Duration</th>
+              <th className="p-4 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100 text-sm">
+            {loading ? (
+              <tr><td colSpan="5" className="p-12 text-center"><Loader2 className="animate-spin inline text-purple-600"/></td></tr>
+            ) : packages.length === 0 ? (
+              <tr><td colSpan="5" className="p-12 text-center text-gray-400 italic">No packages found.</td></tr>
+            ) : (
+              packages.map((pkg) => (
+                <tr key={pkg.id} className="hover:bg-purple-50 transition-colors duration-150 group">
+                  <td className="p-4 font-medium text-gray-800">{pkg.name}</td>
+                  <td className="p-4">
+                    <span className="bg-indigo-50 text-indigo-600 px-2 py-1 rounded text-[12px] font-medium uppercase border border-indigo-100">
+                      {pkg.package_type?.name || "N/A"}
+                    </span>
+                  </td>
+                  <td className="p-4 text-gray-600 font-medium text-center">{parseInt(pkg.price).toLocaleString('vi-VN')} đ</td>
+                  <td className="p-4 text-gray-600 font-medium text-center">{pkg.duration_days} days</td>
+                  <td className="p-4">
+                    <div className="flex justify-center gap-2">
+                      <button onClick={() => setViewData(pkg) || setOpenView(true)} className="p-2 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors"><Eye size={16} /></button>
+                      <button onClick={() => { setEditData(pkg); setOpenEdit(true); }} className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"><Edit size={16} /></button>
+                      <button onClick={() => { setDeleteId(pkg.id); setOpenDelete(true); }} className="p-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"><Trash2 size={16} /></button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
 
-        {/* --- PHÂN TRANG ĐÃ NÂNG CẤP --- */}
+        {/* --- PHÂN TRANG PHONG CÁCH --- */}
         {!loading && pagination.lastPage > 1 && (
-          <div className="flex items-center justify-center gap-2 sm:gap-4 p-4 bg-white border-t border-gray-50">
+          <div className="flex items-center justify-center gap-3 p-4 bg-white border-t border-gray-50">
             <button
               disabled={pagination.currentPage === 1}
               onClick={() => goToPage(pagination.currentPage - 1)}
-              className="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-purple-600 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-purple-600 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors"
             >
               Prev
             </button>
             
-            <div className="flex items-center gap-1 sm:gap-2">
+            <div className="flex items-center gap-2">
               {renderPageNumbers()}
             </div>
 
             <button
               disabled={pagination.currentPage === pagination.lastPage}
               onClick={() => goToPage(pagination.currentPage + 1)}
-              className="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-purple-600 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-purple-600 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors"
             >
               Next
             </button>
@@ -223,7 +193,6 @@ export default function PackageList({ refreshKey, onChanged }) {
         )}
       </div>
 
-      {/* --- CÁC DIALOG BÊN DƯỚI GIỮ NGUYÊN --- */}
       <Dialog open={openEdit} onClose={() => setOpenEdit(false)}>
         <PackageForm 
           key={editData ? `edit-pkg-${editData.id}` : 'add-pkg'} 
@@ -237,6 +206,7 @@ export default function PackageList({ refreshKey, onChanged }) {
       <Dialog open={openView} onClose={() => setOpenView(false)}>
         {viewData && (
           <div className="bg-white rounded-lg overflow-hidden flex flex-col w-full max-w-2xl mx-auto">
+            {/* Header Tím */}
             <div className="bg-purple-600 px-6 py-4 flex justify-between items-center">
                 <div>
                     <h2 className="text-lg font-bold text-white uppercase tracking-wide">Chi tiết gói tập</h2>
@@ -247,6 +217,7 @@ export default function PackageList({ refreshKey, onChanged }) {
                 </button>
             </div>
 
+            {/* Nội dung Body */}
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
                 <div className="space-y-6">
                     <div>

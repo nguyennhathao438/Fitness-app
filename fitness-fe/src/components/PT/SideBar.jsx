@@ -7,18 +7,16 @@ import {
   ShoppingCartIcon,
   StarIcon,
   TextAlignJustifyIcon,
-  LogOutIcon,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { logout } from "../../storages/authSlice.js";
+import { Plus } from "lucide-react";
+import { useSelector } from "react-redux";
+
 export default function SideBar({ collapsed, setCollapsed }) {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const handleLogout = () => {
-    navigate("/");
-    dispatch(logout());
+    const permissions = useSelector((state) => state.auth.permissions);
+
+    const hasPermission = (code) => {
+    return permissions?.includes(code);
   };
   return (
     <div
@@ -35,7 +33,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
         <h2
           className={`max-sm:hidden text-xl font-bold ${collapsed ? "hidden" : "inline"}`}
         >
-          PT Panel
+        PT Panel
         </h2>
         <div
           className="bg-fuchsia-100 p-1 rounded-lg max-sm:hidden h-6 sm:h-8"
@@ -59,9 +57,10 @@ export default function SideBar({ collapsed, setCollapsed }) {
             <span
               className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
             >
-              Các hội viên
+              Member
             </span>
           </NavLink>
+             {hasPermission("schedule_pt.create") && (
           <NavLink
             to="/pt/schedules/create"
             className={({ isActive }) =>
@@ -71,23 +70,10 @@ export default function SideBar({ collapsed, setCollapsed }) {
             }
           >
             <CircleUserRoundIcon className="mr-2 size-5" />
-            {!collapsed && <span className="text-lg">Lịch tập</span>}
+            {!collapsed && <span className="text-lg">Schedules</span>}
           </NavLink>
-          {/* <NavLink
-  to="/pt/schedules/create"
-  className={({ isActive }) =>
-    `flex items-center px-4 py-2 rounded-md cursor-pointer transition
-     hover:bg-purple-500 hover:translate-x-1
-     ${isActive ? "bg-purple-600" : ""}`
-  }
->
-  <Plus className="text-white inline-block mr-2 size-5" />
-  <span
-    className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
-  >
-    Schedules
-  </span>
-</NavLink> */}
+           )}
+           {hasPermission("message_pt.read") && (
           <NavLink
             to="/pt/message-pt"
             className={({ isActive }) =>
@@ -100,10 +86,11 @@ export default function SideBar({ collapsed, setCollapsed }) {
             <span
               className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
             >
-              Nhắn tin
+              Messages
             </span>
           </NavLink>
-
+ )}
+     {hasPermission("message_pt.read") && (
           <NavLink
             to="/pt/exercise"
             className={({ isActive }) =>
@@ -116,20 +103,10 @@ export default function SideBar({ collapsed, setCollapsed }) {
             <span
               className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
             >
-              Bài tập
+              Exercise
             </span>
           </NavLink>
-          <NavLink
-            className="flex items-center px-4 py-2 rounded-md cursor-pointer transition hover:bg-purple-500"
-            onClick={handleLogout}
-          >
-            <LogOutIcon className="text-white inline-block mr-2 size-5"></LogOutIcon>
-            <span
-              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
-            >
-              Đăng xuất
-            </span>
-          </NavLink>
+           )}
         </ul>
       </nav>
     </div>

@@ -18,12 +18,12 @@ export default function TopActiveMember() {
   return (
     <div className="bg-white rounded-xl p-1 sm:p-6">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-5">
+      <div className="flex items-center gap-2 mb-5">
         <div className="p-2 rounded-lg bg-indigo-100">
           <TrophyIcon className="size-5 text-indigo-600" />
         </div>
-        <h3 className="font-semibold max-sm:text-md md:text-xl text-gray-700">
-          Top 5 Hội viên hoạt động lâu nhất
+        <h3 className="font-semibold text-gray-700">
+          Top 5 Longest Active Members
         </h3>
       </div>
 
@@ -68,7 +68,7 @@ export default function TopActiveMember() {
                       {item.member.name}
                     </p>
                     <p className="text-sm text-gray-500">
-                      Tuổi: {item.member.age}
+                      Age: {item.member.age}
                     </p>
                   </div>
                 </div>
@@ -78,7 +78,7 @@ export default function TopActiveMember() {
                   <p className="text-xl font-bold text-indigo-600">
                     {item.total_days}
                   </p>
-                  <p className="text-xs text-gray-500">Ngày hoạt động</p>
+                  <p className="text-xs text-gray-500">days active</p>
                 </div>
               </div>
             ))}

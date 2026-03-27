@@ -16,7 +16,7 @@ use App\Models\BodyMetric;
 use App\Models\PTSchedule;
 use App\Models\Notification;
 use Cloudinary\Cloudinary;
-use App\Models\Role;
+
 class MemberController extends Controller
 {
     /*
@@ -79,11 +79,6 @@ class MemberController extends Controller
                     'valid_until' => now()->addDays($package->duration_days),
                     'status' => $status,
                 ]);
-                $vipRole = Role::where('name', 'Member')->first();
-
-                if ($vipRole) {
-                    $member->roles()->syncWithoutDetaching([$vipRole->id]);
-                }
             });
             $serviceIds = $package->packageType->services->pluck('id');
             $waiting = "paid";
@@ -216,6 +211,7 @@ class MemberController extends Controller
         ]);
 
         $result = $this->memberService->updateUser($request, $memberId);
+
         return response()->json([
             'success' => $result['success'],
             'message' => $result['message'],
@@ -303,16 +299,20 @@ class MemberController extends Controller
 
         try {
             DB::transaction(function () use ($request, $member, &$invoice, &$newPackage, $isExtend) {
+                // Lấy thông tin gói muốn mua
                 $newPackage = TrainingPackage::findOrFail($request->package_id);
 
+                // Xác định trạng thái thanh toán
                 $status = 'paid';
                 if ($request->payment_method == 'cash') {
                     $status = 'pending';
                 }
 
+                // TÍNH TOÁN NGÀY BẮT ĐẦU VÀ GIÁ TIỀN
                 $startDate = Carbon::now();
                 $totalPrice = $newPackage->price;
 
+                // Tìm hóa đơn đang sử dụng (nếu có)
                 $currentInvoice = Invoice::where('member_id', $member->id)
                     ->where('status', 'paid')
                     ->where('valid_until', '>', Carbon::now())
@@ -322,20 +322,26 @@ class MemberController extends Controller
                     ->first();
 
                 if ($isExtend) {
+                    // NẾU LÀ GIA HẠN: Nối tiếp ngày, giá tiền giữ nguyên
                     if ($currentInvoice) {
                         $startDate = Carbon::parse($currentInvoice->valid_until);
                     }
                 } else {
+                    // NẾU LÀ NÂNG CẤP: Tính tiền dư để trừ đi
                     if ($currentInvoice && $currentInvoice->package) {
                         $oldPackage = $currentInvoice->package;
 
+                        // Tính số ngày còn lại (chỉ lấy phần nguyên ngày)
                         $daysRemaining = max(0, Carbon::now()->startOfDay()->diffInDays(Carbon::parse($currentInvoice->valid_until)->startOfDay(), false));
 
                         if ($daysRemaining > 0 && $oldPackage->duration_days > 0) {
+                            // Giá trị của 1 ngày ở gói cũ
                             $dailyRate = $oldPackage->price / $oldPackage->duration_days;
 
+                            // Tổng tiền dư chưa dùng tới
                             $remainingValue = $daysRemaining * $dailyRate;
 
+                            // Số tiền khách phải đóng = Giá gói mới - Tiền dư gói cũ 
                             $totalPrice = max(0, round($newPackage->price - $remainingValue));
                         }
                     }
@@ -378,6 +384,7 @@ class MemberController extends Controller
                 'message' => $isExtend ? 'Gia hạn thành công!' : 'Nâng cấp thành công!',
                 'invoice' => $invoice,
             ], 200);
+
         } catch (Throwable $e) {
             return response()->json([
                 'success' => false,
@@ -391,12 +398,12 @@ class MemberController extends Controller
     public function getMember(Request $request)
     {
         $members = $this->memberService->getMembers($request);
+
         return response()->json([
             'success' => true,
             'data' => $members
         ]);
     }
-
     public function getStatUser()
     {
         $data = $this->memberService->getStatUser();
@@ -413,6 +420,7 @@ class MemberController extends Controller
     public function myPT()
     {
         $memberId = auth()->id();
+
         $pt = DB::table('pt_clients')
             ->join('members', 'pt_clients.pt_id', '=', 'members.id')
             ->where('pt_clients.member_id', $memberId)
@@ -435,7 +443,9 @@ class MemberController extends Controller
         $request->validate([
             'pt_id' => 'required|exists:members,id'
         ]);
+
         $memberId = auth()->id();
+
         $already = DB::table('pt_clients')
             ->where('member_id', $memberId)
             ->exists();
@@ -445,6 +455,7 @@ class MemberController extends Controller
                 'message' => 'Bạn đã có PT rồi'
             ], 400);
         }
+
         DB::table('pt_clients')->insert([
             'pt_id' => $request->pt_id,
             'member_id' => $memberId,

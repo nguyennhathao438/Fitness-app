@@ -26,7 +26,7 @@ export default function Pagination({ meta, onPageChange }) {
           current_page === 1 ? disabledBtn : normalBtn
         }`}
       >
-        Trước
+        Prev
       </button>
 
       {pages.map((page, i) =>
@@ -55,7 +55,7 @@ export default function Pagination({ meta, onPageChange }) {
           current_page === last_page ? disabledBtn : normalBtn
         }`}
       >
-        Sau
+        Next
       </button>
     </div>
   );

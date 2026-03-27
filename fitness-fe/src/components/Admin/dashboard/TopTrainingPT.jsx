@@ -27,12 +27,12 @@ export default function TopTraingPT() {
   return (
     <div className="bg-white rounded-xl p-1 sm:p-6">
       {/* Header */}
-      <div className="flex items-center gap-4 mb-5">
+      <div className="flex items-center gap-2 mb-5">
         <div className="p-2 rounded-lg bg-orange-100">
           <TrophyIcon className="size-5 text-orange-600" />
         </div>
-        <h3 className="font-semibold max-sm:text-md md:text-xl text-gray-700">
-            Top 5 PT dạy nhiều học viên nhất
+        <h3 className="font-semibold text-gray-700">
+            Top 5 Personal Trainers with the Most Training Sessions
         </h3>
       </div>
 
@@ -77,7 +77,7 @@ export default function TopTraingPT() {
                       {item.pt.name}
                     </p>
                     <p className="text-sm text-gray-500">
-                      Tuổi: {item.pt.age}
+                      Age: {item.pt.age}
                     </p>
                   </div>
                 </div>
@@ -87,7 +87,7 @@ export default function TopTraingPT() {
                   <p className="text-xl font-bold text-indigo-600">
                     {item.total_sessions}
                   </p>
-                  <p className="text-xs text-gray-500">hội viên</p>
+                  <p className="text-xs text-gray-500">total Member</p>
                 </div>
               </div>
             ))}

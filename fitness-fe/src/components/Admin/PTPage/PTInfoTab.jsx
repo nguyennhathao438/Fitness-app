@@ -8,7 +8,7 @@ export default function PTInfoTab({ pt }) {
                 <div className="bg-white flex w-[300px] px-3 py-4 rounded-lg space-x-5 shadow-md">
                     <div className="bg-[#DBEAFE] px-2 py-3 rounded-xl"><UserIcon className="text-[#2563EB]"/></div>
                     <span>
-                        <p>Tuổi/Giới tính</p>
+                        <p>Age/Gender</p>
                         <p className="font-bold">{pt.age}/{pt.gender}</p>
                     </span>
                 </div>
@@ -16,7 +16,7 @@ export default function PTInfoTab({ pt }) {
                 <div className="bg-white shadow-md flex w-[300px] px-3 py-4 rounded-lg space-x-5">
                     <div className="bg-[#DCFCE7] px-2 py-3 rounded-xl"><PhoneIcon className="text-[#16A34A]"/></div>
                     <span>
-                        <p>Số điện thoại</p>
+                        <p>Phone</p>
                         <p className="font-bold">{pt.phone}</p>
                     </span>
                 </div>
@@ -34,7 +34,7 @@ export default function PTInfoTab({ pt }) {
                 <div className="bg-white shadow-md flex w-[300px] px-3 py-4 rounded-lg space-x-5">
                     <div className="bg-[#AFC8FF] px-2 py-3 rounded-xl"><UserCheckIcon className="text-[#2563EB]"/></div>
                     <span>
-                        <p>Số hội viên đang quản lý</p>
+                        <p>Active Members</p>
                         <p className="font-bold">{pt.active_clients_count}</p>
                     </span>
                 </div>
@@ -52,7 +52,7 @@ export default function PTInfoTab({ pt }) {
                 </span>
                 ))
             ) : (
-                <span className="text-gray-400 text-sm">Không có role</span>
+                <span className="text-gray-400 text-sm">No role assigned</span>
             )}
             </div>
         </div>

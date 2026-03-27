@@ -33,12 +33,12 @@ export default function InvoiceBarChart() {
         labels,
         datasets: [
           {
-            label: "Đã Thanh toán",
+            label: "Paid",
             data: data.paid,
             backgroundColor: "#22c55e",
           },
           {
-            label: "Từ chối",
+            label: "Rejected",
             data: data.reject,
             backgroundColor: "#ef4444",
           },
@@ -51,7 +51,7 @@ export default function InvoiceBarChart() {
   if (!chartData) {
     return (
       <div className="h-[260px] flex items-center justify-center text-gray-400">
-        Đang tải biểu đồ...
+        Loading chart...
       </div>
     );
   }
@@ -64,7 +64,7 @@ export default function InvoiceBarChart() {
             <FileBarChartIcon className="size-5 text-indigo-600" />
             </span>
             <h3 className="text-xl font-semibold text-gray-700">
-            Thống kê hóa đơn theo tháng
+            Invoice Statistics Per Month
             </h3>
         </div>
         <div className="h-11/12">

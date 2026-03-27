@@ -20,7 +20,7 @@ export default function ConversationItem({ ptList, onSelectPT, onSearch, current
 
                 <input
                     type="text"
-                    placeholder="Tìm kiếm tên người dùng..."
+                    placeholder="Search members..."
                     className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg
                                focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
                     onChange={(e) => onSearch(e.target.value)}
@@ -63,7 +63,7 @@ export default function ConversationItem({ ptList, onSelectPT, onSearch, current
                             </div>
                             
                             <div className="flex justify-between">
-                                <p className="text-xs text-gray-500 truncate md:w-[100px] lg:w-[175px]">
+                                <p className="text-xs text-gray-500 truncate">
                                     {pt.last_sender_id === currentUserId 
                                         ? `Bạn: ${pt.last_message}` 
                                         : pt.last_message}

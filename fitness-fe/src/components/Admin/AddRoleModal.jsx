@@ -50,7 +50,7 @@ export default function AddRoleModal({ open, onClose, onCreated }) {
       <div className="relative w-[500px] rounded-xl bg-white shadow-lg">
         {/* header */}
         <div className="flex items-center justify-between border-b px-6 py-4">
-          <h2 className="text-xl font-semibold">Thêm vai trò</h2>
+          <h2 className="text-xl font-semibold">Add Role</h2>
           <X
             onClick={onClose}
             className="cursor-pointer text-gray-500 hover:text-gray-800"
@@ -61,7 +61,7 @@ export default function AddRoleModal({ open, onClose, onCreated }) {
         <div className="space-y-4 px-6 py-4">
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-600">
-              Tên vai trò
+              Role name
             </label>
             <input
               type="text"
@@ -74,7 +74,7 @@ export default function AddRoleModal({ open, onClose, onCreated }) {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-gray-600">
-              Mô tả
+              Description
             </label>
             <textarea
               rows="3"
@@ -92,7 +92,7 @@ export default function AddRoleModal({ open, onClose, onCreated }) {
             onClick={onClose}
             className="rounded-lg border px-5 py-2 text-gray-700 hover:bg-gray-50"
           >
-            Hủy
+            Cancel
           </button>
 
           <button
@@ -104,7 +104,7 @@ export default function AddRoleModal({ open, onClose, onCreated }) {
                 : "bg-purple-600 hover:bg-purple-700"
             }`}
           >
-            {loading ? "Đang tạo..." : "Thêm"}
+            {loading ? "Creating..." : "Create"}
           </button>
         </div>
       </div>

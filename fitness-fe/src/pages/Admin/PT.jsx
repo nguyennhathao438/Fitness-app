@@ -86,7 +86,6 @@ export default function PT({ refreshKey,onChanged }){
             });
             onChanged?.();
         } catch (err) {
-            console.log("lỗi",err);
             toast.error("Cập nhật thất bại");
         }   finally {
       setIsSubmitting(false);
@@ -106,7 +105,7 @@ export default function PT({ refreshKey,onChanged }){
                 <input
                     value={keyword}
                     type="text"
-                    placeholder="Tìm kiếm theo tên..."
+                    placeholder="Search trainers by name..."
                     onChange={(e) => setKeyword(e.target.value)}
                     className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg
                             focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
@@ -125,10 +124,10 @@ export default function PT({ refreshKey,onChanged }){
                     className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg
                                 focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
                     >
-                    <option value="">Tất cả giới tính</option>
-                    <option value="male">Nam</option>
-                    <option value="female">Nữ</option>
-                    <option value="other">Giới tính khác</option>
+                    <option value="">All Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
                     </select>
                 </div>
 
@@ -141,8 +140,8 @@ export default function PT({ refreshKey,onChanged }){
                     className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg
                                 focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
                     >
-                    <option value="desc">Mới nhất</option>
-                    <option value="asc">Cũ nhất</option>
+                    <option value="desc">Newest</option>
+                    <option value="asc">Oldest</option>
                     </select>
                 </div>
 

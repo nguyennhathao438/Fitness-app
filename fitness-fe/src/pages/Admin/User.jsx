@@ -115,9 +115,9 @@ export default function User() {
         {/* Header */}
         <div className="flex items-center justify-between gap-4 p-2">
           <div className="">
-            <h1 className="text-lg sm:text-3xl font-bold ml-4 mt-3">Quản lý người dùng</h1>
+            <h1 className="text-lg sm:text-3xl font-bold ml-4 mt-3">User Management</h1>
             <p className="text-gray-500 text-sm sm:text-base ml-5">
-              Quản lý tất cả người dùng trong hệ thống.
+              Manage all Users in the system
             </p>
           </div>
           <button
@@ -132,14 +132,14 @@ export default function User() {
             onClick={() => setOpenForm(true)}
           >
             <PlusIcon className="size-5" />
-            <span className="hidden sm:inline">Thêm huấn luyện viên</span>
+            <span className="hidden sm:inline">Add PT</span>
           </button>
         </div>
 
         {/* StatHeader */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-3 gap-4">
           <StatHeader
-            name="Tổng người dùng"
+            name="Total Users"
             value={full}
             icon={<UsersIcon className="size-5 text-white" />}
             className1="bg-[#A870FF]"
@@ -147,7 +147,7 @@ export default function User() {
           />
 
           <StatHeader
-            name="Các hội viên"
+            name="Members"
             value={fullMember}
             icon={<UserCheckIcon className="size-5 text-[#16A34A]" />}
             className1="bg-[#DCFCE7]"
@@ -155,7 +155,7 @@ export default function User() {
           />
 
           <StatHeader
-            name="Các huấn luyện viên"
+            name="Personal Trainers"
             value={fullPT}
             icon={<CrownIcon className="size-5 text-[#2563EB]" />}
             className1="bg-[#BEE3F8]"
@@ -163,7 +163,7 @@ export default function User() {
           />
 
           <StatHeader
-            name="Các người dùng bị xóa"
+            name="Deleted Member"
             value={fullDeleted}
             icon={<UserXIcon className="size-5 text-[#DC2626]" />}
             className1="bg-[#FF6B73]"

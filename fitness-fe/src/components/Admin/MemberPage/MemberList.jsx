@@ -4,6 +4,7 @@ import {
   PencilIcon,
   TrashIcon,
   FilterIcon,
+  CableIcon,
   UserCogIcon,
   UserPlusIcon,
 } from "lucide-react";
@@ -68,6 +69,7 @@ export default function MemberList({ onChanged }) {
   };
   // Sửa thông tin member
   const handleupdated = async (data) => {
+    console.log("Updating member with data:", data);
     if (isSubmitting) return;
     else if (!canUpdateRole) {
       setOpenNoPermission(true);
@@ -76,13 +78,13 @@ export default function MemberList({ onChanged }) {
     try {
       setIsSubmitting(true);
       await updatedUser(selectedMember.id, data);
-      toast.success("Thay đổi thành công");
+      toast.success("Updated Success");
       setOpenForm(false);
       setSelectedMember(null);
       fetchMembers();
       onChanged?.();
     } catch (error) {
-      toast.error("Vui lòng sửa lại",error);
+      toast.error("Fail to updated",error);
     } finally {
       setIsSubmitting(false);
     }
@@ -115,7 +117,7 @@ export default function MemberList({ onChanged }) {
               <input
                 value={keyword}
                 type="text"
-                placeholder="Tìm kiếm theo tên..."
+                placeholder="Search members by name..."
                 onChange={(e) => setKeyword(e.target.value)}
                 className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg
                         focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
@@ -133,10 +135,10 @@ export default function MemberList({ onChanged }) {
                   className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg
                           focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
                 >
-                  <option value="">Tất cả giới tính</option>
-                  <option value="male">Nam</option>
-                  <option value="female">Nữ</option>
-                  <option value="other">Giới tính khác</option>
+                  <option value="">All Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
 
@@ -148,7 +150,7 @@ export default function MemberList({ onChanged }) {
                   className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg
                           focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
                 >
-                  <option value="">Tất cả hội viên</option>
+                  <option value="">All Members</option>
                   <option value="1">Đã có PT</option>
                   <option value="0">Chưa có PT</option>
                 </select>
@@ -163,8 +165,8 @@ export default function MemberList({ onChanged }) {
                   className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg
                           focus:ring-2 focus:ring-purple-500 focus:outline-none text-sm"
                 >
-                  <option value="desc">Mới nhất</option>
-                  <option value="asc">Cũ nhất</option>
+                  <option value="desc">Newest</option>
+                  <option value="asc">Oldest</option>
                 </select>
               </div>
             </div>
@@ -176,10 +178,9 @@ export default function MemberList({ onChanged }) {
           <table className="w-full text-sm">
             <thead className="bg-gray-100 text-gray-700">
               <tr>
-                <th className="px-4 py-3 text-left">Hội viên</th>
-                <th></th>
+                <th className="px-4 py-3 text-left">Member</th>
                 <th className="px-4 py-3 text-left">Email</th>
-                <th className="px-4 py-3 text-left">Chức năng</th>
+                <th className="px-4 py-3 text-left">Actions</th>
               </tr>
             </thead>
 
@@ -187,13 +188,13 @@ export default function MemberList({ onChanged }) {
               {loading ? (
                 <tr>
                   <td colSpan={3} className="text-center py-6 text-gray-500">
-                    Đang tải dữ liệu Hội viên...
+                    Loading...
                   </td>
                 </tr>
               ) : memberList.length === 0 ? (
                 <tr>
                   <td colSpan={3} className="text-center py-6 text-gray-500">
-                    Không tìm thấy hội viên nào!
+                    No members found
                   </td>
                 </tr>
               ) : (
@@ -208,7 +209,21 @@ export default function MemberList({ onChanged }) {
                     hover:translate-x-2  
                   "
                   >
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 relative">
+                      {m.can_add_pt && (
+                        <span
+                          className="
+                        inline-block mb-1
+                      text-red-500 text-xs font-semibold
+                      bg-red-50 px-2 py-0.5 rounded-full
+                        xl:absolute xl:right-45
+                        lg:absolute lg:top-1 lg:right-15
+                        lg:mb-0
+                      "
+                        >
+                          Chưa có PT
+                        </span>
+                      )}
                       <div className="flex items-center gap-3">
                         <img
                           src={m.avatar || defaultAvatar}
@@ -219,19 +234,6 @@ export default function MemberList({ onChanged }) {
                         </span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 relative">
-                        {m.can_add_pt && (
-                        <p
-                          className="
-                        inline-block mb-1 text-red-500 text-xs font-semibold bg-red-50 px-2 py-0.5 rounded-full
-                        sm:absolute sm:top-0 md:right-15 lg:right-45 xl:right-70
-                        max-sm:absolute max-sm:left-0 max-sm:top-0 whitespace-nowrap 
-                      "
-                        >
-                          Chưa có PT
-                        </p>
-                      )}
-                    </td>
                     <td className="px-4 py-3 text-gray-600 font-medium">
                       {m.email}
                     </td>
@@ -239,7 +241,7 @@ export default function MemberList({ onChanged }) {
                       <div className="flex justify-center gap-3">
                         {m.can_add_pt && (
                           <button
-                            title="Gắn PT"
+                            title="Assign PT"
                             className="p-2 rounded-lg bg-green-100 text-green-600
                                     hover:bg-green-200 transition"
                             onClick={() => {
@@ -294,7 +296,7 @@ export default function MemberList({ onChanged }) {
                         </button>
                         {!m.can_add_pt && m.activept && (
                           <button
-                            title="Thay đổi PT"
+                            title="Change PT"
                             className="p-2 rounded-lg bg-orange-100 text-orange-600
                                     hover:bg-orange-200 transition"
                             onClick={() => {
@@ -391,15 +393,8 @@ export default function MemberList({ onChanged }) {
             fetchMembers();
             onChanged?.();
           } catch (err) {
-            const message = err?.response?.data?.message;
-
-            if (message) {
-              toast.error(message);
-            } else {
-              toast.error("Có lỗi xảy ra khi xóa người dùng");
-            }
-
-            console.log("error", err);
+            console.log("error",err);
+            toast.error("Member đang có pt nên không thể xóa");
           }
         }}
         name="Xóa người dùng"
@@ -426,10 +421,10 @@ export default function MemberList({ onChanged }) {
                 label: "Lịch tập",
                 content:< MemberScheduleInfoTab member={selectedMember.id} />
               },
-              // {
-              //   id: "food",
-              //   label: "Chế độ ăn uống",
-              // },
+              {
+                id: "food",
+                label: "Chế độ ăn uống",
+              },
             ]}
           />
         )}

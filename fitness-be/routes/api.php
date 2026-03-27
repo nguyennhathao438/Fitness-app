@@ -23,12 +23,11 @@ use App\Http\Controllers\SurveyTrainingController;
 use App\Http\Controllers\FavoriteExerciseController;
 use App\Http\Controllers\TrainingPackageController;
 use App\Http\Controllers\ChatbotController;
-
+use App\Http\Controllers\FoodAiController;
 use App\Http\Controllers\PTScheduleController;
 use App\Http\Controllers\PTController;
 use App\Http\Controllers\NotificationController;
-
-
+use App\Http\Controllers\NutritionController;
 use App\Http\Controllers\PaymentController;
 Route::post('/login', [AuthenController::class, 'login']);
 Route::post('/register', [MemberController::class, 'register']);
@@ -229,3 +228,14 @@ Route::middleware('auth:sanctum')->group(function () {
 //payment
 Route::post('/momo_payment', [PaymentController::class, 'momo_payment']);
 Route::post('/vnpay_payment', [PaymentController::class, 'vnpay_payment']);
+
+Route::post('/food/predict', [FoodAiController::class, 'predictFood']);
+Route::prefix('calories')->group(function () {
+    Route::get('/day/{date}', [NutritionController::class, 'getByDate']);
+    Route::post('/add-meal', [NutritionController::class, 'addMeal']);
+    Route::get('/history', [NutritionController::class, 'history']);
+        Route::post('/add-many-meals', [NutritionController::class, 'addManyMeals']);
+
+    Route::delete('/meal/{id}', [NutritionController::class, 'deleteMeal']);
+    Route::get('/recent', [NutritionController::class, 'recentMeals']);
+});

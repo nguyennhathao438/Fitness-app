@@ -42,14 +42,14 @@ export default function RoleAccessPage() {
       )}
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-purple-800">Vai trò & Quyền truy cập</h1>
-        <p className="text-purple-500">Quản lý vai trò và quyền hạn hệ thống</p>
+        <h1 className="text-3xl font-bold text-purple-800">Role & Access</h1>
+        <p className="text-purple-500">Manage system roles and permissions</p>
       </div>
 
       {/* Card */}
       <div className="bg-white rounded-2xl shadow-sm border">
         <div className="flex items-center justify-between px-6 py-4 border-b">
-          <h2 className="text-xl font-semibold text-gray-800">Các vai trò</h2>
+          <h2 className="text-xl font-semibold text-gray-800">Roles</h2>
 
           <button
             onClick={() => {
@@ -76,7 +76,7 @@ export default function RoleAccessPage() {
   "
           >
             <span className="text-lg leading-none">＋</span>
-            Thêm vai trò
+            Add Role
           </button>
         </div>
 
@@ -85,12 +85,12 @@ export default function RoleAccessPage() {
           <table className="w-full text-left">
             <thead className="bg-purple-50 text-gray-600">
               <tr>
-                <th className="px-6 py-3">Tên vai trò</th>
-                <th className="px-6 py-3">Ngày tạo</th>
-                <th className="px-6 py-3">Ngày chỉnh sửa</th>
-                <th className="px-6 py-3">Người dùng</th>
+                <th className="px-6 py-3">Role name</th>
+                <th className="px-6 py-3">Created at</th>
+                <th className="px-6 py-3">Updated at</th>
+                <th className="px-6 py-3">Users</th>
                 <th className="px-6 py-3">
-                  <div className="flex justify-end">Chức năng</div>
+                  <div className="flex justify-end">Action</div>
                 </th>
               </tr>
             </thead>
@@ -98,7 +98,7 @@ export default function RoleAccessPage() {
               {loading && (
                 <tr>
                   <td colSpan={5} className="px-6 py-6 text-center">
-                    Đang tải dữ liệu...
+                    Loading...
                   </td>
                 </tr>
               )}
@@ -120,7 +120,7 @@ export default function RoleAccessPage() {
                     </td>
                     <td className="px-6 py-4">
                       <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 text-sm font-semibold text-purple-700">
-                        {role.members_count || 0}
+                        {role.users_count || 0}
                       </span>
                     </td>
                     <td

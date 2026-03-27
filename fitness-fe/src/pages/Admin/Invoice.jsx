@@ -47,30 +47,30 @@ export default function Invoice() {
     <div>
       {/* Header */}
       <div className="p-4">
-        <h1 className="text-lg sm:text-3xl font-bold">Quản lý đơn hàng</h1>
+        <h1 className="text-lg sm:text-3xl font-bold">Order Management</h1>
         <p className="text-gray-500 text-sm sm:text-base">
-          Quản lý hóa đơn gói đào tạo và đơn đặt hàng của thành viên
+          Manage training package invoices and member orders
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 p-2 gap-4">
         <StatHeader
-          name="Tổng đơn hàng"
+          name="Total Orders"
           value={full}
           icon={<ClipboardListIcon className="size-5 text-white" />}
           className1="bg-[#A870FF]"
           loading={loading}
         />
         <StatHeader
-          name="Đơn hàng chưa thanh toán"
+          name="Inactive Orders"
           value={inactive}
           icon={<ScanLineIcon className="size-5 text-[#f4cd30]" />}
           className1="bg-[#FEF3C7]"
           loading={loading}
         />
         <StatHeader
-        name="Doanh thu hàng tháng"
+        name="Monthly Revenue"
         value={`${revenue.this_month}`}
         subValue={
           <span

@@ -43,7 +43,7 @@ export default function InvoiceLineChart() {
           labels,
           datasets: [
         {
-            label: "Doanh thu",
+            label: "Revenue",
             data: data.money,
             borderColor: "#22c55e",
             fill: true,
@@ -78,7 +78,7 @@ export default function InvoiceLineChart() {
   if (!chartData) {
     return (
       <div className="h-[350px] flex items-center justify-center text-gray-400">
-        Đang tải biểu đồ...
+        Loading chart...
       </div>
     );
   }
@@ -92,7 +92,7 @@ export default function InvoiceLineChart() {
             <DollarSignIcon className="size-5 text-emerald-600" />
           </div>
           <h3 className="text-sm max-md:hidden font-semibold text-gray-700">
-            Thống kê doanh thu hóa đơn
+            Invoice Revenue Statistics
           </h3>
         </div>
 

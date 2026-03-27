@@ -18,8 +18,7 @@ class AuthenController extends Controller
             'name',
             'email',
             'phone',
-            'avatar',
-            'gender'
+            'avatar'
         ]);
 
         $latestInvoice = Invoice::with('package.packageType.services')
@@ -86,8 +85,7 @@ class AuthenController extends Controller
             'name',
             'email',
             'phone',
-            'avatar',
-            'gender'
+            'avatar'
         ]);
         if (!Hash::check($request->password, $member->password)) {
             return response()->json([

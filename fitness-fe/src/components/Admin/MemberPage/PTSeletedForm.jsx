@@ -35,18 +35,18 @@ export default function PTSelectedForm({ onSubmit }) {
     <div className="w-full max-w-4xl bg-white rounded-xl p-6 space-y-4">
       {/* Title */}
       <h2 className="text-lg font-semibold text-gray-800 ">
-        Chọn huấn luyện viên
+        Chọn Personal Trainer
       </h2>
 
       {/* List */}
       <div className="border rounded-xl p-4 max-h-[420px] overflow-y-auto">
         {loading ? (
           <div className="text-center py-10 text-gray-500">
-            Đang tải dữ liệu...
+            Loading...
           </div>
         ) : ptList.length === 0 ? (
           <div className="text-center py-10 text-gray-500">
-            Không có huấn luyện viên khả dụng
+            Không có PT khả dụng
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -144,9 +144,8 @@ export default function StatisticsWorkout() {
             </div>
 
             {isLoading ? (
-                <div className="flex flex-col justify-center items-center h-64">
-                    <div className="w-9 flex h-9 border-4 mb-2 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
-                    <p className="text-gray-500 text-md">Loading ...</p>
+                <div className="flex justify-center items-center h-64">
+                    <p className="font-bold text-2xl">Đang tải dữ liệu...</p>
                 </div>
             ) : (
                 <>
@@ -164,10 +163,10 @@ export default function StatisticsWorkout() {
                                 <div
                                     key={day}
                                     className={`border rounded-lg p-4 min-h-64 flex flex-col ${isToday
-                                        ? "border-purple-500 bg-purple-50"
-                                        : data
-                                            ? "border-gray-200 bg-white"
-                                            : "border-gray-100 bg-gray-50"
+                                            ? "border-purple-500 bg-purple-50"
+                                            : data
+                                                ? "border-gray-200 bg-white"
+                                                : "border-gray-100 bg-gray-50"
                                         }`}
                                 >
                                     {/* Day Header */}

@@ -10,33 +10,22 @@ const useWorkoutHistory = () => {
   useEffect(() => {
     const fetchWorkoutData = async () => {
       setLoading(true);
-
       try {
+        // Lấy tất cả workout histories
         const historiesRes = await getWorkoutHistories();
         const histories = historiesRes.data.data || historiesRes.data || [];
-
         setWorkoutHistories(histories);
-
-        const detailRequests = histories.map((history) =>
-          getWorkoutHistoryDetails(history.id)
-            .then((res) => ({
-              id: history.id,
-              data: res.data.data || res.data || [],
-            }))
-            .catch((err) => {
-              console.error(`Lỗi lấy chi tiết workout ${history.id}`, err);
-              return { id: history.id, data: [] };
-            })
-        );
-
-        const results = await Promise.all(detailRequests);
-
+        // Lấy chi tiết cho mỗi workout
         const detailsMap = {};
-
-        results.forEach((r) => {
-          detailsMap[r.id] = r.data;
-        });
-
+        for (const history of histories) {
+          try {
+            const detailRes = await getWorkoutHistoryDetails(history.id);
+            detailsMap[history.id] = detailRes.data.data || detailRes.data || [];
+          } catch (err) {
+            console.error(`Lỗi lấy chi tiết workout ${history.id}:`, err);
+            detailsMap[history.id] = [];
+          }
+        }
         setWorkoutDetails(detailsMap);
       } catch (err) {
         console.error("Lỗi load workout history:", err);
@@ -44,16 +33,16 @@ const useWorkoutHistory = () => {
         setLoading(false);
       }
     };
-
     fetchWorkoutData();
   }, []);
 
+  // Lấy workout cho ngày cụ thể
   function formatDateLocal(date) {
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
+    const d = new Date(date)
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, "0")
+    const day = String(d.getDate()).padStart(2, "0")
+    return `${year}-${month}-${day}`
   }
 
   const getWorkoutByDate = (date) => {
@@ -65,6 +54,7 @@ const useWorkoutHistory = () => {
     });
   };
 
+  // Lấy chi tiết bài tập cho workout cụ thể
   const getDetailsForWorkout = (workoutId) => {
     return workoutDetails[workoutId] || [];
   };

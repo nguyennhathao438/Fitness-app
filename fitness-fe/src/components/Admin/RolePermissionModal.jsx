@@ -192,11 +192,11 @@ export default function RolePermissionModal({
           <table className="w-full border-collapse">
             <thead>
               <tr className="border-b text-gray-600">
-                <th className="py-3 text-left">Quyền hạn</th>
-                <th className="py-3 text-center">Tạo</th>
-                <th className="py-3 text-center">Đọc</th>
-                <th className="py-3 text-center">Chỉnh sửa</th>
-                <th className="py-3 text-center">Xóa</th>
+                <th className="py-3 text-left">Permission</th>
+                <th className="py-3 text-center">Create</th>
+                <th className="py-3 text-center">Read</th>
+                <th className="py-3 text-center">Update</th>
+                <th className="py-3 text-center">Delete</th>
               </tr>
             </thead>
 
@@ -204,7 +204,7 @@ export default function RolePermissionModal({
               {permissionRows.length === 0 ? (
                 <tr>
                   <td colSpan="5" className="py-8 text-center text-gray-500">
-                    Đang tải danh sách quyền hạn...
+                    Loading permissions...
                   </td>
                 </tr>
               ) : (
@@ -259,7 +259,7 @@ export default function RolePermissionModal({
       active:scale-95 active:translate-y-0
     "
           >
-            Hủy
+            Cancel
           </button>
 
           {/* Delete */}
@@ -281,7 +281,7 @@ export default function RolePermissionModal({
       disabled:hover:scale-100 disabled:hover:shadow-none
     "
           >
-            Xóa
+            Delete
           </button>
 
           {/* Update */}
@@ -310,7 +310,7 @@ export default function RolePermissionModal({
             {loading && (
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
             )}
-            {loading ? "Đang cập nhật..." : "Cập nhật"}
+            {loading ? "Updating..." : "Update"}
           </button>
         </div>
       </div>

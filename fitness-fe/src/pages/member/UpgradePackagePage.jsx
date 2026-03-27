@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Star, Clock, Calendar, Crown, CalendarPlus } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify"; 
 import { getUpgradableTypes, getUpgradablePackagesByType, getCurrentPackageInfo } from "../../services/member/TraningPakageService";
-import { upgradePackage } from "../../services/member/MemberService"; 
 import PricingCard from "../../components/member/PricingCard";
 import CompareFeatures from "../../components/member/CompareFeature";
 import ChatBox from "../../components/member/ChatBox";
+
 
 export default function UpgradePackagePage() {
   const [packageTypes, setPackageTypes] = useState([]);
@@ -21,7 +20,6 @@ export default function UpgradePackagePage() {
 
   const { member } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  const location = useLocation(); 
 
   const checkScrollButtons = () => {
     const el = scrollRef.current;
@@ -39,45 +37,6 @@ export default function UpgradePackagePage() {
   };
 
   useEffect(() => {
-    const handlePaymentResult = async () => {
-      const searchParams = new URLSearchParams(location.search);
-      const vnp_ResponseCode = searchParams.get("vnp_ResponseCode");
-      const resultCode = searchParams.get("resultCode");
-
-      if (!vnp_ResponseCode && !resultCode) return;
-
-      const isSuccess = vnp_ResponseCode === "00" || resultCode === "0";
-
-      if (isSuccess) {
-        try {
-          const savedData = JSON.parse(localStorage.getItem("temp_register_data"));
-          if (savedData) {
-            await upgradePackage({
-              package_id: savedData.package_id,
-              payment_method: savedData.payment_method, 
-              is_extend: savedData.isExtend,
-            });
-            
-            toast.success("Thanh toán thành công! Gói tập đã được cập nhật.");
-          }
-        } catch (error) {
-          console.error(error);
-          toast.error("Thanh toán thành công nhưng có lỗi lúc tạo hóa đơn.");
-        }
-      } else {
-        toast.error("Thanh toán thất bại hoặc bạn đã hủy giao dịch!");
-      }
-
-      localStorage.removeItem("temp_register_data");
-      navigate(location.pathname, { replace: true });
-      
-    };
-
-    handlePaymentResult();
-  }, [location.search, navigate]);
-
-
-  useEffect(() => {
     window.scrollTo({
       top: 0,
       left: 0,
@@ -86,9 +45,6 @@ export default function UpgradePackagePage() {
 
   // Load Thông tin gói hiện tại & Loại gói nâng cấp
   useEffect(() => {
-
-    if (location.search.includes('vnp_') || location.search.includes('resultCode')) return;
-
     setLoading(true);
     setPackageTypes([]);
     setActiveTab(null);
@@ -96,6 +52,7 @@ export default function UpgradePackagePage() {
     setCurrentPackage(null);
 
     if (member?.id) {
+      // Lấy gói hiện tại & Lấy danh sách nâng cấp
       Promise.all([
         getCurrentPackageInfo(),
         getUpgradableTypes(member.id)
@@ -117,9 +74,9 @@ export default function UpgradePackagePage() {
     } else {
         setLoading(false);
     }
-  }, [member, location.search]); 
+  }, [member]);
 
-  // Load Gói theo Tab
+  // 2. Load Gói theo Tab
   useEffect(() => {
     if (!activeTab || !member?.id) return;
 
@@ -156,8 +113,9 @@ export default function UpgradePackagePage() {
     return (
       <>
         <div className="flex flex-col items-center justify-center h-screen text-lg font-semibold text-gray-700">
+          {/* Vòng tròn xoay */}
           <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4">Đang xử lý dữ liệu...</p>
+          <p className="mt-4">Đang tải trang...</p>
         </div>
       </>
     );
@@ -175,8 +133,8 @@ export default function UpgradePackagePage() {
           <div className="bg-white p-10 rounded-2xl shadow-sm border border-gray-200 text-center mb-10">
             <p className="text-gray-500 mb-5">Bạn hiện chưa đăng ký gói tập nào đang hoạt động.</p>
             <button 
-              onClick={() => navigate('/pricing-packages')}
-              className="cursor-pointer bg-purple-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-purple-500 transition-colors shadow-md shadow-blue-600/20"
+              onClick={() => navigate('/pricing-packages')} // Chỉnh lại route nếu cần
+              className="bg-purple-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-purple-500 transition-colors shadow-md shadow-blue-600/20"
             >
               Đăng Ký Ngay
             </button>
@@ -232,7 +190,7 @@ export default function UpgradePackagePage() {
                     {/* NÚT GIA HẠN */}
                     <button
                       onClick={handleRenew}
-                      className="cursor-pointer w-full md:w-auto px-6 py-3 bg-purple-700 hover:bg-purple-500 text-white font-bold rounded-xl shadow-md shadow-blue-600/20 transition-all flex items-center justify-center gap-2 self-center"
+                      className="w-full md:w-auto px-6 py-3 bg-purple-700 hover:bg-purple-500 text-white font-bold rounded-xl shadow-md shadow-blue-600/20 transition-all flex items-center justify-center gap-2 self-center"
                     >
                       <CalendarPlus className="w-5 h-5" />
                       Gia hạn ngay
@@ -251,7 +209,7 @@ export default function UpgradePackagePage() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`cursor-pointer px-6 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 ${
+                      className={`px-6 py-2.5 rounded-full font-semibold text-sm transition-all duration-300 ${
                         activeTab === tab.id
                           ? "bg-purple-700 text-white shadow-lg shadow-purple-700/30"
                           : "bg-white text-purple-700 border border-purple-200 hover:bg-purple-50 hover:border-purple-300"
@@ -325,7 +283,7 @@ export default function UpgradePackagePage() {
                 </p>
                 <button
                   onClick={() => navigate("/")}
-                  className="cursor-pointer px-6 py-2 bg-white border border-purple-600 text-purple-700 font-bold rounded-full hover:bg-purple-50 transition-colors"
+                  className="px-6 py-2 bg-white border border-purple-600 text-purple-700 font-bold rounded-full hover:bg-purple-50 transition-colors"
                 >
                   Quay lại trang chủ
                 </button>
