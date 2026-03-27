@@ -1,7 +1,7 @@
 const ranges = [
-  { label: "Monthly", value: "monthly" },
-  { label: "Quarterly", value: "quarterly" },
-  { label: "Annually", value: "yearly" },
+  { label: "Tháng", value: "monthly" },
+  { label: "Quý", value: "quarterly" },
+  { label: "Năm", value: "yearly" },
 ];
 
 export default function TimeRangeTabs({ value, onChange }) {

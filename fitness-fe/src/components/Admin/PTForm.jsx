@@ -6,17 +6,14 @@ import { useEffect, useState } from "react";
 import { getAllRoles } from "@/services/admin/Role";
 
 const baseSchema = {
-  name: z
-    .string()
-    .min(3,"Tên phải có ít nhất 3 ký tự")
-    .regex(/^[A-Za-zÀ-ỹ\s]+$/,"Tên chỉ được chứa chữ cái và khoảng trắng"),
+  name: z.string().min(3,"Tên phải có ít nhất 3 ký tự").regex(/^[A-Za-zÀ-ỹ\s]+$/,"Tên chỉ được chứa chữ cái và khoảng trắng"),
   phone: z.string().regex(/^0\d{9}$/,"Số điện thoại phải bắt đầu bằng 0 và có 10 số"),
-  email: z
-    .string()
-    .email(("Email không hợp lệ"))
-    .regex(/\.com$/,"Email phải có đuôi .com"),
-  gender: z.enum(["male", "female", "other"]).optional(),
-  birthday: z.string().optional(),
+  email: z.string().email(("Email không hợp lệ")).regex(/\.com$/,"Email phải có đuôi .com"),
+  gender: z.string().min(1, "Vui lòng chọn giới tính").refine(
+      (val) => ["male", "female", "other"].includes(val),
+      "Giới tính không hợp lệ"
+    ),
+  birthday: z.string().min(1,"vui lòng chọn ngày sinh"),
 };
 
 const addSchema = z.object({
@@ -136,9 +133,9 @@ export default function PTForm({
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 text-white rounded-t-xl">
         <h2 className="text-xl font-semibold">
-          {mode === "add" ? "Add New PT" : "Edit information"}
+          {mode === "add" ? "Thêm huấn luyện viên mới" : "Chỉnh sửa thông tin"}
         </h2>
-        <p className="text-sm opacity-90">Fill in the information details</p>
+        <p className="text-sm opacity-90">Điền đầy đủ thông tin chi tiết</p>
       </div>
 
       {/* Content */}
@@ -152,7 +149,7 @@ export default function PTForm({
         <div>
           <div className="flex items-center gap-2">
             <UserIcon className="bg-[#DBEAFE] rounded-md w-7 h-7 text-purple-600" />
-            <h3 className="font-semibold text-lg">Basic Information</h3>
+            <h3 className="font-semibold text-lg">Thông tin cơ bản</h3>
           </div>
 
           <div
@@ -163,29 +160,38 @@ export default function PTForm({
             {/* Left form */}
             <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
-                label="Full Name"
+                label="Họ và tên"
                 register={register("name")}
                 className="text-[#000000]"
                 error={errors.name}
               />
-              <select
+              <div>
+                <p className="text-sm font-medium mb-1.5">Giới tính</p>
+                <select
                 {...register("gender")}
-                className=" w-full max-md:p-3.5 md:mt-6.5 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none
+                className=" w-full max-md:p-3.5 px-3 py-4 border border-gray-300 rounded-lg text-sm bg-white focus:outline-none
                 focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
               >
-                <option value="">Select gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
+                <option value="">Chọn giới tính</option>
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+                <option value="other">Giới tính khác</option>
               </select>
+                {errors.gender && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.gender.message}
+                  </p>
+                )}
+              </div>
 
               <Input
-                label="Date of birth"
+                label="Nhập ngày sinh"
                 register={register("birthday")}
                 type="date"
+                error={errors.birthday}
               />
               <Input
-                label="Phone"
+                label="Số điện thoại"
                 register={register("phone")}
                 type="text"
                 error={errors.phone}
@@ -200,7 +206,7 @@ export default function PTForm({
 
               {mode === "add" && (
                 <Input
-                  label="Password"
+                  label="Mật khẩu"
                   type="password"
                   register={register("password")}
                   error={errors.password}
@@ -245,7 +251,7 @@ export default function PTForm({
                   className="flex items-center gap-2 px-3 py-2 text-sm border rounded-lg"
                 >
                   <UploadIcon className="size-4" />
-                  Change image
+                  Chọn Ảnh
                 </button>
               </div>
             )}
@@ -257,15 +263,15 @@ export default function PTForm({
           <div>
             <div className="flex items-center gap-2">
               <ShieldIcon className="size-5 text-purple-600" />
-              <h3 className="font-semibold text-lg">Role</h3>
+              <h3 className="font-semibold text-lg">Vai trò</h3>
             </div>
 
             <div className="border rounded-lg overflow-x-auto h-[110px]">
               <table className="w-full text-sm">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-4 py-2 text-left">Role name</th>
-                    <th className="px-4 py-2 text-left">Description</th>
+                    <th className="px-4 py-2 text-left">Tên vai trò</th>
+                    <th className="px-4 py-2 text-left">Mô tả</th>
                     <th>CheckBox</th>
                   </tr>
                 </thead>
@@ -307,7 +313,7 @@ export default function PTForm({
             <div className="flex items-center mt-2 gap-1">
               <InfoIcon className="h-5 w-5 text-gray-500" />
               <p className="text-xs text-gray-500">
-                Role auto-update based on role, but can be manually overridden
+                Chức năng tự động cập nhật vai trò dựa trên vai trò hiện tại, nhưng có thể được ghi đè thủ công.
               </p>
             </div>
           </div>
@@ -333,7 +339,7 @@ export default function PTForm({
           {loading ? (
             <div className="flex items-center justify-center gap-2">
               <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              Saving...
+              Đang lưu...
             </div>
           ) : (
             "Xác nhận"

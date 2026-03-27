@@ -30,7 +30,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
         <h2
           className={`max-sm:hidden text-xl font-bold ${collapsed ? "hidden" : "inline"}`}
         >
-          Admin Panel
+          Trang Admin
         </h2>
         <div
           className="bg-fuchsia-100 p-1 rounded-lg max-sm:hidden h-6 sm:h-8"
@@ -54,7 +54,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
               <span
                 className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
               >
-                Dashboard
+                Trang tổng quan
               </span>
             </NavLink>
           )}
@@ -68,7 +68,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
               }
             >
               <CircleUserRoundIcon className="mr-2 size-5" />
-              {!collapsed && <span className="text-lg">Users</span>}
+              {!collapsed && <span className="text-lg">Người dùng</span>}
             </NavLink>
           )}
           {hasPermission("package.read") && (
@@ -86,7 +86,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
                   collapsed ? "hidden" : "inline"
                 } max-sm:hidden text-lg`}
               >
-                Packages
+                Gói tập
               </span>
             </NavLink>
           )}
@@ -103,7 +103,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
               <span
                 className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
               >
-                Messages
+                Tin nhắn
               </span>
             </NavLink>
           )}
@@ -121,7 +121,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
               <span
                 className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
               >
-                Orders
+                Đơn hàng
               </span>
             </NavLink>
           )}
@@ -138,7 +138,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
               <span
                 className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
               >
-                RoleSet
+                Phân quyền
               </span>
             </NavLink>
           )}

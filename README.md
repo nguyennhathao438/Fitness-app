@@ -28,6 +28,7 @@
 
     php artisan reverb:start
 
+    php artisan pt:expire
 ## Run frontend app
 
     npm run dev

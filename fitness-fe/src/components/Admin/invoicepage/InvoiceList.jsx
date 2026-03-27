@@ -89,7 +89,7 @@ export default function InvoiceList({ refreshStats }) {
             type="text"
             value={keyword}
             onChange={(e) => setkeyword(e.target.value)}
-            placeholder="Search package name, member name..."
+            placeholder="Tìm theo tên gói, tên hội viên..."
             className="w-full pl-9 pr-4 py-2
                       border border-gray-300 rounded-lg
                       focus:ring-2 focus:ring-purple-500
@@ -138,10 +138,10 @@ export default function InvoiceList({ refreshStats }) {
                         focus:ring-2 focus:ring-purple-500
                         focus:outline-none text-sm"
             >
-              <option value="">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="paid">Paid</option>
-              <option value="reject">Rejected</option>
+              <option value="">Tất cả trạng thái</option>
+              <option value="pending">Chờ đợi</option>
+              <option value="paid">Đã thanh toán</option>
+              <option value="reject">Từ chối</option>
             </select>
           </div>
 
@@ -157,7 +157,7 @@ export default function InvoiceList({ refreshStats }) {
                         focus:ring-2 focus:ring-purple-500
                         focus:outline-none text-sm"
             >
-              <option value="">All Payments</option>
+              <option value="">Các phương thức</option>
               <option value="vnpay">VNPAY</option>
               <option value="momo">MOMO</option>
               <option value="cash">Cash</option>
@@ -171,11 +171,11 @@ export default function InvoiceList({ refreshStats }) {
         <table className="w-full text-sm whitespace-nowrap">
           <thead className="bg-gray-100 text-gray-700">
             <tr>
-              <th className="px-4 py-3 text-left">Member</th>
-              <th className="px-4 py-3 text-left">Package</th>
-              <th className="px-4 py-3 text-left">Payment</th>
-              <th className="px-4 py-3 text-left">Status</th>
-              <th className="px-4 py-3 text-center">Action</th>
+              <th className="px-4 py-3 text-left">Tên hội viên</th>
+              <th className="px-4 py-3 text-left">gói tập</th>
+              <th className="px-4 py-3 text-left">thanh toán</th>
+              <th className="px-4 py-3 text-left">trạng thái</th>
+              <th className="px-4 py-3 text-center">Chức năng</th>
             </tr>
           </thead>
 
@@ -183,7 +183,7 @@ export default function InvoiceList({ refreshStats }) {
             {loading ? (
               <tr>
                 <td colSpan={5} className="text-center py-6 text-gray-500">
-                  Loading...
+                  Đang tải danh sách đơn hàng...
                 </td>
               </tr>
             ) : invoices.length === 0 ? (
@@ -318,7 +318,7 @@ export default function InvoiceList({ refreshStats }) {
                   fetchInvoice();
                 } catch (err) {
                   console.log("error",err)
-                  toast.error("Xóa thất bại");
+                  toast.error("không thể xóa đơn vẫn còn hạn");
                 }
               }}
               name="Xóa đơn hàng"
@@ -335,7 +335,7 @@ export default function InvoiceList({ refreshStats }) {
                   await updatedInvoice(selectedInvoice.id, {
                     status: data.status,
                   });
-                  toast.success("Cập nhật invoice thành công");
+                  toast.success("Cập nhật đơn hàng thành công");
                   setOpenUpdate(false);
                   fetchInvoice();
                   refreshStats();

@@ -59,11 +59,11 @@ export default function PTCard({pt,onDeleteClick,onEditClick}) {
             </div>
             <div className="p-2 m-auto bg-white space-y-2">
                 <div className="space-x-1 sm:space-x-8">
-                    <p className="inline-block">Gender:</p>
+                    <p className="inline-block">Giới tính:</p>
                     <span className="font-bold">{pt.gender}</span>
                 </div>
                 <div className="space-x-5">
-                    <span className="inline-block max-sm:text-sm">Active Member:</span>
+                    <span className="inline-block max-sm:text-sm">Hội viên hiện có:</span>
                     <span className="font-bold">{pt.active_clients_count}</span>
                 </div>
                 <div className="flex justify-center">
@@ -71,7 +71,7 @@ export default function PTCard({pt,onDeleteClick,onEditClick}) {
                     onClick={() => setOpenView(true)}
                     >
                     <EyeIcon/>
-                    <span className="">View Details</span>
+                    <span className="">Xem chi tiết</span>
                     </button>
                 </div>
             </div>
