@@ -46,9 +46,9 @@ export default function Dashboard() {
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
+        <h1 className="text-3xl font-bold text-gray-800">Trang tổng quan</h1>
         <p className="text-gray-500">
-          System Overview & Monthly Statistics
+          Tổng quan hệ thống và thống kê hàng tháng
         </p>
       </div>
 
@@ -65,7 +65,7 @@ export default function Dashboard() {
                <UsersIcon className="size-5 text-purple-600" />
               </div>
               <h3 className="font-semibold text-gray-700">
-                Member This Month
+                Hội viên tháng này
               </h3>
             </div>
 
@@ -108,7 +108,7 @@ export default function Dashboard() {
                 <ShoppingCartIcon className="size-5 text-green-600" />
               </div>
               <h3 className="font-semibold text-gray-700">
-                Order This Month
+                Đơn hàng tháng này
               </h3>
             </div>
             {invoiceLoading ? (
@@ -152,7 +152,7 @@ export default function Dashboard() {
               <BarChart3Icon className="size-5 text-blue-600" />
             </div>
             <h2 className="text-lg font-semibold text-gray-700">
-              User Registration Statistics
+              Thống kê đăng ký người dùng
             </h2>
           </div>
           <div className="h-[300px] flex items-center justify-center text-gray-400">

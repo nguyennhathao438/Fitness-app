@@ -107,7 +107,14 @@ class InvoiceService
                 'message' => 'Invoice không tồn tại'
             ];
         }
-
+        // Không cho xóa nếu còn hạn
+        if ($invoice->valid_until && $invoice->valid_until > Carbon::today()) {
+            return [
+                'success' => false,
+                'status' => 400,
+                'message' => 'Không thể xóa invoice vì gói dịch vụ vẫn còn hạn'
+            ];
+        }
         $invoice->update([
             'is_deleted' => true
         ]);

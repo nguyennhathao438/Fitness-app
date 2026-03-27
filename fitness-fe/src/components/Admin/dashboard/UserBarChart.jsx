@@ -47,7 +47,7 @@ export default function UserBarChart() {
         labels,
         datasets: [
         {
-          label: "Member",
+          label: "Hội viên",
           data: data.member,
           backgroundColor: "#6366f1",
           stack: "user",
@@ -63,7 +63,7 @@ export default function UserBarChart() {
           barPercentage: isMobile ? 0.85 : 0.9,
         },
         {
-          label: "All User",
+          label: "Tất cả người dùng",
           data: data.all,
           backgroundColor: "#22c55e",
           categoryPercentage: isMobile ? 0.75 : 0.85,
@@ -78,7 +78,7 @@ export default function UserBarChart() {
   if (!chartData) {
     return (
       <div className="h-[280px] flex items-center justify-center text-gray-400">
-        Loading chart...
+        Đang tải biểu đồ...
       </div>
     );
   }
@@ -88,7 +88,7 @@ export default function UserBarChart() {
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-semibold text-gray-700 max-md:hidden">
-          User Registration Statistics
+          Biểu đồ cột các người dùng trong hệ thống
         </h3>
 
         {/* Filter*/}

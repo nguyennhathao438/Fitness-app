@@ -92,7 +92,7 @@ class MemberService
     // xóa người dùng
     public function deleteMember($memberId)
     {
-        $member = Member::find($memberId);
+        $member = Member::with('latestInvoice')->find($memberId);
 
         if (!$member) {
             return [
@@ -101,7 +101,6 @@ class MemberService
                 'message' => 'User không tồn tại'
             ];
         }
-
         $hasActivePT = PersonalTrainerClient::where('member_id', $memberId)
             ->where('status', 'active')
             ->exists();
@@ -113,7 +112,14 @@ class MemberService
                 'message' => 'Không thể xóa member đang có PT hướng dẫn'
             ];
         }
-
+        $latestInvoice = $member->latestInvoice;
+        if($latestInvoice && $latestInvoice->valid_until > now()) {
+            return [
+                'success' => false,
+                'status' => 400,
+                'message' => 'Hội viên đang còn hạn gói tập'
+            ];
+        }
         $member->update([
             'is_deleted' => true
         ]);

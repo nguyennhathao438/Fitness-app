@@ -51,8 +51,8 @@ export default function MemberRegisterPage() {
   const [scheduleLoading, setScheduleLoading] = useState(false);
   const [openMessage, setOpenMessage] = useState(false);
   const [pt, setPt] = useState(null);
-  const roles = useSelector((state) => state.auth.roles);
-  const permissions = useSelector((state) => state.auth.permissions);
+  const roles = useSelector((state) => state.auth.roles) || [];
+  const permissions = useSelector((state) => state.auth.permissions) || [];
   const [openNoPermission, setOpenNoPermission] = useState(false);
   const canReadRole = roles.includes("Member_vip");
   const canReadPermission = permissions.includes("message_user.read");
