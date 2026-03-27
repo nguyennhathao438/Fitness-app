@@ -4,6 +4,7 @@ import { Menu, X, User, LogOut } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../storages/authSlice.js";
 import defaultAvatar from "../../assets/default-avatar.jpg";
+import logo from "../../assets/logo1.png";
 import { Bell, BellDot } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -39,12 +40,13 @@ export default function Header() {
     <>
       <header className="bg-[#000000] border-b border-[#2a2435] relative z-[1000]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-18">
             {/* Logo */}
             <Link href="/" className="shrink-0">
               <img
-                className="w-40 h-16"
-                src="https://fight100.vn/wp-content/uploads/2024/02/logo.png"
+                className="w-35 h-35"
+                //src="https://fight100.vn/wp-content/uploads/2024/02/logo.png"
+                src={logo}
                 alt=""
               />
             </Link>

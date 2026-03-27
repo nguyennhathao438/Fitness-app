@@ -117,7 +117,7 @@ export default function ProfilePackage() {
               <p className="text-gray-500 mb-5">Bạn hiện chưa đăng ký gói tập nào đang hoạt động.</p>
               <button 
                 onClick={() => navigate('/pricing-packages')} 
-                className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-md shadow-blue-600/20"
+                className="cursor-pointer bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-md shadow-blue-600/20"
               >
                 Đăng Ký Ngay
               </button>
@@ -174,14 +174,14 @@ export default function ProfilePackage() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
                 <button 
                   onClick={() => navigate('/upgrade')}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-md shadow-blue-600/20"
+                  className="cursor-pointer w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-md shadow-blue-600/20"
                 >
                   <Repeat size={16} /> Gia Hạn Gói
                 </button>
                 
                 <button 
                   onClick={() => navigate('/upgrade')}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-md shadow-blue-600/20"
+                  className="cursor-pointer w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-md shadow-blue-600/20"
                 >
                   <ArrowUpCircle size={16} /> Nâng Cấp Ngay
                 </button>
