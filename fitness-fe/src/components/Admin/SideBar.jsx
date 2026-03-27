@@ -7,13 +7,24 @@ import {
   ShoppingCartIcon,
   StarIcon,
   TextAlignJustifyIcon,
+  ArrowLeftFromLineIcon,
+  LogOutIcon,
 } from "lucide-react";
+import { logout } from "../../storages/authSlice.js";
 import { NavLink } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 export default function SideBar({ collapsed, setCollapsed }) {
+  const navigate = useNavigate();
   const permissions = useSelector((state) => state.auth.permissions);
+  const roles = useSelector((state) => state.auth.roles);
   const hasPermission = (code) => {
     return permissions?.includes(code);
+  };
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    navigate("/");
+    dispatch(logout());
   };
   return (
     <div
@@ -41,23 +52,21 @@ export default function SideBar({ collapsed, setCollapsed }) {
       </div>
       <nav className="mt-4 border-t border-gray-300 px-2">
         <ul className="mt-2 space-y-5">
-          {hasPermission("statistic.read") && (
-            <NavLink
-              to="/admin/dashboard"
-              className={({ isActive }) =>
-                `flex items-center px-4 py-2 rounded-md cursor-pointer transition
+          <NavLink
+            to="/admin/"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
                             hover:bg-gradient-to-r from-[#56228d] to-[#dfd2fa] hover:translate-x-1
                             ${isActive ? "bg-gradient-to-r from-[#56228d] to-[#dfd2fa]" : ""}`
-              }
+            }
+          >
+            <HouseIcon className="text-white inline-block mr-2 size-5"></HouseIcon>
+            <span
+              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
             >
-              <HouseIcon className="text-white inline-block mr-2 size-5"></HouseIcon>
-              <span
-                className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
-              >
-                Trang tổng quan
-              </span>
-            </NavLink>
-          )}
+              Trang tổng quan
+            </span>
+          </NavLink>
           {hasPermission("user.read") && (
             <NavLink
               to="/admin/user"
@@ -142,6 +151,34 @@ export default function SideBar({ collapsed, setCollapsed }) {
               </span>
             </NavLink>
           )}
+          {roles.includes("Member") && (
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `flex items-center px-4 py-2 rounded-md cursor-pointer transition
+                              hover:bg-gradient-to-r from-[#56228d] to-[#dfd2fa] hover:translate-x-1
+                              ${isActive ? "bg-gradient-to-r from-[#56228d] to-[#dfd2fa]" : ""}`
+              }
+            >
+              <ArrowLeftFromLineIcon className=" text-white inline-block mr-2 size-5"></ArrowLeftFromLineIcon>
+              <span
+                className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+              >
+                Trang hội viên
+              </span>
+            </NavLink>
+          )}
+          <NavLink
+            className="flex items-center px-4 py-2 rounded-md cursor-pointer transition hover:bg-gradient-to-r from-[#56228d] to-[#dfd2fa] hover:translate-x-1"
+            onClick={handleLogout}
+          >
+            <LogOutIcon className="text-white inline-block mr-2 size-5"></LogOutIcon>
+            <span
+              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+            >
+              Đăng xuất
+            </span>
+          </NavLink>
         </ul>
       </nav>
     </div>
