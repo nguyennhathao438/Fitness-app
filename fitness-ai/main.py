@@ -40,7 +40,7 @@ def home():
     }
 
 
-# ===== API cũ giữ nguyên =====
+
 @app.post("/predict")
 def predict(data: dict):
     text = data["text"]

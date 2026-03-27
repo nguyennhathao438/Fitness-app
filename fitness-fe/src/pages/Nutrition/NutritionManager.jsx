@@ -1,5 +1,5 @@
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import {
@@ -332,7 +332,7 @@ const [entryMode, setEntryMode] = useState("manual");
   const [aiPreview, setAiPreview] = useState("");
   const [aiResult, setAiResult] = useState(null);
   const [aiMealForm, setAiMealForm] = useState(initialAiMealForm);
-
+const dayMealsSectionRef = useRef(null);
   const [loadingDay, setLoadingDay] = useState(false);
   const [loadingRecent, setLoadingRecent] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(false);
@@ -348,7 +348,23 @@ const [entryMode, setEntryMode] = useState("manual");
   );
 
   const canLoadNutrition = !!memberId;
+const scrollToDayMealsSection = () => {
+  const top =
+    dayMealsSectionRef.current?.getBoundingClientRect().top +
+      window.scrollY -
+      80 || 0;
 
+  window.scrollTo({
+    top,
+    behavior: "smooth",
+  });
+};const handleChangeDayMealsPage = (page) => {
+  setDayMealsPage(page);
+
+  requestAnimationFrame(() => {
+    scrollToDayMealsSection();
+  });
+};
   const refreshDayData = useCallback(async () => {
     if (!memberId || !selectedDate) return;
 
@@ -373,7 +389,7 @@ const [entryMode, setEntryMode] = useState("manual");
 
     try {
       setLoadingRecent(true);
-      const response = await getRecentMeals(memberId, 20);
+      const response = await getRecentMeals(memberId, 8);
       const parsed = parseRecentMealsResponse(response);
       setRecentMeals(parsed);
     } catch (error) {
@@ -417,6 +433,7 @@ const [entryMode, setEntryMode] = useState("manual");
   useEffect(() => {
     if (!memberId || !selectedDate) return;
     refreshDayData();
+    setDayMealsPage(1);
   }, [memberId, selectedDate, refreshDayData]);
 
   useEffect(() => {
@@ -498,7 +515,7 @@ const handleAddManualMeal = async () => {
       return [...prev, meal];
     });
   };
-
+const [recentMealNote, setRecentMealNote] = useState("");
  const handleAddSelectedRecentMeals = async () => {
   if (!memberId) {
     toast.error("Không tìm thấy member_id từ Redux.");
@@ -525,7 +542,7 @@ const handleAddManualMeal = async () => {
         meal_name: item.meal_name,
         calories: normalizeNumber(item.calories),
         meal_time: normalizeTimeValue(recentMealTime),
-        note: item.notes || "",
+        note: recentMealNote || "",
         source: isPlanningMode ? "schedule" : "recent",
       })),
     };
@@ -540,6 +557,7 @@ const handleAddManualMeal = async () => {
 
     setSelectedRecentMeals([]);
     setRecentMealTime("");
+    setRecentMealNote("");
     await refreshAllNutritionData();
   } catch (error) {
     console.error("Lỗi thêm nhiều món:", error);
@@ -594,7 +612,8 @@ const handleAddManualMeal = async () => {
     setRecognizingAI(false);
   }
 };
-
+const [dayMealsPage, setDayMealsPage] = useState(1);
+const dayMealsPerPage = 10;
   const handleAddAiMeal = async () => {
     if (!memberId) {
       toast.error("Không tìm thấy member_id từ Redux.");
@@ -695,6 +714,12 @@ const handleAddManualMeal = async () => {
       </div>
     );
   }
+const totalDayMealsPages = Math.ceil(dayMeals.length / dayMealsPerPage) || 1;
+
+const paginatedDayMeals = dayMeals.slice(
+  (dayMealsPage - 1) * dayMealsPerPage,
+  dayMealsPage * dayMealsPerPage
+);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-purple-950 p-4 md:p-6">
@@ -746,8 +771,8 @@ const handleAddManualMeal = async () => {
 
         {/* Date + Summary */}
         <section className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-5 text-white shadow-xl backdrop-blur">
-            <label className="mb-2 block text-sm font-medium text-slate-300">
+<div className="rounded-3xl border border-white/10 bg-white/5 p-5 text-white shadow-xl backdrop-blur">
+        <label className="mb-2 block text-sm font-medium text-slate-300">
               Chọn ngày
             </label>
             <input
@@ -796,168 +821,227 @@ const handleAddManualMeal = async () => {
           {/* Left side */}
           <div className="space-y-6">
             {/* Meal list */}
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-5 text-white shadow-xl backdrop-blur">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <div>
-                  <h2 className="text-xl font-semibold">Danh sách món ăn trong ngày</h2>
-                  <p className="mt-1 text-sm text-slate-400">
-                    Hiển thị món ăn theo ngày đã chọn.
-                  </p>
-                </div>
+       <div
+  ref={dayMealsSectionRef}
+  className="rounded-3xl border border-white/10 bg-white/5 p-5 text-white shadow-xl backdrop-blur"
+>
+  <div className="mb-4 flex items-center justify-between gap-3">
+    <div>
+      <h2 className="text-xl font-semibold">Danh sách món ăn trong ngày</h2>
+      <p className="mt-1 text-sm text-slate-400">
+        Hiển thị món ăn theo ngày đã chọn.
+      </p>
+    </div>
 
-                <button
-                  onClick={refreshDayData}
-                  className="rounded-2xl border border-purple-400/30 bg-purple-500/10 px-4 py-2 text-sm font-medium text-purple-200 transition hover:bg-purple-500/20"
-                >
-                  Tải lại
-                </button>
-              </div>
-
-              {loadingDay ? (
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-6 text-center text-slate-300">
-                  Đang tải dữ liệu calo...
-                </div>
-              ) : dayMeals.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-white/10 bg-black/20 p-6 text-center text-slate-400">
-                  Chưa có món ăn nào cho ngày này.
-                </div>
-              ) : (
-                <div className="grid gap-4">
-                  {dayMeals.map((meal) => (
-                    <div
-                      key={meal.id}
-                      className="rounded-2xl border border-white/10 bg-slate-950/50 p-4 transition hover:border-purple-400/30"
-                    >
-                      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                        <div className="space-y-2">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h3 className="text-lg font-semibold text-white">
-                              {meal.meal_name}
-                            </h3>
-                            <span className="rounded-full bg-purple-500/20 px-3 py-1 text-xs font-medium text-purple-200">
-                              {meal.calories} kcal
-                            </span>
-                            <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-slate-300">
-                              {meal.source || "manual"}
-                            </span>
-                          </div>
-
-                          <div className="flex flex-wrap gap-4 text-sm text-slate-400">
-<span>Giờ ăn: {normalizeTimeValue(meal.meal_time) || "--:--"}</span>                           
-                          </div>
-
-                          {meal.notes ? (
-                            <p className="text-sm leading-6 text-slate-300">
-                              Ghi chú: {meal.notes}
-                            </p>
-                          ) : null}
-                        </div>
-
-                        {typeof deleteMeal === "function" ? (
-                          <button
-                            onClick={() => handleDeleteMeal(meal.id)}
-                            disabled={deletingMealId === meal.id}
-                            className="rounded-2xl border border-red-400/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-200 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
-                          >
-                            {deletingMealId === meal.id ? "Đang xóa..." : "Xóa món"}
-                          </button>
-                        ) : null}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Recent meals */}
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-5 text-white shadow-xl backdrop-blur">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <div>
-                  <h2 className="text-xl font-semibold">Thêm từ món gần đây</h2>
-                  <p className="mt-1 text-sm text-slate-400">
-                    Chọn nhiều món và thêm nhanh vào ngày đang xem.
-                  </p>
-                </div>
-
-                <button
-                  onClick={handleAddSelectedRecentMeals}
-                  disabled={submittingRecent || !selectedRecentMeals.length}
-                  className="rounded-2xl bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-purple-500 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {submittingRecent ? "Đang thêm..." : "Thêm món đã chọn"}
-                </button>
-                
-              </div>
-<div className="mb-4 grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
-  <div>
-    <label className="mb-2 block text-sm text-slate-300">Giờ ăn</label>
-    <input
-      type="time"
-      value={recentMealTime}
-      onChange={(e) => setRecentMealTime(e.target.value)}
-      className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none focus:border-purple-400"
-    />
+    <button
+      onClick={refreshDayData}
+      className="rounded-2xl border border-purple-400/30 bg-purple-500/10 px-4 py-2 text-sm font-medium text-purple-200 transition hover:bg-purple-500/20"
+    >
+      Tải lại
+    </button>
   </div>
 
-  <button
-    onClick={handleAddSelectedRecentMeals}
-    disabled={submittingRecent || !selectedRecentMeals.length}
-    className="rounded-2xl bg-purple-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-purple-500 disabled:cursor-not-allowed disabled:opacity-50"
-  >
-    {submittingRecent ? "Đang thêm..." : "Thêm món đã chọn"}
-  </button>
-</div>
-              {loadingRecent ? (
-                <div className="rounded-2xl border border-white/10 bg-black/20 p-6 text-center text-slate-300">
-                  Đang tải món gần đây...
+  {loadingDay ? (
+    <div className="rounded-2xl border border-white/10 bg-black/20 p-6 text-center text-slate-300">
+      Đang tải dữ liệu calo...
+    </div>
+  ) : dayMeals.length === 0 ? (
+    <div className="rounded-2xl border border-dashed border-white/10 bg-black/20 p-6 text-center text-slate-400">
+      Chưa có món ăn nào cho ngày này.
+    </div>
+  ) : (
+    <>
+      <div className="grid gap-4">
+        {paginatedDayMeals.map((meal) => (
+          <div
+            key={meal.id}
+            className="rounded-2xl border border-white/10 bg-slate-950/50 p-4 transition hover:border-purple-400/30"
+          >
+            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="text-lg font-semibold text-white">
+                    {meal.meal_name}
+                  </h3>
+                  <span className="rounded-full bg-purple-500/20 px-3 py-1 text-xs font-medium text-purple-200">
+                    {meal.calories} kcal
+                  </span>
+                  <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-slate-300">
+                    {meal.source || "manual"}
+                  </span>
                 </div>
-              ) : recentMeals.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-white/10 bg-black/20 p-6 text-center text-slate-400">
-                  Chưa có dữ liệu món gần đây.
+
+                <div className="flex flex-wrap gap-4 text-sm text-slate-400">
+                  <span>Giờ ăn: {normalizeTimeValue(meal.meal_time) || "--:--"}</span>
                 </div>
-              ) : (
-                <div className="grid gap-3 md:grid-cols-2">
-                  {recentMeals.map((meal) => {
-                    const checked = selectedRecentMealIds.includes(meal.id);
 
-                    return (
-                      <button
-                        key={meal.id}
-                        type="button"
-                        onClick={() => handleToggleRecentMeal(meal)}
-                        className={`rounded-2xl border p-4 text-left transition ${
-                          checked
-                            ? "border-purple-400 bg-purple-500/10"
-                            : "border-white/10 bg-slate-950/50 hover:border-white/20"
-                        }`}
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <h3 className="font-semibold text-white">{meal.meal_name}</h3>
-                            <div className="mt-2 flex flex-wrap gap-2 text-xs text-slate-400">
-                              <span>{meal.calories} kcal</span>
-<span>{normalizeTimeValue(meal.meal_time) || "--:--"}</span>                              <span>{meal.source || "recent"}</span>
-                            </div>
-                          </div>
+                {meal.notes ? (
+                  <p className="text-sm leading-6 text-slate-300">
+                    Ghi chú: {meal.notes}
+                  </p>
+                ) : null}
+              </div>
 
-                          <span
-                            className={`mt-1 h-5 w-5 rounded-full border ${
-                              checked
-                                ? "border-purple-300 bg-purple-400"
-                                : "border-slate-500 bg-transparent"
-                            }`}
-                          />
-                        </div>
-
-                        {meal.notes ? (
-                          <p className="mt-3 text-sm text-slate-300">{meal.notes}</p>
-                        ) : null}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
+              {typeof deleteMeal === "function" ? (
+                <button
+                  onClick={() => handleDeleteMeal(meal.id)}
+                  disabled={deletingMealId === meal.id}
+                  className="rounded-2xl border border-red-400/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-200 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {deletingMealId === meal.id ? "Đang xóa..." : "Xóa món"}
+                </button>
+              ) : null}
             </div>
+          </div>
+        ))}
+      </div>
+
+      {dayMeals.length > dayMealsPerPage ? (
+        <div className="mt-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <p className="text-sm text-slate-400">
+            Trang {dayMealsPage}/{totalDayMealsPages} • Tổng {dayMeals.length} món
+          </p>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => handleChangeDayMealsPage(1)}
+              disabled={dayMealsPage === 1}
+              className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Đầu
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleChangeDayMealsPage(Math.max(dayMealsPage - 1, 1))}
+              disabled={dayMealsPage === 1}
+              className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Trước
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                handleChangeDayMealsPage(Math.min(dayMealsPage + 1, totalDayMealsPages))
+              }
+              disabled={dayMealsPage === totalDayMealsPages}
+              className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Sau
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleChangeDayMealsPage(totalDayMealsPages)}
+              disabled={dayMealsPage === totalDayMealsPages}
+              className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Cuối
+            </button>
+          </div>
+        </div>
+      ) : null}
+    </>
+  )}
+</div>
+            {/* Recent meals */}
+          <div className="rounded-3xl border border-white/10 bg-white/5 p-5 text-white shadow-xl backdrop-blur">
+  <div className="mb-4 flex items-center justify-between gap-3">
+    <div>
+      <h2 className="text-xl font-semibold">Thêm từ món gần đây</h2>
+      <p className="mt-1 text-sm text-slate-400">
+        Chọn nhiều món và thêm nhanh vào ngày đang xem.
+      </p>
+    </div>
+  </div>
+
+  <div className="mb-4 grid gap-4 md:grid-cols-2">
+    <div>
+      <label className="mb-2 block text-sm text-slate-300">Giờ ăn</label>
+      <input
+        type="time"
+        value={recentMealTime}
+        onChange={(e) => setRecentMealTime(e.target.value)}
+        className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none focus:border-purple-400"
+      />
+    </div>
+
+    <div>
+      <label className="mb-2 block text-sm text-slate-300">Ghi chú mới</label>
+      <input
+        type="text"
+        value={recentMealNote}
+        onChange={(e) => setRecentMealNote(e.target.value)}
+        placeholder="Ví dụ: ăn sau tập, ít cơm, thêm rau..."
+        className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-purple-400"
+      />
+    </div>
+  </div>
+
+  <div className="mb-4">
+    <button
+      onClick={handleAddSelectedRecentMeals}
+      disabled={submittingRecent || !selectedRecentMeals.length}
+      className="rounded-2xl bg-purple-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-purple-500 disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      {submittingRecent ? "Đang thêm..." : "Thêm món đã chọn"}
+    </button>
+  </div>
+
+  {loadingRecent ? (
+    <div className="rounded-2xl border border-white/10 bg-black/20 p-6 text-center text-slate-300">
+      Đang tải món gần đây...
+    </div>
+  ) : recentMeals.length === 0 ? (
+    <div className="rounded-2xl border border-dashed border-white/10 bg-black/20 p-6 text-center text-slate-400">
+      Chưa có dữ liệu món gần đây.
+    </div>
+  ) : (
+    <div className="grid gap-3 md:grid-cols-2">
+      {recentMeals.map((meal) => {
+        const checked = selectedRecentMealIds.includes(meal.id);
+
+        return (
+          <button
+            key={meal.id}
+            type="button"
+            onClick={() => handleToggleRecentMeal(meal)}
+            className={`rounded-2xl border p-4 text-left transition ${
+              checked
+                ? "border-purple-400 bg-purple-500/10"
+                : "border-white/10 bg-slate-950/50 hover:border-white/20"
+            }`}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h3 className="font-semibold text-white">{meal.meal_name}</h3>
+                <div className="mt-2 flex flex-wrap gap-2 text-xs text-slate-400">
+                  <span>{meal.calories} kcal</span>
+                  <span>{normalizeTimeValue(meal.meal_time) || "--:--"}</span>
+                  <span>{meal.source || "recent"}</span>
+                </div>
+              </div>
+
+              <span
+                className={`mt-1 h-5 w-5 rounded-full border ${
+                  checked
+                    ? "border-purple-300 bg-purple-400"
+                    : "border-slate-500 bg-transparent"
+                }`}
+              />
+            </div>
+
+            {meal.notes ? (
+              <p className="mt-3 text-sm text-slate-300">{meal.notes}</p>
+            ) : null}
+          </button>
+        );
+      })}
+    </div>
+  )}
+</div>
 
            
   </div>

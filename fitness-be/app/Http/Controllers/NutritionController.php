@@ -33,7 +33,7 @@ class NutritionController extends Controller
 public function recentMeals(Request $request)
 {
     $memberId = $request->member_id;
-    $limit = $request->limit ?? 20;
+    $limit = 40;
 
     $query = NutritionLog::query();
 
@@ -41,11 +41,9 @@ public function recentMeals(Request $request)
         $query->where('member_id', $memberId);
     }
 
-    $meals = $query->orderBy('meal_date', 'desc')
-        ->orderBy('meal_time', 'desc')
-        ->orderBy('created_at', 'desc')
-        ->limit($limit)
-        ->get();
+ $meals = $query->latest('created_at')
+    ->limit($limit)
+    ->get();
 
     return response()->json([
         'meals' => $meals

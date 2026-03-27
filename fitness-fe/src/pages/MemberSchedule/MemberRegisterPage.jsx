@@ -67,15 +67,21 @@ export default function MemberRegisterPage() {
       console.log("lỗi không lấy được pt chat",error)
     }
   };
-  const checkMyPT = async () => {
-    try {
-      const res = await getMyPT();
-      if (res.data?.has_pt) setMyPT(res.data.pt);
-      else { setMyPT(null); await loadPTList(); }
-    } catch (err) { setMyPT(null); await loadPTList(); }
-    finally { setLoading(false); }
-  };
+ const checkMyPT = async () => {
+  try {
+    const res = await getMyPT();
 
+    if (res.data?.has_pt) {
+      setMyPT(res.data.pt);
+    } else {
+      setMyPT(null);
+    }
+  } catch (err) {
+    setMyPT(null);
+  } finally {
+    setLoading(false);
+  }
+};
   const loadPTList = async () => {
     try {
       const res = await getPTList();
@@ -139,64 +145,31 @@ export default function MemberRegisterPage() {
   // ===== GIAO DIỆN CHỌN PT =======
   // ===============================
   if (!myPT) {
-    return (
-      <div className="min-h-screen bg-[#F8FAFC] p-4 lg:p-8">
-        <div className="max-w-7xl mx-auto">
-          {/* HEADER DESIGN SYSTEM */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
-            <div>
-              <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-                <Dumbbell className="w-8 h-8 text-purple-600" />
-                Tìm Huấn Luyện Viên
-              </h1>
-              <p className="text-slate-500 font-medium mt-1">
-                Chọn người đồng hành phù hợp để bắt đầu hành trình thay đổi vóc dáng.
-              </p>
-            </div>
+  return (
+    <div className="min-h-screen bg-[#F8FAFC] p-4 lg:p-8">
+      <div className="max-w-3xl mx-auto">
+        <div className="bg-white rounded-[32px] border border-slate-200 shadow-xl p-8 md:p-10 text-center">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-[24px] bg-amber-50 flex items-center justify-center">
+            <AlertCircle className="w-10 h-10 text-amber-500" />
           </div>
 
-          {/* GRID SYSTEM */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {ptList.map((pt) => (
-              <div key={pt.id} className="group bg-white rounded-[32px] p-6 shadow-xl shadow-slate-200/60 border border-slate-200 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-purple-50 rounded-bl-full -mr-8 -mt-8 opacity-50" />
-                
-                <div className="relative z-10 flex flex-col h-full">
-                  <div className="w-16 h-16 bg-slate-100 rounded-[24px] flex items-center justify-center mb-6 ring-4 ring-slate-50 group-hover:bg-purple-600 group-hover:ring-purple-100 transition-all duration-300">
-                    <User className="w-8 h-8 text-slate-400 group-hover:text-white" />
-                  </div>
-                  
-                  <h2 className="text-xl font-black text-slate-900 mb-1 group-hover:text-purple-600 transition-colors">{pt.name}</h2>
-                  <p className="text-slate-500 font-bold text-[10px] uppercase tracking-[0.2em] mb-8">
-                    {pt.specialty || "Expert Trainer"}
-                  </p>
-                  
-                  <button
-                    onClick={() => handleChoosePT(pt.id)}
-                    className="mt-auto w-full py-3.5 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 transition-all active:scale-95 flex items-center justify-center gap-2 shadow-sm"
-                  >
-                    Bắt đầu tập luyện
-                    <Zap className="w-4 h-4 fill-current" />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-3">
+            Bạn chưa được phân công huấn luyện viên
+          </h1>
 
-          {ptList.length === 0 && (
-              <div className="text-center py-20 bg-white rounded-[32px] border border-slate-200 shadow-sm mt-8">
-                <div className="w-20 h-20 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <User className="w-10 h-10 text-slate-400" />
-                </div>
-                <h3 className="text-xl font-black text-slate-900">Không có PT sẵn sàng</h3>
-                <p className="text-slate-500 font-medium">Vui lòng quay lại sau ít phút.</p>
-              </div>
-          )}
+          <p className="text-slate-500 font-medium leading-7 max-w-2xl mx-auto">
+            Hiện tại tài khoản của bạn chưa có huấn luyện viên phụ trách.
+            Vui lòng chờ Admin chọn huấn luyện viên cho bạn trước khi đăng ký lịch tập.
+          </p>
+
+          <div className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-700 font-medium">
+            Khi Admin phân công PT xong, bạn có thể quay lại trang này để xem lịch và đăng ký buổi tập.
+          </div>
         </div>
       </div>
-    );
-  }
-
+    </div>
+  );
+}
   // ===============================
   // ===== GIAO DIỆN ĐĂNG KÝ LỊCH ==
   // ===============================
