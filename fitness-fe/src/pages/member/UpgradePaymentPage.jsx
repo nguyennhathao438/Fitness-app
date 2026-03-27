@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"; 
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import StepPayment from "../../components/member/StepPayment";
+import StepPaymentMember from "../../components/member/StepPaymentMember";
 import backgroundImage from "../../assets/background.jpg";
 import { CheckCircle, Info } from "lucide-react"; 
 
@@ -111,7 +111,7 @@ export default function UpgradePaymentPage() {
             </div>
 
             {/* COMPONENT THANH TOÁN */}
-            <StepPayment
+            <StepPaymentMember
                 data={data}
                 setData={setData}
                 next={handleSuccess}
