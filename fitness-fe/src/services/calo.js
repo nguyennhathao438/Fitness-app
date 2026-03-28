@@ -1,6 +1,5 @@
 import api from "../api.js";
 
-
 /**
  * =========================
  * FOOD AI
@@ -24,7 +23,6 @@ export const predictFoodFromImage = (formData) => {
  */
 
 // Lấy danh sách món ăn theo ngày
-// ví dụ: getCaloriesByDay("2026-03-25", 1)
 export const getCaloriesByDay = (date, memberId) => {
   return api.get(`/calories/day/${date}`, {
     params: {
@@ -39,8 +37,10 @@ export const addMeal = (data) => {
     member_id: data.member_id,
     meal_name: data.meal_name,
     calories: data.calories,
+    quantity: data.quantity ?? null,
+    unit: data.unit ?? null,
     meal_date: data.meal_date,
-    meal_time: data.meal_time,
+    meal_time: data.meal_time || null,
     image_url: data.image_url || null,
     source: data.source || "manual",
     note: data.note || "",
@@ -52,10 +52,18 @@ export const addManyMeals = (data) => {
   return api.post("/calories/add-many-meals", {
     member_id: data.member_id,
     meal_date: data.meal_date,
-    meals: data.meals || [],
+    meals: (data.meals || []).map((meal) => ({
+      meal_name: meal.meal_name,
+      calories: meal.calories,
+      quantity: meal.quantity ?? null,
+      unit: meal.unit ?? null,
+      meal_time: meal.meal_time || null,
+      image_url: meal.image_url || null,
+      source: meal.source || "manual",
+      note: meal.note || "",
+    })),
   });
 };
-
 
 // Lấy lịch sử calo theo khoảng ngày
 export const getCaloriesHistory = (memberId, from, to) => {
@@ -77,22 +85,11 @@ export const deleteMeal = (id) => {
  * =========================
  * CURRENT ACCOUNT / PROFILE
  * =========================
- * Ưu tiên dùng API profile hiện có của project.
- * Nếu project bạn đã có service auth/profile riêng rồi,
- * có thể bỏ hàm này và import từ service có sẵn.
  */
 export const getMyProfile = () => {
   return api.get("/auth/me");
 };
 
-/**
- * Helper: map response account về format chuẩn frontend cần dùng
- * response.data.member.id
- * response.data.member.name
- * response.data.member.email
- * response.data.member.phone
- * response.data.member.avatar
- */
 export const mapCurrentUserFromProfile = (response) => {
   const member = response?.data?.member || null;
 
@@ -110,11 +107,60 @@ export const mapCurrentUserFromProfile = (response) => {
     valid_until: response?.data?.valid_until ?? null,
   };
 };
+
 export const getRecentMeals = (memberId, limit = 8) => {
   return api.get("/calories/recent", {
     params: {
       member_id: memberId,
       limit,
+    },
+  });
+};
+
+/**
+ * =========================
+ * NUTRITION STATISTICS
+ * =========================
+ */
+
+export const getNutritionSummary = (params = {}) => {
+  return api.get("/calories/summary", {
+    params: {
+      member_id: params.member_id,
+      from: params.from,
+      to: params.to,
+    },
+  });
+};
+
+export const getNutritionChart = (params = {}) => {
+  return api.get("/calories/chart", {
+    params: {
+      member_id: params.member_id,
+      from: params.from,
+      to: params.to,
+      type: params.type || "day",
+    },
+  });
+};
+
+export const getNutritionSourceStats = (params = {}) => {
+  return api.get("/calories/source-stats", {
+    params: {
+      member_id: params.member_id,
+      from: params.from,
+      to: params.to,
+    },
+  });
+};
+
+export const getNutritionTopMeals = (params = {}) => {
+  return api.get("/calories/top-meals", {
+    params: {
+      member_id: params.member_id,
+      from: params.from,
+      to: params.to,
+      limit: params.limit || 10,
     },
   });
 };

@@ -16,6 +16,10 @@ return new class extends Migration
             $table->string('meal_name');
             $table->integer('calories')->default(0);
 
+            // Thêm định lượng
+            $table->decimal('quantity', 8, 2)->nullable();
+            $table->string('unit', 50)->nullable();
+
             $table->date('meal_date');
             $table->time('meal_time')->nullable();
 

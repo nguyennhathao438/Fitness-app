@@ -10,6 +10,8 @@ class NutritionLog extends Model
         'member_id',
         'meal_name',
         'calories',
+        'quantity',
+        'unit',
         'meal_date',
         'meal_time',
         'image_url',
@@ -19,6 +21,7 @@ class NutritionLog extends Model
 
     protected $casts = [
         'meal_date' => 'date',
+        'quantity' => 'decimal:2',
     ];
 
     public function member()
