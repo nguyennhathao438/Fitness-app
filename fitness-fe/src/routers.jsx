@@ -35,6 +35,7 @@ import RequireRole from "./pages/utils/RequireRole";
 import RequireGuest from "./pages/utils/RequireGuest";
 import NotFound from "./components/member/NotFound";
 import RequireMember from "./pages/utils/RequireMember";
+import DashboardPT from "./pages/PT/DashboardPT";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -152,7 +153,8 @@ const router = createBrowserRouter([
       </RequireRole>
     ),
     children: [
-      { index: true, element: <ListMemberOfPT /> },
+      { index: true, element: <DashboardPT /> },
+      { path: "member", element: <ListMemberOfPT /> },
       { path: "schedules", element: <ScheduleDashboardPT /> },
 
       { path: "schedules/create", element: <CreateSchedulePT /> },

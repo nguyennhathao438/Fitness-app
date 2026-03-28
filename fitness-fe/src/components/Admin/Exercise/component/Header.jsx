@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ExerciseModal from "../modals/ExerciseModal";
 import { HiPlus } from "react-icons/hi";
-import { MdFitnessCenter } from "react-icons/md";
+import { Dumbbell } from "lucide-react";
 export default function Header() {
     const [openForm, setOpenForm] = useState(false);
 
@@ -11,15 +11,15 @@ export default function Header() {
 
                 {/* LEFT */}
                 <div className="text-center md:text-left">
-                    <div className="flex">
-                        <MdFitnessCenter className="text-purple-600 text-3xl md:text-4xl mr-2"/>
+                    <div className="flex justify-center">
+                        <Dumbbell className="hidden md:block text-purple-600 w-9 h-9 mr-2" />
                         <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
                             Exercise Management
                         </h1>
                     </div>
 
-                    <p className="text-gray-500 mt-1 text-sm md:text-base">
-                        Manage exercises and workout details
+                    <p className="text-slate-500 mt-1 font-medium md:text-base">
+                        Quản lý bài tập của hội viên
                     </p>
                 </div>
 
