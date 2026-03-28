@@ -233,12 +233,18 @@ Route::post('/vnpay_payment', [PaymentController::class, 'vnpay_payment']);
 
 
 Route::post('/food/predict', [FoodAiController::class, 'predictFood']);
+
 Route::prefix('calories')->group(function () {
     Route::get('/day/{date}', [NutritionController::class, 'getByDate']);
     Route::post('/add-meal', [NutritionController::class, 'addMeal']);
     Route::get('/history', [NutritionController::class, 'history']);
     Route::post('/add-many-meals', [NutritionController::class, 'addManyMeals']);
-
     Route::delete('/meal/{id}', [NutritionController::class, 'deleteMeal']);
     Route::get('/recent', [NutritionController::class, 'recentMeals']);
+
+    // API thống kê
+    Route::get('/summary', [NutritionController::class, 'summary']);
+    Route::get('/chart', [NutritionController::class, 'chart']);
+    Route::get('/source-stats', [NutritionController::class, 'sourceStats']);
+    Route::get('/top-meals', [NutritionController::class, 'topMeals']);
 });
