@@ -101,6 +101,7 @@ export const FOOD_CALORIES_MAP = {
   tuna_tartare: 180,
   waffles: 370
 };
+
 export const FOOD_NAME_MAP = {
   apple_pie: "Apple Pie",
   baby_back_ribs: "Baby Back Ribs",
@@ -214,3 +215,191 @@ export const getDisplayFoodName = (label) => {
   if (!label) return "";
   return FOOD_NAME_MAP[label] || label.replaceAll("_", " ");
 };
+
+export const HEALTHY_FOOD_SUGGESTIONS = [
+  { id: 1, label: "khoai_lang", name: "Khoai lang", calories: 86, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🍠" },
+  { id: 2, label: "sua_tuoi", name: "Sữa tươi", calories: 42, unitBase: "100ml", defaultQuantity: 250, defaultUnit: "ml", icon: "🥛" },
+  { id: 3, label: "ca_hoi", name: "Cá hồi", calories: 208, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🐟" },
+  { id: 4, label: "yen_mach", name: "Yến mạch", calories: 68, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🥣" },
+  { id: 5, label: "trung_ga", name: "Trứng gà", calories: 155, unitBase: "100g", defaultQuantity: 2, defaultUnit: "quả", icon: "🥚" },
+  { id: 6, label: "uc_ga", name: "Ức gà", calories: 165, unitBase: "100g", defaultQuantity: 150, defaultUnit: "gram", icon: "🍗" },
+  { id: 7, label: "bong_cai_xanh", name: "Bông cải xanh", calories: 34, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🥦" },
+  { id: 8, label: "chuoi", name: "Chuối", calories: 89, unitBase: "100g", defaultQuantity: 1, defaultUnit: "quả", icon: "🍌" },
+  { id: 9, label: "tao", name: "Táo", calories: 52, unitBase: "100g", defaultQuantity: 1, defaultUnit: "quả", icon: "🍎" },
+  { id: 10, label: "bo", name: "Bơ", calories: 160, unitBase: "100g", defaultQuantity: 0.5, defaultUnit: "quả", icon: "🥑" },
+
+  { id: 11, label: "sua_chua_khong_duong", name: "Sữa chua không đường", calories: 59, unitBase: "100g", defaultQuantity: 1, defaultUnit: "hũ", icon: "🍶" },
+  { id: 12, label: "hanh_nhan", name: "Hạnh nhân", calories: 579, unitBase: "100g", defaultQuantity: 30, defaultUnit: "gram", icon: "🌰" },
+  { id: 13, label: "oc_cho", name: "Óc chó", calories: 654, unitBase: "100g", defaultQuantity: 30, defaultUnit: "gram", icon: "🥜" },
+  { id: 14, label: "dau_hu", name: "Đậu hũ", calories: 76, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "⬜" },
+  { id: 15, label: "rau_bina", name: "Rau bina", calories: 23, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🥬" },
+  { id: 16, label: "gao_lut", name: "Gạo lứt", calories: 111, unitBase: "100g", defaultQuantity: 1, defaultUnit: "chén", icon: "🍚" },
+  { id: 17, label: "ca_ngu", name: "Cá ngừ", calories: 132, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🐠" },
+  { id: 18, label: "tom", name: "Tôm", calories: 99, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🦐" },
+  { id: 19, label: "ca_rot", name: "Cà rốt", calories: 41, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🥕" },
+  { id: 20, label: "cam", name: "Cam", calories: 47, unitBase: "100g", defaultQuantity: 1, defaultUnit: "quả", icon: "🍊" },
+
+  { id: 21, label: "dua_hau", name: "Dưa hấu", calories: 30, unitBase: "100g", defaultQuantity: 200, defaultUnit: "gram", icon: "🍉" },
+  { id: 22, label: "dua_chuot", name: "Dưa chuột", calories: 15, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🥒" },
+  { id: 23, label: "ca_chua", name: "Cà chua", calories: 18, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🍅" },
+  { id: 24, label: "dau_den", name: "Đậu đen", calories: 132, unitBase: "100g", defaultQuantity: 1, defaultUnit: "chén", icon: "🫘" },
+  { id: 25, label: "dau_xanh", name: "Đậu xanh", calories: 105, unitBase: "100g", defaultQuantity: 1, defaultUnit: "chén", icon: "🫛" },
+  { id: 26, label: "banh_mi_den", name: "Bánh mì đen", calories: 247, unitBase: "100g", defaultQuantity: 2, defaultUnit: "lát", icon: "🍞" },
+  { id: 27, label: "pho_mai_tuoi", name: "Phô mai tươi", calories: 98, unitBase: "100g", defaultQuantity: 50, defaultUnit: "gram", icon: "🧀" },
+  { id: 28, label: "hat_chia", name: "Hạt chia", calories: 486, unitBase: "100g", defaultQuantity: 15, defaultUnit: "gram", icon: "🫙" },
+  { id: 29, label: "hat_lanh", name: "Hạt lanh", calories: 534, unitBase: "100g", defaultQuantity: 15, defaultUnit: "gram", icon: "🌾" },
+  { id: 30, label: "dau_phong", name: "Đậu phộng", calories: 567, unitBase: "100g", defaultQuantity: 30, defaultUnit: "gram", icon: "🥜" },
+
+  { id: 31, label: "nam", name: "Nấm", calories: 22, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🍄" },
+  { id: 32, label: "bi_do", name: "Bí đỏ", calories: 26, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🎃" },
+  { id: 33, label: "sua_dau_nanh", name: "Sữa đậu nành", calories: 54, unitBase: "100ml", defaultQuantity: 250, defaultUnit: "ml", icon: "🥛" },
+  { id: 34, label: "uc_vit", name: "Ức vịt", calories: 201, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🍖" },
+  { id: 35, label: "thit_bo_nac", name: "Thịt bò nạc", calories: 217, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🥩" },
+  { id: 36, label: "ca_thu", name: "Cá thu", calories: 189, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🐟" },
+  { id: 37, label: "le", name: "Lê", calories: 57, unitBase: "100g", defaultQuantity: 1, defaultUnit: "quả", icon: "🍐" },
+  { id: 38, label: "kiwi", name: "Kiwi", calories: 61, unitBase: "100g", defaultQuantity: 1, defaultUnit: "quả", icon: "🥝" },
+  { id: 39, label: "dau_tay", name: "Dâu tây", calories: 32, unitBase: "100g", defaultQuantity: 100, defaultUnit: "gram", icon: "🍓" },
+  { id: 40, label: "rong_bien", name: "Rong biển", calories: 45, unitBase: "100g", defaultQuantity: 50, defaultUnit: "gram", icon: "🌿" },
+];
+export const FOOD_DEFAULT_PORTION_MAP = {
+  apple_pie: { quantity: 1, unit: "miếng" },
+  baby_back_ribs: { quantity: 300, unit: "gram" },
+  baklava: { quantity: 2, unit: "miếng" },
+  beef_carpaccio: { quantity: 100, unit: "gram" },
+  beef_tartare: { quantity: 120, unit: "gram" },
+  beet_salad: { quantity: 1, unit: "phần" },
+  beignets: { quantity: 3, unit: "cái" },
+  bibimbap: { quantity: 1, unit: "tô" },
+  bread_pudding: { quantity: 1, unit: "miếng" },
+  breakfast_burrito: { quantity: 1, unit: "cuộn" },
+  bruschetta: { quantity: 2, unit: "miếng" },
+  caesar_salad: { quantity: 1, unit: "phần" },
+  cannoli: { quantity: 2, unit: "cái" },
+  caprese_salad: { quantity: 1, unit: "phần" },
+  carrot_cake: { quantity: 1, unit: "miếng" },
+  ceviche: { quantity: 1, unit: "phần" },
+  cheese_plate: { quantity: 1, unit: "phần" },
+  cheesecake: { quantity: 1, unit: "miếng" },
+  chicken_curry: { quantity: 1, unit: "phần" },
+  chicken_quesadilla: { quantity: 1, unit: "phần" },
+  chicken_wings: { quantity: 6, unit: "cánh" },
+  chocolate_cake: { quantity: 1, unit: "miếng" },
+  chocolate_mousse: { quantity: 1, unit: "ly" },
+  churros: { quantity: 3, unit: "cái" },
+  clam_chowder: { quantity: 1, unit: "tô" },
+  club_sandwich: { quantity: 1, unit: "phần" },
+  crab_cakes: { quantity: 2, unit: "miếng" },
+  creme_brulee: { quantity: 1, unit: "phần" },
+  croque_madame: { quantity: 1, unit: "phần" },
+  cup_cakes: { quantity: 1, unit: "cái" },
+  deviled_eggs: { quantity: 2, unit: "nửa quả" },
+  donuts: { quantity: 1, unit: "cái" },
+  dumplings: { quantity: 6, unit: "cái" },
+  edamame: { quantity: 1, unit: "chén" },
+  eggs_benedict: { quantity: 1, unit: "phần" },
+  escargots: { quantity: 6, unit: "con" },
+  falafel: { quantity: 4, unit: "viên" },
+  filet_mignon: { quantity: 200, unit: "gram" },
+  fish_and_chips: { quantity: 1, unit: "phần" },
+  foie_gras: { quantity: 80, unit: "gram" },
+  french_fries: { quantity: 1, unit: "phần" },
+  french_onion_soup: { quantity: 1, unit: "tô" },
+  french_toast: { quantity: 2, unit: "lát" },
+  fried_calamari: { quantity: 1, unit: "phần" },
+  fried_rice: { quantity: 1, unit: "chén" },
+  frozen_yogurt: { quantity: 1, unit: "ly" },
+  garlic_bread: { quantity: 2, unit: "miếng" },
+  gnocchi: { quantity: 1, unit: "phần" },
+  greek_salad: { quantity: 1, unit: "phần" },
+  grilled_cheese_sandwich: { quantity: 1, unit: "cái" },
+  grilled_salmon: { quantity: 180, unit: "gram" },
+  guacamole: { quantity: 1, unit: "chén nhỏ" },
+  gyoza: { quantity: 5, unit: "cái" },
+  hamburger: { quantity: 1, unit: "cái" },
+  hot_and_sour_soup: { quantity: 1, unit: "tô" },
+  hot_dog: { quantity: 1, unit: "cái" },
+  huevos_rancheros: { quantity: 1, unit: "phần" },
+  hummus: { quantity: 1, unit: "chén nhỏ" },
+  ice_cream: { quantity: 1, unit: "viên" },
+  lasagna: { quantity: 1, unit: "miếng" },
+  lobster_bisque: { quantity: 1, unit: "tô" },
+  lobster_roll_sandwich: { quantity: 1, unit: "cái" },
+  macaroni_and_cheese: { quantity: 1, unit: "chén" },
+  macarons: { quantity: 3, unit: "cái" },
+  miso_soup: { quantity: 1, unit: "tô" },
+  mussels: { quantity: 1, unit: "phần" },
+  nachos: { quantity: 1, unit: "phần" },
+  omelette: { quantity: 1, unit: "cái" },
+  onion_rings: { quantity: 6, unit: "vòng" },
+  oysters: { quantity: 6, unit: "con" },
+  pad_thai: { quantity: 1, unit: "đĩa" },
+  paella: { quantity: 1, unit: "phần" },
+  pancakes: { quantity: 2, unit: "cái" },
+  panna_cotta: { quantity: 1, unit: "phần" },
+  peking_duck: { quantity: 1, unit: "phần" },
+  pho: { quantity: 1, unit: "tô" },
+  pizza: { quantity: 2, unit: "miếng" },
+  pork_chop: { quantity: 1, unit: "miếng" },
+  poutine: { quantity: 1, unit: "phần" },
+  prime_rib: { quantity: 250, unit: "gram" },
+  pulled_pork_sandwich: { quantity: 1, unit: "cái" },
+  ramen: { quantity: 1, unit: "tô" },
+  ravioli: { quantity: 1, unit: "phần" },
+  red_velvet_cake: { quantity: 1, unit: "miếng" },
+  risotto: { quantity: 1, unit: "đĩa" },
+  samosa: { quantity: 2, unit: "cái" },
+  sashimi: { quantity: 8, unit: "miếng" },
+  scallops: { quantity: 6, unit: "con" },
+  seaweed_salad: { quantity: 1, unit: "phần" },
+  shrimp_and_grits: { quantity: 1, unit: "phần" },
+  spaghetti_bolognese: { quantity: 1, unit: "đĩa" },
+  spaghetti_carbonara: { quantity: 1, unit: "đĩa" },
+  spring_rolls: { quantity: 4, unit: "cái" },
+  steak: { quantity: 200, unit: "gram" },
+  strawberry_shortcake: { quantity: 1, unit: "miếng" },
+  sushi: { quantity: 8, unit: "miếng" },
+  tacos: { quantity: 2, unit: "cái" },
+  takoyaki: { quantity: 6, unit: "viên" },
+  tiramisu: { quantity: 1, unit: "miếng" },
+  tuna_tartare: { quantity: 100, unit: "gram" },
+  waffles: { quantity: 2, unit: "miếng" }
+};
+
+export const getDefaultQuantityByLabel = (label) => {
+  if (!label) return null;
+
+  const normalizedLabel = String(label).trim().toLowerCase();
+
+  if (FOOD_DEFAULT_PORTION_MAP[normalizedLabel]) {
+    return FOOD_DEFAULT_PORTION_MAP[normalizedLabel].quantity ?? null;
+  }
+
+  const food = HEALTHY_FOOD_SUGGESTIONS.find(
+    (item) => String(item.label).trim().toLowerCase() === normalizedLabel
+  );
+
+  if (!food) return null;
+
+  return food.defaultQuantity ?? null;
+};
+
+export const getDefaultUnitByLabel = (label) => {
+  if (!label) return "";
+
+  const normalizedLabel = String(label).trim().toLowerCase();
+
+  if (FOOD_DEFAULT_PORTION_MAP[normalizedLabel]) {
+    return FOOD_DEFAULT_PORTION_MAP[normalizedLabel].unit || "";
+  }
+
+  const food = HEALTHY_FOOD_SUGGESTIONS.find(
+    (item) => String(item.label).trim().toLowerCase() === normalizedLabel
+  );
+
+  if (!food) return "";
+
+  return food.defaultUnit || food.unitBase || "";
+};
+
+
+export const getHealthyFoodSuggestions = () => HEALTHY_FOOD_SUGGESTIONS;
