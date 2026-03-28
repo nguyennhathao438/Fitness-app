@@ -1,11 +1,22 @@
 import { useState } from "react";
-import { Heart, Calendar, CheckSquare, MessageCircle,Dumbbell} from "lucide-react";
+import {
+  Heart,
+  Calendar,
+  CheckSquare,
+  MessageCircle,
+  Dumbbell,
+} from "lucide-react";
 import ProfilePackage from "../../ProfilePackage";
 import ProfileBodyMetric from "./BodyMetric/ProfileBodyMetric";
 import StatisticsWorkout from "./WorkoutHistory/StatisticsWorkout";
 import MemberRegisterPage from "@/pages/MemberSchedule/MemberRegisterPage";
-
+import RequireMember from "@/pages/utils/RequireMember";
+import { useSelector } from "react-redux";
+import WaitingForRegister from "@/pages/member/WaitingForRegister";
+import UpgradeModal from "@/components/utils/UpgradeModal";
 export default function ProfileTabBar() {
+  const statusInvoice = useSelector((state) => state.auth.statusInvoice);
+  const roles = useSelector((state) => state.auth.roles) || [];
   const [activeTab, setActiveTab] = useState(0);
   const tabs = [
     { id: 0, label: "BMI", icon: Heart },
@@ -45,8 +56,25 @@ export default function ProfileTabBar() {
       <main className="flex-1">
         {tabs[activeTab].id === 1 && <ProfilePackage />}
         {tabs[activeTab].id === 0 && <ProfileBodyMetric />}
-        {tabs[activeTab].id === 2 && <MemberRegisterPage />}
-        {tabs[activeTab].id === 4 && <StatisticsWorkout />}
+        {tabs[activeTab].id === 2 &&
+          (statusInvoice === "pending" ? (
+            <WaitingForRegister />
+          ) : roles.includes("MemberVip") ? (
+            <MemberRegisterPage />
+          ) : (
+            <UpgradeModal
+              isOpen={true}
+              onClose={() => {
+                setActiveTab(0);
+              }}
+            />
+          ))}
+        {tabs[activeTab].id === 4 &&
+          (statusInvoice === "pending" ? (
+            <WaitingForRegister />
+          ) : (
+            <StatisticsWorkout />
+          ))}
       </main>
     </div>
   );

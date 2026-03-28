@@ -26,7 +26,7 @@ import {
 import Dialog from "@/components/Admin/Dialog";
 import { getPTChat } from "@/services/member/Message";
 import ProfileMessage from "@/components/member/ProfileMessage";
-import NoPermissionModal from "@/components/utils/NoPermissionModel";
+
 import { useSelector } from "react-redux";
 
 const START_HOUR = 6;
@@ -56,7 +56,7 @@ export default function MemberRegisterPage() {
   const roles = useSelector((state) => state.auth.roles);
   const permissions = useSelector((state) => state.auth.permissions);
   const [openNoPermission, setOpenNoPermission] = useState(false);
-  const canReadRole = roles.includes("Member_vip");
+  const canReadRole = roles.includes("MemberVip");
   const canReadPermission = permissions.includes("message_user.read");
   useEffect(() => {
     checkMyPT();
