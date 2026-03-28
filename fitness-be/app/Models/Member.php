@@ -65,7 +65,10 @@ class Member extends Authenticatable
         return $this->hasOne(PersonalTrainerClient::class, 'member_id')
             ->where('status', 'active');
     }
-
+    public function bodyMetrics()
+    {
+        return $this->hasMany(BodyMetric::class);
+    }
 
     public function managedMembers()
     {

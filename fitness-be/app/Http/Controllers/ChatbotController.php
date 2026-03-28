@@ -8,6 +8,7 @@ use App\Http\Services\PackageAiService;
 use Illuminate\Support\Facades\DB;
 use App\Http\Services\FaqAiService;
 use App\Http\Services\ExerciseAiService;
+use App\Http\Services\NutritionAiService;
 class ChatbotController extends Controller
 {
     public function suggestPackage($question)
@@ -84,6 +85,10 @@ class ChatbotController extends Controller
             case 'goi_y_bai_tap':
                 $exerciseService = app(ExerciseAiService::class);
                 $answer = $exerciseService->ask($question, $memberId);
+                return response()->json(["answer" => $answer], 200);
+            case 'goi_y_dinh_duong':
+                $nutritionService = app(NutritionAiService::class);
+                $answer = $nutritionService->ask($question, $memberId);
                 return response()->json(["answer" => $answer], 200);
 
             default:
