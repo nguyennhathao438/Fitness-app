@@ -10,6 +10,7 @@ import ProfilePackage from "../../ProfilePackage";
 import ProfileBodyMetric from "./BodyMetric/ProfileBodyMetric";
 import StatisticsWorkout from "./WorkoutHistory/StatisticsWorkout";
 import MemberRegisterPage from "@/pages/MemberSchedule/MemberRegisterPage";
+import NutritionStatisticsPage from "@/pages/Nutrition/NutritionStatisticsPage";
 import RequireMember from "@/pages/utils/RequireMember";
 import { useSelector } from "react-redux";
 import WaitingForRegister from "@/pages/member/WaitingForRegister";
@@ -22,7 +23,7 @@ export default function ProfileTabBar() {
     { id: 0, label: "BMI", icon: Heart },
     { id: 1, label: "Gói tập", icon: Dumbbell },
     { id: 2, label: "Lịch tập", icon: Calendar },
-    { id: 3, label: "Checklist", icon: CheckSquare },
+    { id: 3, label: "Thống kê dinh dưỡng", icon: CheckSquare },
     { id: 4, label: "Lịch sử tập", icon: MessageCircle },
   ];
   return (
@@ -69,6 +70,7 @@ export default function ProfileTabBar() {
               }}
             />
           ))}
+          {tabs[activeTab].id === 3 && <NutritionStatisticsPage />}
         {tabs[activeTab].id === 4 &&
           (statusInvoice === "pending" ? (
             <WaitingForRegister />

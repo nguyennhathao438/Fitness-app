@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 
 class NutritionLogSeeder extends Seeder
@@ -12,14 +11,14 @@ class NutritionLogSeeder extends Seeder
     public function run(): void
     {
         $startDate = '2026-03-25';
-        $endDate = '2026-04-03'; // có thể đổi thành 2026-04-01 nếu muốn ngắn hơn
+        $endDate = '2026-04-03';
 
         $mealTemplates = [
             [
                 'meal_name' => 'Apple Pie',
                 'calories' => 320,
                 'meal_time' => '08:00:00',
-                'source' => 'recent',
+                'source' => 'ai',
                 'note' => 'Bữa sáng nhẹ',
             ],
             [
@@ -47,7 +46,7 @@ class NutritionLogSeeder extends Seeder
                 'meal_name' => 'Salad cá ngừ',
                 'calories' => 290,
                 'meal_time' => '20:00:00',
-                'source' => 'schedule',
+                'source' => 'manual',
                 'note' => 'Ăn tối muộn',
             ],
         ];

@@ -36,6 +36,8 @@ import RequireGuest from "./pages/utils/RequireGuest";
 import NotFound from "./components/member/NotFound";
 import RequireMember from "./pages/utils/RequireMember";
 import NutritionManager from "./pages/Nutrition/NutritionManager";
+import NutritionStatisticsPage from "./pages/Nutrition/NutritionStatisticsPage";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -72,6 +74,8 @@ const router = createBrowserRouter([
       },
       { path: "member/pt-register", element: <PTRegisterPage /> },
       { path: "member/my-schedules", element: <MySchedulePage /> },
+    { path: "calosum", element: <NutritionStatisticsPage /> },
+
       { path: "notifications", element: <Notifications /> },
     ],
   },

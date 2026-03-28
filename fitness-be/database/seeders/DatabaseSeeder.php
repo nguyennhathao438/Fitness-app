@@ -22,7 +22,6 @@ class DatabaseSeeder extends Seeder
 
             MemberSeeder::class,
 
-
             ServiceSeeder::class,
             PackageTypeSeeder::class,
             TrainingPackageSeeder::class,
