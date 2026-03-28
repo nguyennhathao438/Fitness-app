@@ -4,6 +4,7 @@ import { useState } from "react";
 import ResetPassModal from "../modals/ResetPassModal";
 import EditProfileModal from "../modals/EditProfile";
 import { useNavigate } from "react-router-dom";
+
 export default function MemberInfo() {
   const navigate = useNavigate();
   const roles = useSelector((state) => state.auth.roles) || [];
@@ -101,7 +102,7 @@ export default function MemberInfo() {
             {roles.includes("Admin") && (
               <button
                 className="flex mx-5 my-2 justify-center px-4 py-1 text-white bg-purple-500 hover:bg-purple-600 rounded-md cursor-pointer"
-                onClick={() => navigate("/admin/dashboard")}
+                onClick={() => navigate("/admin")}
               >
                 <User className="w-5 mr-2" />
                 Đến trang quản trị

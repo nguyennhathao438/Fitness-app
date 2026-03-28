@@ -54,6 +54,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
         <ul className="mt-2 space-y-5">
           <NavLink
             to="/admin/"
+            end
             className={({ isActive }) =>
               `flex items-center px-4 py-2 rounded-md cursor-pointer transition
                             hover:bg-gradient-to-r from-[#56228d] to-[#dfd2fa] hover:translate-x-1

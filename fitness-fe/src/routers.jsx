@@ -60,11 +60,7 @@ const router = createBrowserRouter([
       { path: "waiting", element: <WaitingForRegister /> },
       {
         path: "profile",
-        element: (
-          <RequireMember>
-            <Profile />
-          </RequireMember>
-        ),
+        element: <Profile />,
       },
       {
         path: "workout",
