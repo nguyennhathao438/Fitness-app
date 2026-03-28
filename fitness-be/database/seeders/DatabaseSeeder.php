@@ -22,8 +22,9 @@ class DatabaseSeeder extends Seeder
 
             MemberSeeder::class,
 
-            PackageTypeSeeder::class,
+
             ServiceSeeder::class,
+            PackageTypeSeeder::class,
             TrainingPackageSeeder::class,
 
             InvoiceSeeder::class,
