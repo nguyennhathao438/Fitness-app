@@ -30,6 +30,7 @@ use App\Http\Controllers\NotificationController;
 
 
 use App\Http\Controllers\PaymentController;
+
 Route::post('/login', [AuthenController::class, 'login']);
 Route::post('/register', [MemberController::class, 'register']);
 Route::post('/check-email', [AuthenController::class, 'checkEmail']);
@@ -144,6 +145,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/session', [PTClientController::class, 'getTopPT']);
     Route::put('/cancel_pt', [PTClientController::class, 'cancelPT']);
     Route::put('/change_pt', [PTClientController::class, 'ChangePT']);
+    Route::get('/pt/{ptId}/member-stats', [PTClientController::class, 'statsMembers']);
     // Message
     Route::post('/messages', [MessageController::class, 'store']);
     Route::get('/messages/{userId}', [MessageController::class, 'getMessages']);

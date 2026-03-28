@@ -50,6 +50,23 @@ export default function SideBar({ collapsed, setCollapsed }) {
             <span
               className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
             >
+              Trang chủ
+            </span>
+          </NavLink>
+
+          <NavLink
+            to="/pt/member"
+            end
+            className={({ isActive }) =>
+              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
+                            hover:bg-purple-500 hover:translate-x-1
+                            ${isActive ? "bg-purple-600" : ""}`
+            }
+          >
+            <HouseIcon className="text-white inline-block mr-2 size-5"></HouseIcon>
+            <span
+              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+            >
               Member
             </span>
           </NavLink>

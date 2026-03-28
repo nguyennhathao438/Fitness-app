@@ -5,7 +5,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
 import { useState } from "react";
-export default function UpdateBodyMetricModal({open,onClose,onSuccess}) {
+export default function UpdateBodyMetricModal({ open, onClose, onSuccess }) {
     const [isLoading, setIsLoading] = useState(false)
     const bodyMetricSchema = z.object({
         height: z.
@@ -60,7 +60,7 @@ export default function UpdateBodyMetricModal({open,onClose,onSuccess}) {
             onClose()
         } catch (error) {
             console.error("Error creating body metric:", error);
-        }finally{
+        } finally {
             setIsLoading(false)
         }
     };
@@ -160,11 +160,11 @@ export default function UpdateBodyMetricModal({open,onClose,onSuccess}) {
                     </div>
 
                     <div className="flex justify-center space-x-3">
-                        <button type="submit" className=" bg-yellow-300 text-purple-900 hover:shadow-lg hover:shadow-yellow-400/30 hover:scale-110 cursor-pointer px-4 py-2 rounded-md ">
-                            {isLoading ? "Đang lưu ..." : "Xác nhận"}
-                        </button>
                         <button type="button" onClick={() => { onClose(), handleResetBodyMetricForm() }} className="bg-gray-300 cursor-pointer px-4 py-2 rounded-md hover:shadow-lg hover:shadow-gray-400/30 hover:scale-110">
                             Hủy
+                        </button>
+                        <button type="submit" className=" bg-yellow-300 text-purple-900 hover:shadow-lg hover:shadow-yellow-400/30 hover:scale-110 cursor-pointer px-4 py-2 rounded-md ">
+                            {isLoading ? "Đang lưu ..." : "Xác nhận"}
                         </button>
                     </div>
                 </div>
