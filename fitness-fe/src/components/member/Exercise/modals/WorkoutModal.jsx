@@ -126,24 +126,48 @@ export default function WorkoutModal({ exercises = [], open, onClose, workoutTod
     }, [timeLeft, isRunning]);
 
     /* ================= ĐỦ SET → SANG BÀI MỚI ================= */
+    // useEffect(() => {
+    //     if (completedSetCount === totalSet && totalSet > 0) {
+    //         // eslint-disable-next-line react-hooks/set-state-in-effect
+    //         setCompletedExercise((prev) => {
+    //             const next = new Set(prev);
+    //             next.add(currentIndex);
+    //             return next;
+    //         });
+    //         const t = setTimeout(() => {
+    //             if (currentIndex < localExercises.length - 1) {
+    //                 const nextIndex = currentIndex + 1;
+    //                 setCurrentIndex(nextIndex);
+    //                 setCompletedSetCount(0); //currentSet tự reset về 1
+    //                 setTimeLeft(localExercises[nextIndex].execution_time || 0);
+    //                 setIsRunning(false);
+    //             }
+    //         }, 300);
+    //         return () => clearTimeout(t);
+    //     }
+    // }, [completedSetCount, totalSet]);
+
     useEffect(() => {
         if (completedSetCount === totalSet && totalSet > 0) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
-            setCompletedExercise((prev) => {
-                const next = new Set(prev);
-                next.add(currentIndex);
-                return next;
-            });
-            const t = setTimeout(() => {
-                if (currentIndex < localExercises.length - 1) {
-                    const nextIndex = currentIndex + 1;
-                    setCurrentIndex(nextIndex);
-                    setCompletedSetCount(0); //currentSet tự reset về 1
-                    setTimeLeft(localExercises[nextIndex].execution_time || 0);
-                    setIsRunning(false);
-                }
-            }, 300);
-            return () => clearTimeout(t);
+            // Chỉ tự chuyển nếu bài tập hiện tại chưa nằm trong completedExercise
+            if (!completedExercise.has(currentIndex)) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
+                setCompletedExercise((prev) => {
+                    const next = new Set(prev);
+                    next.add(currentIndex);
+                    return next;
+                });
+                const t = setTimeout(() => {
+                    if (currentIndex < localExercises.length - 1) {
+                        const nextIndex = currentIndex + 1;
+                        setCurrentIndex(nextIndex);
+                        setCompletedSetCount(0);
+                        setTimeLeft(localExercises[nextIndex].execution_time || 0);
+                        setIsRunning(false);
+                    }
+                }, 300);
+                return () => clearTimeout(t);
+            }
         }
     }, [completedSetCount, totalSet]);
 
