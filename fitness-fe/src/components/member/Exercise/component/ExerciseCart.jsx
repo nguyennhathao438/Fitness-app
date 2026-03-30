@@ -7,18 +7,20 @@ import { createWorkoutHistoryDetail, getWorkoutHistoryDetails } from "@/services
 
 export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutToday, refetch }) {
     const { member } = useSelector((state) => state.auth);
+
     const [loading, setLoading] = useState(false)
     const [openWorkout, setOpenWorkout] = useState(false);
     const [details, setDetails] = useState([]);
     const [workoutId, setWorkoutId] = useState(null);
     const [exerciseConfig, setExerciseConfig] = useState([]);
+
     const dateVN = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }).format(new Date());
+
     const getCloudinaryThumbnail = (url) => {
         if (!url) return "";
-        return url
-            .replace("/video/upload/", "/video/upload/so_15/")
-            .replace(".mp4", ".jpg");
+        return url.replace("/video/upload/", "/video/upload/so_15/").replace(".mp4", ".jpg");
     };
+
     useEffect(() => {
         const config = listExerciseAdd.map(ex => ({
             ...ex,
@@ -109,9 +111,7 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
             <div className="space-y-3 text-center">
                 <div className="flex items-center justify-center gap-3">
                     <Dumbbell className="text-purple-400" size={25} />
-                    <h2 className="text-2xl font-bold tracking-wide">
-                        Bài tập hôm nay
-                    </h2>
+                    <h2 className="text-2xl font-bold tracking-wide">Bài tập hôm nay</h2>
                     <span className="text-purple-300 text-sm font-semibold bg-purple-500/20 px-2 py-0.5 rounded-md">
                         {listExerciseAdd.length} bài
                     </span>
@@ -128,69 +128,76 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
 
             {/* list */}
             <div className="space-y-3">
-                {exerciseConfig.map((exercise, index) => (
-                    <div key={exercise.id || index} className="flex items-center justify-between rounded-lg bg-[#2a2440] px-4 py-3 border border-purple-500/20 hover:border-purple-500 transition">
-                        <div className="flex items-center gap-4">
-                            <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-purple-500">
-                                <img className="w-full h-full object-cover" src={getCloudinaryThumbnail(exercise.video)} alt="" />
-                            </div>
-                            <div>
-                                <p className="font-semibold">{exercise.name}</p>
-                                <div className="mt-1 flex gap-4 text-xs text-gray-300">
-                                    {exercise.set_count !== null && exercise.set_count !== undefined && (
-                                        <div className="flex items-center gap-1">
-                                            <Repeat size={12} />
-                                            <input
-                                                type="number"
-                                                min="1"
-                                                value={exercise.set_count}
-                                                onChange={(e) =>
-                                                    updateExercise(index, "set_count", e.target.value)
-                                                }
-                                                className="w-12 h-6 text-xs bg-gray-700 border border-gray-600 rounded text-center focus:outline-none focus:border-yellow-400"
-                                            />
-                                            sets
-                                        </div>
-                                    )}
+                {exerciseConfig.map((exercise, index) => {
+                    const detail = workoutToday?.details.find(
+                        (d) => d.exercise_id === exercise.id
+                    );
 
-                                    {exercise.rep !== null && exercise.rep !== undefined && (
-                                        <div className="flex items-center gap-1">
-                                            <Dumbbell size={12} />
-                                            <input
-                                                type="number"
-                                                min="1"
-                                                value={exercise.rep}
-                                                onChange={(e) =>
-                                                    updateExercise(index, "rep", e.target.value)
-                                                }
-                                                className="w-12 h-6 text-xs bg-gray-700 border border-gray-600 rounded text-center focus:outline-none focus:border-yellow-400"
-                                            />
-                                            reps
-                                        </div>
-                                    )}
+                    const completion = detail?.completion_percentage || 0;
 
-                                    {exercise.time_action && (
-                                        <span className="flex items-center gap-1">
-                                            <Timer size={12} />
-                                            {exercise.time_action}s
-                                        </span>
-                                    )}
+                    return (
+                        <div key={exercise.id || index} className="flex items-center justify-between rounded-lg bg-[#2a2440] px-4 py-3 border border-purple-500/20 hover:border-purple-500 transition">
+                            <div className="flex items-center gap-4">
+                                <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-purple-500">
+                                    <img className="w-full h-full object-cover" src={getCloudinaryThumbnail(exercise.video)} alt="" />
+                                </div>
+                                <div>
+                                    <p className="font-semibold">{exercise.name}</p>
+                                    <div className="mt-1 flex gap-4 text-xs text-gray-300">
+                                        {exercise.set_count !== null && exercise.set_count !== undefined && (
+                                            <div className="flex items-center gap-1">
+                                                <Repeat size={12} />
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    value={exercise.set_count}
+                                                    disabled={completion > 0} 
+                                                    onChange={(e) =>updateExercise(index, "set_count", e.target.value)}
+                                                    className="w-12 h-6 text-xs bg-gray-700 border border-gray-600 rounded text-center focus:outline-none focus:border-yellow-400"
+                                                />
+                                                sets
+                                            </div>
+                                        )}
+
+                                        {exercise.rep !== null && exercise.rep !== undefined && (
+                                            <div className="flex items-center gap-1">
+                                                <Dumbbell size={12} />
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    value={exercise.rep}
+                                                    disabled={completion > 0} 
+                                                    onChange={(e) =>updateExercise(index, "rep", e.target.value)}
+                                                    className="w-12 h-6 text-xs bg-gray-700 border border-gray-600 rounded text-center focus:outline-none focus:border-yellow-400"
+                                                />
+                                                reps
+                                            </div>
+                                        )}
+
+                                        {exercise.time_action && (
+                                            <span className="flex items-center gap-1">
+                                                <Timer size={12} />
+                                                {exercise.time_action}s
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="flex items-center gap-3">
-                            <span className="text-green-400 font-semibold bg-green-500/10 px-2 py-1 rounded-md">
-                                {workoutToday?.details.find(d => d.exercise_id === exercise.id)?.completion_percentage || 0}%
-                            </span>
-                            {!workoutToday?.details.find(d => d.exercise_id === exercise.id) && (
-                                <button onClick={() => onRemove?.(exercise)} className="flex h-8 w-8 items-center justify-center rounded-md bg-red-500/20 text-red-400 hover:bg-red-500/40 transition">
-                                    <X size={14} />
-                                </button>
-                            )}
+                            <div className="flex items-center gap-3">
+                                <span className="text-green-400 font-semibold bg-green-500/10 px-2 py-1 rounded-md">
+                                    {completion}%
+                                </span>
+
+                                {!detail && (
+                                    <button onClick={() => onRemove?.(exercise)} className="flex h-8 w-8 items-center justify-center rounded-md bg-red-500/20 text-red-400 hover:bg-red-500/40 transition">
+                                        <X size={14} />
+                                    </button>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
 
             {/* start button */}
@@ -210,7 +217,6 @@ export default function ExerciseCart({ listExerciseAdd = [], onRemove, workoutTo
                     reloadWorkout={refetch}
                 />
             )}
-
         </div>
     );
 }
