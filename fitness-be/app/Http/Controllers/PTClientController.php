@@ -193,4 +193,41 @@ class PTClientController extends Controller
             'data' => $topPTs
         ]);
     }
+
+    public function statsMembers($ptId)
+    {
+        // Kiểm tra PT tồn tại
+        if (!\App\Models\Member::where('id', $ptId)->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'PT không tồn tại'
+            ], 404);
+        }
+
+        // Tổng học viên
+        $total = \App\Models\PersonalTrainerClient::where('pt_id', $ptId)->count();
+
+        // Đang còn hạn (active + chưa hết ngày)
+        $active = \App\Models\PersonalTrainerClient::where('pt_id', $ptId)
+            ->where('status', 'active')
+            ->where('end_date', '>=', now())
+            ->count();
+
+        // Hết hạn (expired hoặc quá hạn)
+        $expired = \App\Models\PersonalTrainerClient::where('pt_id', $ptId)
+            ->where(function ($q) {
+                $q->where('status', 'expired')
+                    ->orWhere('end_date', '<', now());
+            })
+            ->count();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'total' => $total,
+                'active' => $active,
+                'expired' => $expired,
+            ]
+        ]);
+    }
 }

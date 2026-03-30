@@ -1,23 +1,23 @@
 import { useState } from "react";
 import ExerciseModal from "../modals/ExerciseModal";
 import { HiPlus } from "react-icons/hi";
-
 export default function Header() {
     const [openForm, setOpenForm] = useState(false);
 
     return (
-        <div className="mb-8">
-
+        <div className="mb-4">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
                 {/* LEFT */}
                 <div className="text-center md:text-left">
-                    <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
-                        Exercise Management
-                    </h1>
+                    <div className="flex justify-center">
+                        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+                            Exercise Management
+                        </h1>
+                    </div>
 
-                    <p className="text-gray-500 mt-1 text-sm md:text-base">
-                        Manage exercises and workout details
+                    <p className="text-slate-500 mt-1 font-medium md:text-base">
+                        Quản lý bài tập của hội viên
                     </p>
                 </div>
 
