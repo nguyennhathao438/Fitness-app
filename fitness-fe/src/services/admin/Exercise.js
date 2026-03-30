@@ -22,3 +22,6 @@ export const getExercises = (params = {}) => {
     },
   });
 };
+export const deleteExercise = (id) => {
+  return api.delete(`/exercises/${id}`);
+};
