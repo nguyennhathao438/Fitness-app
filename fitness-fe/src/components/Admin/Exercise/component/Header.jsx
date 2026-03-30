@@ -1,7 +1,6 @@
 import { useState } from "react";
 import ExerciseModal from "../modals/ExerciseModal";
 import { HiPlus } from "react-icons/hi";
-import { Dumbbell } from "lucide-react";
 export default function Header() {
     const [openForm, setOpenForm] = useState(false);
 
@@ -12,7 +11,6 @@ export default function Header() {
                 {/* LEFT */}
                 <div className="text-center md:text-left">
                     <div className="flex justify-center">
-                        <Dumbbell className="hidden md:block text-purple-600 w-9 h-9 mr-2" />
                         <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
                             Exercise Management
                         </h1>
