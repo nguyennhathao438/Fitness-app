@@ -1,10 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import gymImg from "../../../assets/gym.jpg"
-import { User } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Dumbbell,Apple,Droplet,ClipboardList,Activity,Salad, Lock,ShowerHead,Scale,Shirt} from "lucide-react";
 import { getAllTrainingPackages } from "../../../services/member/TraningPakageService";
 export default function InfoPackage() {
+    const benefits = [
+        { name: "Khăn tập", icon: Shirt },
+        { name: "Dụng cụ tập", icon: Dumbbell },
+        { name: "Thức ăn nhẹ", icon: Apple },
+        { name: "Nước uống", icon: Droplet },
+        { name: "Lộ trình tập", icon: ClipboardList },
+        { name: "Phân tích thể trạng", icon: Activity },
+        { name: "Tư vấn dinh dưỡng", icon: Salad },
+        { name: "Tủ locker", icon: Lock },
+        { name: "Nhà tắm", icon: ShowerHead },
+        { name: "Máy inbody", icon: Scale },
+    ];
     const [packages, setPackages] = useState([]);
     useEffect(() => {
         getAllTrainingPackages().then((res) => {
@@ -68,22 +80,22 @@ export default function InfoPackage() {
                     className="flex gap-10 overflow-x-auto scroll-smooth md:overflow-hidden ">
                     {packages.map((item) => (
                         <li key={item.id} className="group shrink-0 w-[220px] h-[220px] px-2">
-                          <div className="w-full h-full [perspective:1000px]">
-                            <div className="relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
-                              {/* Front */}
-                              <div className="absolute inset-0 rounded-xl bg-[#474274] flex flex-col items-center justify-center text-center p-4 shadow-sm border border-gray-400 [backface-visibility:hidden]">
-                                <h3 className="text-center text-white text-lg font-semibold">{item.name}</h3>
-                                <p className="text-center text-amber-400 my-2 font-bold text-2xl">{formatVND(item.price)}</p>
-                                <p className="text-center text-white text-sm">{item.duration_days} ngày</p>
-                              </div>
+                            <div className="w-full h-full [perspective:1000px]">
+                                <div className="relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+                                    {/* Front */}
+                                    <div className="absolute inset-0 rounded-xl bg-[#474274] flex flex-col items-center justify-center text-center p-4 shadow-sm border border-gray-400 [backface-visibility:hidden]">
+                                        <h3 className="text-center text-white text-lg font-semibold">{item.name}</h3>
+                                        <p className="text-center text-amber-400 my-2 font-bold text-2xl">{formatVND(item.price)}</p>
+                                        <p className="text-center text-white text-sm">{item.duration_days} ngày</p>
+                                    </div>
 
-                              {/* Back */}
-                              <div className="absolute inset-0 rounded-xl bg-white p-4 flex flex-col gap-3 items-center justify-center [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                                <span className="font-bold text-xl">Chi tiết gói tập</span>
-                                <p className="text-gray-700 text-sm font-bold">{item.description}</p>
-                              </div>
+                                    {/* Back */}
+                                    <div className="absolute inset-0 rounded-xl bg-white p-4 flex flex-col gap-3 items-center justify-center [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                                        <span className="font-bold text-xl">Chi tiết gói tập</span>
+                                        <p className="text-gray-700 text-sm font-bold">{item.description}</p>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
                         </li>
                     ))}
                 </ul>
@@ -95,57 +107,31 @@ export default function InfoPackage() {
             </div>
 
 
-            <div className="relative h-[60vh] my-5 overflow-hidden">
-                <img src={gymImg} alt="" className="object-cover h-full w-full " />
-                <div className="absolute inset-0  bg-[#474274]/50"></div>
-                <h2 className="absolute top-10 text-center text-white font-bold text-2xl left-1/2 -translate-x-1/2">LOẠT TIỆN ÍCH ĐI KÈM MIỄN PHÍ</h2>
-                <div className="flex flex-row justify-around absolute top-25 left-5 right-5 md:right-25 md:left-25">
-                    <div className="flex flex-col items-center">
-                        <User className="text-white" />
-                        <p className="text-white">Khăn tập</p>
+            <div className="relative mt-20">
+                <img src={gymImg} className="w-full h-[450px] object-cover" />
+                <div className="absolute inset-0 bg-[#474274]/70 flex flex-col items-center justify-center px-6">
+                    <h2 className="text-white text-2xl font-bold mb-10 text-center">
+                        LOẠT TIỆN ÍCH ĐI KÈM MIỄN PHÍ
+                    </h2>
+
+                    {/* GRID */}
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-white text-center">
+                        {benefits.map((item, i) => (
+                            <div key={i} className="flex flex-col items-center gap-2 hover:scale-105 transition">
+                                <item.icon size={30} className="text-amber-400" />
+                                <p>{item.name}</p>
+                            </div>
+                        ))}
                     </div>
-                    <div className="flex flex-col items-center">
-                        <User className="text-white" />
-                        <p className="text-white">Dụng cụ tập</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <User className="text-white" />
-                        <p className="text-white">Thức ăn nhẹ</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <User className="text-white" />
-                        <p className="text-white">Nước uống</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <User className="text-white" />
-                        <p className="text-white">Xây dựng lộ trình</p>
-                    </div>
+
+                    <Link to="/pricing-packages">
+                        <button className="mt-10 px-8 py-3 bg-white text-[#474274] font-semibold rounded-lg hover:bg-gray-100 transition">
+                            Đăng ký tập ngay
+                        </button>
+                    </Link>
+
                 </div>
-                <div className="flex flex-row justify-around absolute right-5 left-5 md:right-25 md:left-25 top-50 ">
-                    <div className="flex flex-col items-center">
-                        <User className="text-white" />
-                        <p className="text-white">Phân tích thể trạng</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <User className="text-white" />
-                        <p className="text-white">Tư vấn dinh dưỡng</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <User className="text-white" />
-                        <p className="text-white">Tủ locker</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <User className="text-white" />
-                        <p className="text-white">Nhà tắm</p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <User className="text-white" />
-                        <p className="text-white">Máy inbody</p>
-                    </div>
-                </div>
-                <Link to="/pricing-packages">
-                    <button className="absolute left-1/2 -translate-x-1/2 top-75 rounded-xl cursor-pointer px-7 py-2 bg-white">Đăng ký tập ngay</button>
-                </Link>
+
             </div>
         </div>
     );
