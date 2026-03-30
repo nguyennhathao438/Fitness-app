@@ -15,7 +15,7 @@ class ExerciseSeeder extends Seeder
                 'rep_base' => 10,
                 'set_base' => 4,
                 'description' => 'Bài đẩy ngực với thanh đòn',
-                'video' => 'https://res.cloudinary.com/dcmko66fp/video/upload/v1774602036/huy4r6wqwwhb2sjfuya5.mp4',
+                'video' => 'https://res.cloudinary.com/dcmko66fp/video/upload/v1774846512/bbpxz8edxwyyngyeplc2.mp4',
                 'time_action' => null,
                 'created_at' => now(),
                 'updated_at' => now()
