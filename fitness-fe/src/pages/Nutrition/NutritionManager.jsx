@@ -680,7 +680,7 @@ export default function NutritionManager() {
         <section className="rounded-3xl border border-slate-200 bg-white p-5 text-slate-900 shadow-sm md:p-6">
           <div className="grid gap-4 lg:grid-cols-[1.4fr_0.9fr] lg:items-center">
             <div>
-              <div className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+              <div className="inline-flex items-center rounded-full border border-purple-200 bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-700">
                 FitnesIT • Nutrition AI
               </div>
 
@@ -713,7 +713,7 @@ export default function NutritionManager() {
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-slate-500">Member ID</span>
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
+                  <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700">
                     #{currentUser.id}
                   </span>
                 </div>
@@ -735,7 +735,7 @@ export default function NutritionManager() {
               onChange={(e) => setSelectedDate(e.target.value)}
             />
 
-            <div className="mt-4 rounded-2xl border border-blue-200 bg-blue-50 p-3 text-sm text-blue-700">
+            <div className="mt-4 rounded-2xl border border-purple-200 bg-purple-100 p-3 text-sm text-purple-700">
               {isPlanningMode
                 ? "Bạn đang chọn ngày tương lai. Hệ thống sẽ chuyển sang chế độ lên kế hoạch ăn uống."
                 : "Bạn đang xem nhật ký calo của ngày đã chọn."}
@@ -745,7 +745,7 @@ export default function NutritionManager() {
           <div className="rounded-3xl border border-slate-200 bg-white p-5 text-slate-900 shadow-sm">
             <p className="text-sm text-slate-500">Tổng calo trong ngày</p>
             <div className="mt-4 flex items-end gap-2">
-              <span className="text-4xl font-bold text-blue-700">
+              <span className="text-4xl font-bold text-purple-700">
                 {loadingDay ? "..." : totalCalories}
               </span>
               <span className="pb-1 text-sm text-slate-500">kcal</span>
@@ -755,7 +755,7 @@ export default function NutritionManager() {
           <div className="rounded-3xl border border-slate-200 bg-white p-5 text-slate-900 shadow-sm">
             <p className="text-sm text-slate-500">Số món đã thêm</p>
             <div className="mt-4 flex items-end gap-2">
-              <span className="text-4xl font-bold text-slate-900">
+              <span className="text-4xl font-bold text-purple-700">
                 {loadingDay ? "..." : dayMeals.length}
               </span>
               <span className="pb-1 text-sm text-slate-500">món</span>
@@ -786,7 +786,7 @@ export default function NutritionManager() {
 
                 <button
                   onClick={refreshDayData}
-                  className="rounded-2xl border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-blue-700 transition hover:bg-blue-100"
+                  className="rounded-2xl border border-purple-200 bg-purple-100 px-4 py-2 text-sm font-medium text-purple-700 transition hover:bg-blue-100"
                 >
                   Tải lại
                 </button>
@@ -829,7 +829,7 @@ export default function NutritionManager() {
                                 <h3 className="text-lg font-semibold text-slate-900">
                                   {meal.meal_name}
                                 </h3>
-                                <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
+                                <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-700">
                                   {meal.calories} kcal
                                 </span>
                                 <span className="rounded-full bg-white px-3 py-1 text-xs text-slate-600 border border-slate-200">
@@ -945,7 +945,7 @@ export default function NutritionManager() {
                     onClick={() => setEntryMode("manual")}
                     className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
                       entryMode === "manual"
-                        ? "bg-blue-600 text-white"
+                        ? "bg-purple-700 text-white"
                         : "text-slate-600 hover:bg-white"
                     }`}
                   >
@@ -957,7 +957,7 @@ export default function NutritionManager() {
                     onClick={() => setEntryMode("ai")}
                     className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
                       entryMode === "ai"
-                        ? "bg-blue-600 text-white"
+                        ? "bg-purple-700 text-white"
                         : "text-slate-600 hover:bg-white"
                     }`}
                   >
@@ -1051,7 +1051,7 @@ export default function NutritionManager() {
                     <button
                       onClick={handleAddManualMeal}
                       disabled={submittingManual}
-                      className="rounded-2xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="rounded-2xl bg-purple-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-purple-800 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {submittingManual
                         ? "Đang xử lý..."

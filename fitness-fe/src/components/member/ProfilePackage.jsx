@@ -96,10 +96,10 @@ export default function ProfilePackage() {
   if (loading) {
     return (
       <>
-        <div className="flex flex-col items-center justify-center h-screen text-lg font-semibold text-gray-700">
+        <div className="flex flex-col items-center justify-center h-screen text-lg">
           {/* Vòng tròn xoay */}
-          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4">Đang tải trang...</p>
+          <div className="w-9 flex h-9 border-4 mb-2 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
+          <p className="mt-2 text-gray-400">Loading ...</p>
         </div>
       </>
     );
@@ -216,14 +216,14 @@ export default function ProfilePackage() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
                 <button
                   onClick={() => navigate("/upgrade")}
-                  className="cursor-pointer w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-md shadow-blue-600/20"
+                  className="cursor-pointer w-full sm:w-auto flex items-center justify-center gap-2 bg-purple-700 hover:bg-purple-800 text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-md shadow-blue-600/20"
                 >
                   <Repeat size={16} /> Gia Hạn Gói
                 </button>
 
                 <button
                   onClick={() => navigate("/upgrade")}
-                  className="cursor-pointer w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-md shadow-blue-600/20"
+                  className="cursor-pointer w-full sm:w-auto flex items-center justify-center gap-2 bg-purple-700 hover:bg-purple-800 text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-md shadow-blue-600/20"
                 >
                   <ArrowUpCircle size={16} /> Nâng Cấp Ngay
                 </button>

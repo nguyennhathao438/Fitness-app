@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import useWorkoutHistory from '../../hooks/useWorkoutHistory';
 
@@ -17,20 +16,9 @@ function getStartOfWeek(date) {
 }
 
 export default function WorkoutTimeChart({ currentWeek = new Date() }) {
-    const { workoutHistories, workoutDetails, loading } = useWorkoutHistory();
+    const { workoutHistories, loading } = useWorkoutHistory();
     const weekDays = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
-    // Debug logs
-    useEffect(() => {
-        console.log("=== WorkoutTimeChart Debug ===");
-        console.log("Loading:", loading);
-        console.log("Workout Histories:", workoutHistories);
-        console.log("Workout Details:", workoutDetails);
-        if (workoutHistories.length > 0) {
-            console.log("First workout sample:", workoutHistories[0]);
-            console.log("First workout total_time:", workoutHistories[0].total_time);
-        }
-    }, [workoutHistories, workoutDetails, loading]);
 
     // Tính các ngày trong tuần
     const startOfWeek = getStartOfWeek(currentWeek);
@@ -63,10 +51,6 @@ export default function WorkoutTimeChart({ currentWeek = new Date() }) {
         };
     });
 
-    // Debug chartData
-    useEffect(() => {
-        console.log("Chart Data:", chartData);
-    }, [chartData]);
     const totalTimeWeek = chartData.reduce((sum, d) => sum + d.time, 0);
     const avgTimePerDay = totalTimeWeek > 0 ? Math.round(totalTimeWeek / 7) : 0;
     const maxTime = Math.max(...chartData.map(d => d.time), 0);

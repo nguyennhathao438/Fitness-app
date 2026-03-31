@@ -105,7 +105,7 @@ export default function HealthyFoodSuggestions({
     <section className="mx-auto mt-6 max-w-7xl rounded-3xl border border-slate-200 bg-white p-5 text-slate-900 shadow-sm md:p-6">
       <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <div className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+          <div className="inline-flex items-center rounded-full border border-purple-200 bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700">
             Gợi ý dinh dưỡng
           </div>
 
@@ -245,7 +245,7 @@ export default function HealthyFoodSuggestions({
                 disabled={!selectedFood}
                 className={`rounded-2xl px-5 py-3 text-sm font-semibold text-white transition ${
                   selectedFood
-                    ? "bg-blue-600 hover:bg-blue-500"
+                    ? "bg-purple-700 hover:bg-purple-800"
                     : "cursor-not-allowed bg-slate-300"
                 }`}
               >
