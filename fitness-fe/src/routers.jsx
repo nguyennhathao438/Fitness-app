@@ -50,7 +50,14 @@ const router = createBrowserRouter([
       { path: "member/payment/:packageId", element: <UpgradePaymentPage /> },
       { path: "register/:packageId", element: <RegisterPage /> },
       { path: "bmi", element: <BodyMaxIndex /> },
-      { path: "CaloAI", element: <NutritionManager /> },
+      {
+        path: "CaloAI",
+        element: (
+          <RequireMember>
+            <NutritionManager />
+          </RequireMember>
+        ),
+      },
       {
         path: "login",
         element: (

@@ -9,6 +9,7 @@ import { Bell, BellDot } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { notificationService } from "../../services/notificationService";
+import AvatarWithBubble from "./AvatarWithBubble.jsx";
 export default function Header() {
   const navigate = useNavigate();
   const { member, isAuthenticated } = useSelector((state) => state.auth);
@@ -38,7 +39,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="bg-[#000000] border-b border-[#2a2435] relative z-[1000]">
+      <header className="bg-[#000000] border-b border-[#2a2435] relative z-[1000] sticky top-0 ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-18">
             {/* Logo */}
@@ -242,26 +243,10 @@ export default function Header() {
                       )}
                     </div>
                   )}
-                  <div className="flex items-center gap-3">
-                    {member?.avatar ? (
-                      <Link to="/profile">
-                        <img
-                          src={member.avatar || defaultAvatar}
-                          alt="avatar"
-                          className="w-9 h-9 rounded-full object-cover border-2 border-purple-400"
-                        />
-                      </Link>
-                    ) : (
-                      <div className="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center border-2 border-purple-400">
-                        <Link to="/profile">
-                          <User className="w-5 h-5 text-gray-300" />
-                        </Link>
-                      </div>
-                    )}
-                    <span className="text-sm text-gray-200 font-medium">
-                      {member?.name}
-                    </span>
-                  </div>
+                  <AvatarWithBubble
+                    member={member}
+                    defaultAvatar={defaultAvatar}
+                  />
                   <button
                     onClick={handleLogout}
                     className="bg-gray-600 hover:bg-gray-500 text-white text-sm px-5 py-2 rounded-full transition-all duration-300 border border-gray-500 hover:border-gray-400"

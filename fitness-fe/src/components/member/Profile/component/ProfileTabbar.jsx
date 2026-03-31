@@ -70,7 +70,7 @@ export default function ProfileTabBar() {
               }}
             />
           ))}
-          {tabs[activeTab].id === 3 && <NutritionStatisticsPage />}
+        {tabs[activeTab].id === 3 && <NutritionStatisticsPage />}
         {tabs[activeTab].id === 4 &&
           (statusInvoice === "pending" ? (
             <WaitingForRegister />

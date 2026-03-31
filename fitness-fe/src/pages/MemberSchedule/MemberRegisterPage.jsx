@@ -26,7 +26,7 @@ import {
 import Dialog from "@/components/Admin/Dialog";
 import { getPTChat } from "@/services/member/Message";
 import ProfileMessage from "@/components/member/ProfileMessage";
-
+import NoPermissionModal from "@/components/utils/NoPermissionModel";
 import { useSelector } from "react-redux";
 
 const START_HOUR = 6;

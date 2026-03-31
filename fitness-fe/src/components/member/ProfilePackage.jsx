@@ -1,20 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Clock, 
-  BarChart2, 
-  CheckSquare, 
-  Repeat, 
+import React, { useState, useEffect } from "react";
+import {
+  Clock,
+  BarChart2,
+  CheckSquare,
+  Repeat,
   ArrowUpCircle,
   History,
-} from 'lucide-react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { getCurrentPackageInfo, getMemberInvoiceHistory } from '../../services/member/TraningPakageService'; 
+} from "lucide-react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import {
+  getCurrentPackageInfo,
+  getMemberInvoiceHistory,
+} from "../../services/member/TraningPakageService";
 
 export default function ProfilePackage() {
   const { member } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  
+
   const [currentPackage, setCurrentPackage] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -23,24 +26,25 @@ export default function ProfilePackage() {
   useEffect(() => {
     if (member?.id) {
       setLoading(true);
-      
+
       Promise.all([
-        getCurrentPackageInfo().catch(err => {
+        getCurrentPackageInfo().catch((err) => {
           console.error("Lỗi lấy thông tin gói tập:", err);
-          return null; 
+          return null;
         }),
-        getMemberInvoiceHistory().catch(err => {
+        getMemberInvoiceHistory().catch((err) => {
           console.error("Lỗi lấy lịch sử giao dịch:", err);
           return null;
-        })
+        }),
       ])
         .then(([packageRes, historyData]) => {
+          console.log("Lịch sử giao dịch:", historyData);
           // Xử lý gói hiện tại
           if (packageRes && packageRes.data && packageRes.data.success) {
             setCurrentPackage(packageRes.data.data);
           }
-          
-          // Xử lý lịch sử giao dịch 
+
+          // Xử lý lịch sử giao dịch
           if (historyData) {
             setHistory(historyData);
           }
@@ -57,24 +61,24 @@ export default function ProfilePackage() {
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('vi-VN').format(date);
+    return new Intl.DateTimeFormat("vi-VN").format(date);
   };
 
   const getPaymentMethodBadge = (method) => {
     switch (method?.toLowerCase()) {
-      case 'momo':
+      case "momo":
         return (
           <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold bg-pink-100 text-pink-700 border border-pink-200">
             MoMo
           </span>
         );
-      case 'vnpay':
+      case "vnpay":
         return (
           <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200">
             VNPay
           </span>
         );
-      case 'cash':
+      case "cash":
         return (
           <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700 border border-amber-200">
             Tiền mặt
@@ -83,7 +87,7 @@ export default function ProfilePackage() {
       default:
         return (
           <span className="inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-600 border border-gray-200">
-            {method || 'Khác'}
+            {method || "Khác"}
           </span>
         );
     }
@@ -100,11 +104,31 @@ export default function ProfilePackage() {
       </>
     );
   }
-
+  const getStatusBadge = (status) => {
+    switch (status) {
+      case "paid":
+        return (
+          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-600">
+            Đã thanh toán
+          </span>
+        );
+      case "pending":
+        return (
+          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-600">
+            Đang xử lý
+          </span>
+        );
+      default:
+        return (
+          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">
+            Thất bại
+          </span>
+        );
+    }
+  };
   return (
     <section className="py-8 px-4 bg-gray-50 min-h-full font-sans">
       <div className="max-w-6xl mx-auto space-y-10">
-        
         {/* GÓI TẬP HIỆN TẠI  */}
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
@@ -114,9 +138,11 @@ export default function ProfilePackage() {
           {!currentPackage ? (
             /* Trạng thái chưa có gói tập */
             <div className="bg-white p-10 rounded-2xl shadow-sm border border-gray-200 text-center">
-              <p className="text-gray-500 mb-5">Bạn hiện chưa đăng ký gói tập nào đang hoạt động.</p>
-              <button 
-                onClick={() => navigate('/pricing-packages')} 
+              <p className="text-gray-500 mb-5">
+                Bạn hiện chưa đăng ký gói tập nào đang hoạt động.
+              </p>
+              <button
+                onClick={() => navigate("/pricing-packages")}
                 className="cursor-pointer bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-md shadow-blue-600/20"
               >
                 Đăng Ký Ngay
@@ -129,19 +155,27 @@ export default function ProfilePackage() {
               <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 border-b border-gray-100 pb-6 mb-6">
                 <div className="flex items-center gap-4">
                   <div>
-                    <p className="text-gray-500 text-[10px] md:text-xs font-bold uppercase tracking-wider mb-1">Gói Tập</p>
+                    <p className="text-gray-500 text-[10px] md:text-xs font-bold uppercase tracking-wider mb-1">
+                      Gói Tập
+                    </p>
                     <h3 className="text-xl md:text-2xl font-extrabold text-gray-900 mb-1">
                       {currentPackage.package_name}
                     </h3>
                     <p className="text-gray-500 text-xs md:text-sm">
-                      {currentPackage.description || "Toàn diện • PT • Spa • Hồ bơi"}
+                      {currentPackage.description ||
+                        "Toàn diện • PT • Spa • Hồ bơi"}
                     </p>
                   </div>
                 </div>
                 <div className="md:text-right mt-1 md:mt-0">
-                  <p className="text-gray-500 text-[10px] md:text-xs font-bold uppercase tracking-wider mb-1">Giá gói</p>
+                  <p className="text-gray-500 text-[10px] md:text-xs font-bold uppercase tracking-wider mb-1">
+                    Giá gói
+                  </p>
                   <p className="text-2xl font-bold text-emerald-500">
-                    {Number(currentPackage.price || currentPackage.package_price || 0).toLocaleString('vi-VN')} đ
+                    {Number(
+                      currentPackage.price || currentPackage.package_price || 0,
+                    ).toLocaleString("vi-VN")}{" "}
+                    đ
                   </p>
                 </div>
               </div>
@@ -152,35 +186,43 @@ export default function ProfilePackage() {
                   <p className="text-gray-500 text-xs font-bold flex items-center gap-1.5 mb-1.5 uppercase tracking-wider">
                     <Clock size={14} className="text-rose-500" /> Ngày Hết Hạn
                   </p>
-                  <p className="text-lg font-bold text-gray-900">{formatDate(currentPackage.valid_until)}</p>
-                </div>
-                <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                  <p className="text-gray-500 text-xs font-bold flex items-center gap-1.5 mb-1.5 uppercase tracking-wider">
-                    <BarChart2 size={14} className="text-blue-500" /> Số Ngày Còn Lại
+                  <p className="text-lg font-bold text-gray-900">
+                    {formatDate(currentPackage.valid_until)}
                   </p>
-                  <p className="text-lg font-bold text-gray-900">{currentPackage.days_remaining} ngày</p>
                 </div>
                 <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
                   <p className="text-gray-500 text-xs font-bold flex items-center gap-1.5 mb-1.5 uppercase tracking-wider">
-                    <CheckSquare size={14} className="text-emerald-500" /> Trạng Thái
+                    <BarChart2 size={14} className="text-blue-500" /> Số Ngày
+                    Còn Lại
+                  </p>
+                  <p className="text-lg font-bold text-gray-900">
+                    {currentPackage.days_remaining} ngày
+                  </p>
+                </div>
+                <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                  <p className="text-gray-500 text-xs font-bold flex items-center gap-1.5 mb-1.5 uppercase tracking-wider">
+                    <CheckSquare size={14} className="text-emerald-500" /> Trạng
+                    Thái
                   </p>
                   <p className="text-lg font-bold text-emerald-600">
-                    {currentPackage.days_remaining > 0 ? "Đang Hoạt Động" : "Đã Hết Hạn"}
+                    {currentPackage.days_remaining > 0
+                      ? "Đang Hoạt Động"
+                      : "Đã Hết Hạn"}
                   </p>
                 </div>
               </div>
 
               {/* Nút Hành Động */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
-                <button 
-                  onClick={() => navigate('/upgrade')}
+                <button
+                  onClick={() => navigate("/upgrade")}
                   className="cursor-pointer w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-md shadow-blue-600/20"
                 >
                   <Repeat size={16} /> Gia Hạn Gói
                 </button>
-                
-                <button 
-                  onClick={() => navigate('/upgrade')}
+
+                <button
+                  onClick={() => navigate("/upgrade")}
                   className="cursor-pointer w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl text-sm font-bold transition-all shadow-md shadow-blue-600/20"
                 >
                   <ArrowUpCircle size={16} /> Nâng Cấp Ngay
@@ -193,9 +235,9 @@ export default function ProfilePackage() {
         {/* LỊCH SỬ MUA GÓI */}
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <History size={24} className="text-blue-600"/> Lịch Sử Mua Gói
+            <History size={24} className="text-blue-600" /> Lịch Sử Mua Gói
           </h2>
-          
+
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse min-w-[600px]">
@@ -205,24 +247,38 @@ export default function ProfilePackage() {
                     <th className="px-6 py-4 font-bold">Số Tiền</th>
                     <th className="px-6 py-4 font-bold">Ngày Mua</th>
                     <th className="px-6 py-4 font-bold">Thanh toán</th>
+                    <th className="px-6 py-4 font-bold">Trạng thái</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {history.map((item, index) => (
-                    <tr key={index} className="hover:bg-gray-50/50 transition-colors">
-                      <td className="px-6 py-4 text-sm font-medium text-gray-700">{item.name}</td>
-                      <td className="px-6 py-4 text-sm font-bold text-emerald-600">
-                        {Number(item.price).toLocaleString('vi-VN')} đ
+                    <tr
+                      key={index}
+                      className="hover:bg-gray-50/50 transition-colors"
+                    >
+                      <td className="px-6 py-4 text-sm font-medium text-gray-700">
+                        {item.name}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">{formatDate(item.purchaseDate)}</td>
+                      <td className="px-6 py-4 text-sm font-bold text-emerald-600">
+                        {Number(item.price).toLocaleString("vi-VN")} đ
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500">
+                        {formatDate(item.purchaseDate)}
+                      </td>
                       <td className="px-6 py-4">
                         {getPaymentMethodBadge(item.payment_method)}
+                      </td>
+                      <td className="px-6 py-4">
+                        {getStatusBadge(item.status)}
                       </td>
                     </tr>
                   ))}
                   {history.length === 0 && (
                     <tr>
-                      <td colSpan="4" className="px-6 py-8 text-center text-gray-500">
+                      <td
+                        colSpan="4"
+                        className="px-6 py-8 text-center text-gray-500"
+                      >
                         Bạn chưa có lịch sử giao dịch nào.
                       </td>
                     </tr>
@@ -232,7 +288,6 @@ export default function ProfilePackage() {
             </div>
           </div>
         </div>
-
       </div>
     </section>
   );

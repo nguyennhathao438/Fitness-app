@@ -13,9 +13,14 @@ import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../storages/authSlice.js";
+import { useSelector } from "react-redux";
 export default function SideBar({ collapsed, setCollapsed }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const permissions = useSelector((state) => state.auth.permissions);
+  const hasPermission = (code) => {
+    return permissions?.includes(code);
+  };
   const handleLogout = () => {
     navigate("/");
     dispatch(logout());
@@ -62,23 +67,25 @@ export default function SideBar({ collapsed, setCollapsed }) {
               Trang chủ
             </span>
           </NavLink>
-
-          <NavLink
-            to="/pt/member"
-            end
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
+          {hasPermission("member.read") && (
+            <NavLink
+              to="/pt/member"
+              end
+              className={({ isActive }) =>
+                `flex items-center px-4 py-2 rounded-md cursor-pointer transition
                             hover:bg-purple-500 hover:translate-x-1
                             ${isActive ? "bg-purple-600" : ""}`
-            }
-          >
-            <HouseIcon className="text-white inline-block mr-2 size-5"></HouseIcon>
-            <span
-              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+              }
             >
-              Member
-            </span>
-          </NavLink>
+              <HouseIcon className="text-white inline-block mr-2 size-5"></HouseIcon>
+              <span
+                className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+              >
+                Member
+              </span>
+            </NavLink>
+          )}
+
           <NavLink
             to="/pt/schedules/create"
             className={({ isActive }) =>
@@ -105,37 +112,41 @@ export default function SideBar({ collapsed, setCollapsed }) {
     Schedules
   </span>
 </NavLink> */}
-          <NavLink
-            to="/pt/message-pt"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
+          {hasPermission("message_pt.read") && (
+            <NavLink
+              to="/pt/message-pt"
+              className={({ isActive }) =>
+                `flex items-center px-4 py-2 rounded-md cursor-pointer transition
                             hover:bg-purple-500
                             ${isActive ? "bg-purple-600" : ""}`
-            }
-          >
-            <MessageCircleIcon className=" text-white inline-block mr-2 size-5"></MessageCircleIcon>
-            <span
-              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+              }
             >
-              Nhắn tin
-            </span>
-          </NavLink>
+              <MessageCircleIcon className=" text-white inline-block mr-2 size-5"></MessageCircleIcon>
+              <span
+                className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+              >
+                Nhắn tin
+              </span>
+            </NavLink>
+          )}
+          {hasPermission("exercise.read") && (
+            <NavLink
+              to="/pt/exercise"
+              className={({ isActive }) =>
+                `flex items-center px-4 py-2 rounded-md cursor-pointer transition
+                            hover:bg-purple-500
+                            ${isActive ? "bg-purple-600" : ""}`
+              }
+            >
+              <ShieldCheckIcon className=" text-white inline-block mr-2 size-5"></ShieldCheckIcon>
+              <span
+                className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
+              >
+                Bài tập
+              </span>
+            </NavLink>
+          )}
 
-          <NavLink
-            to="/pt/exercise"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 rounded-md cursor-pointer transition
-                            hover:bg-purple-500
-                            ${isActive ? "bg-purple-600" : ""}`
-            }
-          >
-            <ShieldCheckIcon className=" text-white inline-block mr-2 size-5"></ShieldCheckIcon>
-            <span
-              className={`${collapsed ? "hidden" : "inline"} max-sm:hidden text-lg`}
-            >
-              Bài tập
-            </span>
-          </NavLink>
           <NavLink
             className="flex items-center px-4 py-2 rounded-md cursor-pointer transition hover:bg-purple-500"
             onClick={handleLogout}

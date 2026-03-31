@@ -32,27 +32,20 @@ class RolePermissionSeeder extends Seeder
         $pt->permissions()->sync(
             Permission::whereIn('code', [
 
-                'user.read',
-
-                'package.read',
-
-                'invoice.read',
-                'invoice.update',
-
                 'message_pt.create',
                 'message_pt.read',
 
-                'workout.create',
-                'workout.read',
-
                 'schedule_pt.read',
                 'schedule_pt.update',
+                'schedule_pt.create',
+                'schedule_pt.delete',
 
                 'member.read',
 
                 'exercise.read',
-
-                'statistic.read',
+                'exercise.update',
+                'exercise.delete',
+                'exercise.create',
 
             ])->pluck('id')->toArray()
         );

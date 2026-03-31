@@ -32,13 +32,14 @@ class NutritionAiService
             ->latest()
             ->first();
 
-        // Mapping giới tính cho dễ hiểu
+        // Mapping giới tính
         $genderMap = [
             'male' => 'Nam',
             'female' => 'Nữ',
             'other' => 'Khác'
         ];
 
+        // ===== DATA GỐC =====
         $data = [
             'gender' => $genderMap[$member->gender] ?? null,
             'age' => $age,
@@ -50,8 +51,46 @@ class NutritionAiService
             'body_water' => $metric->body_water ?? null,
         ];
 
-        // Convert thành string để đưa vào prompt
-        return json_encode($data, JSON_UNESCAPED_UNICODE);
+        // ===== GỌI CALCULATE =====
+        $calculated = $this->caculate($data);
+
+        // ===== MERGE =====
+        $finalData = array_merge($data, $calculated);
+
+        // Convert thành JSON
+        return json_encode($finalData, JSON_UNESCAPED_UNICODE);
+    }
+    public function caculate($data)
+    {
+        $result = [
+            'bmi' => null,
+            'bmr' => null,
+        ];
+
+        if (!empty($data['weight']) && !empty($data['height'])) {
+            $height_m = $data['height'] / 100;
+            if ($height_m > 0) {
+                $result['bmi'] = round($data['weight'] / ($height_m * $height_m), 2);
+            }
+        }
+
+        if (
+            !empty($data['weight']) &&
+            !empty($data['height']) &&
+            !empty($data['age']) &&
+            !empty($data['gender'])
+        ) {
+            $weight = $data['weight'];
+            $height = $data['height'];
+            $age = $data['age'];
+
+            if ($data['gender'] === 'male') {
+                $result['bmr'] = 10 * $weight + 6.25 * $height - 5 * $age + 5;
+            } else {
+                $result['bmr'] = 10 * $weight + 6.25 * $height - 5 * $age - 161;
+            }
+        }
+        return $result;
     }
     public function ask($question, $memberId)
     {
