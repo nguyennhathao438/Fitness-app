@@ -13,29 +13,20 @@ const memberSchema = z.object({
         .trim()
         .min(3, "Họ và tên phải ít nhất 3 ký tự")
         .max(100, "Tên quá dài"),
-
     email: z.string()
         .trim()
         .email("Email không hợp lệ"),
-
     phone: z.string()
         .regex(/^[0-9]{9,11}$/, "Số điện thoại không hợp lệ"),
-
     gender: z.enum(["male", "female", "other"]).optional(),
     avatar: z.any().optional(),
 });
 
 export default function EditProfileModal({ open, onClose, member }) {
-
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
     const [preview, setPreview] = useState(null);
-    const {
-        register,
-        handleSubmit,
-        reset,
-        setValue
-    } = useForm({
+    const { register, handleSubmit, reset, setValue } = useForm({
         resolver: zodResolver(memberSchema)
     });
 
@@ -65,39 +56,40 @@ export default function EditProfileModal({ open, onClose, member }) {
         setIsLoading(true);
         try {
             let avatarUrl = null;
+            //  nếu có chọn file thì upload trước
+            if (data.avatar instanceof File) {
+                const formData = new FormData();
+                formData.append("file", data.avatar);
+                formData.append("upload_preset", "avatar_upload");
 
-        //  nếu có chọn file thì upload trước
-        if (data.avatar instanceof File) {
-            const formData = new FormData();
-            formData.append("file", data.avatar);
-            formData.append("upload_preset", "avatar_upload");
+                const resCloud = await fetch(
+                    "https://api.cloudinary.com/v1_1/dcmko66fp/image/upload",
+                    {
+                        method: "POST",
+                        body: formData,
+                    }
+                );
 
-            const resCloud = await fetch(
-                "https://api.cloudinary.com/v1_1/dcmko66fp/image/upload",
-                {
-                    method: "POST",
-                    body: formData,
-                }
-            );
+                const cloudData = await resCloud.json();
+                avatarUrl = cloudData.secure_url;
+                console.log(cloudData);
+            }
+            if (!avatarUrl && member?.avatar)
+                avatarUrl = member.avatar
 
-            const cloudData = await resCloud.json();
-            avatarUrl = cloudData.secure_url;
-            console.log(cloudData);
-        }
+            // gửi về BE
+            const res = await updateProfile({
+                ...data,
+                avatar: avatarUrl // gửi URL chứ không phải file
+            });
 
-        // gửi về BE
-        const res = await updateProfile({
-            ...data,
-            avatar: avatarUrl // gửi URL chứ không phải file
-        });
+            dispatch(updateMember(res.data.member));
+            toast.success(res.data.message || "Cập nhật thành công");
 
-        dispatch(updateMember(res.data.member));
-        toast.success(res.data.message || "Cập nhật thành công");
-
-        handleResetForm();
-        onClose();
+            handleResetForm();
+            onClose();
         } catch (error) {
-            toast.error("Cập nhật thất bại",error);
+            toast.error("Cập nhật thất bại", error);
         } finally {
             setIsLoading(false);
         }
@@ -109,29 +101,16 @@ export default function EditProfileModal({ open, onClose, member }) {
     };
 
     return (
-        <Modal
-            title={"Chỉnh sửa thông tin"}
-            bgColor={"bg-gray-900"}
-            border={"border-yellow-400 border-2 border"}
-            txtColor={"text-white"}
-            open={open}
-            onClose={onClose}>
+        <Modal title={"Chỉnh sửa thông tin"} bgColor={"bg-gray-900"} border={"border-yellow-400 border-2 border"} txtColor={"text-white"} open={open} onClose={onClose}>
             <form onSubmit={handleSubmit(onSubmit, onError)} className="flex flex-col gap-4" >
                 <div className="flex flex-col items-center gap-2">
                     <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-yellow-400">
-                        <img
-                            src={preview || member?.avatar || defaultAvatar}
-                            alt="avatar"
-                            className="w-full h-full object-cover"
-                        />
+                        <img src={preview || member?.avatar || defaultAvatar} alt="avatar" className="w-full h-full object-cover"/>
                     </div>
 
                     <label className="cursor-pointer text-sm text-yellow-300 hover:underline">
                         Chọn ảnh
-                        <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
+                        <input type="file" accept="image/*" className="hidden"
                             onChange={(e) => {
                                 const file = e.target.files[0];
                                 if (file) {
@@ -144,32 +123,17 @@ export default function EditProfileModal({ open, onClose, member }) {
                 </div>
                 <div>
                     <label className="text-white">Họ và tên</label>
-                    <input
-                        {...register("name")}
-                        type="text"
-                        placeholder="Họ và tên"
-                        className="border bg-white px-3 py-2 rounded-md w-full"
-                    />
+                    <input {...register("name")} type="text" placeholder="Họ và tên" className="border bg-white px-3 py-2 rounded-md w-full"/>
                 </div>
 
                 <div>
                     <label className="text-white">Email</label>
-                    <input
-                        {...register("email")}
-                        type="text"
-                        placeholder="Email"
-                        className="border bg-white px-3 py-2 rounded-md w-full"
-                    />
+                    <input {...register("email")} type="text" placeholder="Email" className="border bg-white px-3 py-2 rounded-md w-full"/>
                 </div>
 
                 <div>
                     <label className="text-white">Số điện thoại</label>
-                    <input
-                        {...register("phone")}
-                        type="text"
-                        placeholder="Số điện thoại"
-                        className="border bg-white px-3 py-2 rounded-md w-full"
-                    />
+                    <input {...register("phone")} type="text" placeholder="Số điện thoại" className="border bg-white px-3 py-2 rounded-md w-full"/>
                 </div>
 
                 <div>
@@ -182,7 +146,7 @@ export default function EditProfileModal({ open, onClose, member }) {
                 </div>
 
                 <div className="flex justify-center gap-4 mt-2">
-                    <button type="button" className="px-6 py-1 bg-gray-300 rounded-md hover:shadow-lg hover:shadow-gray-400/30 hover:scale-110 hover:bg-gray-400" onClick={() => { onClose();handleResetForm();}}>
+                    <button type="button" className="px-6 py-1 bg-gray-300 rounded-md hover:shadow-lg hover:shadow-gray-400/30 hover:scale-110 hover:bg-gray-400" onClick={() => { onClose(); handleResetForm(); }}>
                         Hủy
                     </button>
                     <button type="submit" className="px-6 py-2 bg-yellow-300 text-purple-900 hover:shadow-lg hover:shadow-yellow-400/30 rounded-md hover:scale-110">

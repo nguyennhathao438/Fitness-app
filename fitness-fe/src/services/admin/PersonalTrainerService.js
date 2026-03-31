@@ -39,3 +39,6 @@ export const getTopPT = () => {
 export const getMe = () => {
   return api.get(`/me`);
 };
+export const getStatsMembersOfPT = (ptId) => {
+  return api.get(`/pt/${ptId}/member-stats`);
+};

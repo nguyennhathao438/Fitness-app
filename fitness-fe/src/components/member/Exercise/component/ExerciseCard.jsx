@@ -8,21 +8,12 @@ export default function ExerciseGridCard({
   onToggleFavorite
 }) {
 
-  const getYoutubeThumbnail = (url) => {
-    if (!url) return "/placeholder.jpg";
-
-    const regExp =
-      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-
-    const match = url.match(regExp);
-    const videoId = match && match[2].length === 11 ? match[2] : null;
-
-    return videoId
-      ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-      : "/placeholder.jpg";
+  const getCloudinaryThumbnail = (url) => {
+    if (!url) return "";
+    return url
+      .replace("/video/upload/", "/video/upload/so_15/")
+      .replace(".mp4", ".jpg");
   };
-
-  const thumbnail = getYoutubeThumbnail(exercise.video);
 
   return (
     <div
@@ -52,9 +43,13 @@ export default function ExerciseGridCard({
         </button>
 
         <img
-          src={thumbnail}
+          src={getCloudinaryThumbnail(exercise.video)}
           alt={exercise.name}
-          className="h-full w-full object-cover transition-transform duration-300 hover:scale-110"
+          // onClick={() => {
+          //   setVideoUrl(item.video);
+          //   setOpenVideo(true);
+          // }}
+          className="cursor-pointer w-full h-full object-cover group-hover:scale-110 transition"
         />
       </div>
 

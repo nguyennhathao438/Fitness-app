@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 import { z } from "zod"
 export default function ExerciseModal({ open, onClose, title, item, onSuccess }) {
     const [isLoading, setIsLoading] = useState(false)
+
+    const [videoPreview, setVideoPreview] = useState("");
     const exerciseSchema = z.object({
         name: z.string().min(2),
         muscle: z.array(z.coerce.number()).min(1, "Vui lòng chọn ít nhất 1 nhóm cơ"),
@@ -21,7 +23,7 @@ export default function ExerciseModal({ open, onClose, title, item, onSuccess })
 
     const { muscleList } = useExercise();
 
-    const { register, handleSubmit, reset, watch, formState: { errors }, } = useForm({
+    const { register, handleSubmit, reset, watch, setValue, formState: { errors }, } = useForm({
         resolver: zodResolver(exerciseSchema),
         defaultValues: {
             muscle: [],
@@ -43,15 +45,18 @@ export default function ExerciseModal({ open, onClose, title, item, onSuccess })
     const onSubmit = async (data) => {
         setIsLoading(true);
         const dataObject = {
-            ...data,
-            rep_base: data.rep_base || null,
-            set_base: data.set_base || null,
-            time_action: data.time_action || null,
+            name: data.name,
+            description: data.description,
+            rep_base: data.rep_base ?? null,
+            set_base: data.set_base ?? null,
+            time_action: data.time_action ?? null,
+            video: data.video,
             muscle_group_ids: data.muscle,
         };
         console.log("object", dataObject)
         try {
             if (title === "Thêm bài tập") {
+                console.log("Hoang huy")
                 await createExercise(dataObject);
                 toast.success("Thêm bài tập thành công");
             } else {
@@ -62,7 +67,8 @@ export default function ExerciseModal({ open, onClose, title, item, onSuccess })
             handleReset()
             onClose()
         } catch (e) {
-            toast.error("Lỗi không thể thêm bài tập", e);
+            toast.error("Lỗi không thể thêm bài tập");
+            console.error(e);
         }
         finally {
             setIsLoading(false);
@@ -95,6 +101,8 @@ export default function ExerciseModal({ open, onClose, title, item, onSuccess })
                 time_action: item.time_action,
                 video: item.video || ""
             });
+
+            setVideoPreview(item.video || "");
         }
     }, [item, open]);
 
@@ -223,17 +231,44 @@ export default function ExerciseModal({ open, onClose, title, item, onSuccess })
                     <div>
                         <label className="block text-sm text-gray-600 mb-1 font-semibold">Upload Video</label>
                         <input
-                            {...register("video")}
-                            placeholder="https://youtube.com/..."
+                            type="file"
+                            accept="video/*"
                             className="w-full border px-3 py-2 rounded mb-2"
+                            onChange={async (e) => {
+                                const file = e.target.files[0];
+                                if (!file) return;
+
+                                const formData = new FormData();
+                                formData.append("file", file);
+                                formData.append("upload_preset", "video_upload");
+                                //   formData.append("folder", "exercises"); 
+
+                                try {
+                                    const res = await fetch(`https://api.cloudinary.com/v1_1/dcmko66fp/video/upload`, {
+                                        method: "POST",
+                                        body: formData
+                                    });
+                                    const data = await res.json();
+                                    const url = data.secure_url;
+
+                                    setValue("video", url, {
+                                        shouldValidate: true,
+                                        shouldDirty: true,
+                                    });
+
+                                    setVideoPreview(url);
+                                } catch (err) {
+                                    console.error("Upload failed", err);
+                                    toast.error("Upload video thất bại");
+                                }
+                            }}
                         />
-                        {watch("video") && (
-                            <iframe
-                                className="w-full h-48"
-                                src={watch("video").replace("watch?v=", "embed/")}
-                                title="Video bài tập"
-                                allowFullScreen
-                            />
+
+                        {/* Preview video nếu có */}
+                        {videoPreview && (
+                            <video key={videoPreview} className="w-full h-48" controls>
+                                <source src={videoPreview} type="video/mp4" />
+                            </video>
                         )}
                     </div>
                 </div>

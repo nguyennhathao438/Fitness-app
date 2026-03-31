@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Exercise;
 use Illuminate\Http\Request;
+
 class ExerciseController extends Controller
 {
     public function __construct()
@@ -51,15 +52,14 @@ class ExerciseController extends Controller
             'rep_base' => 'nullable|integer',
             'set_base' => 'nullable|integer',
             'description' => 'nullable|string',
-            'video' => 'nullable|string',
             'time_action' => 'nullable|integer',
+            'video' => 'nullable|string', 
             'muscle_group_ids' => 'nullable|array',
             'muscle_group_ids.*' => 'exists:muscle_groups,id',
         ]);
 
         $exercise = Exercise::create($data);
 
-        // gắn muscle groups (pivot)
         if (!empty($data['muscle_group_ids'])) {
             $exercise->muscleGroups()->sync($data['muscle_group_ids']);
         }

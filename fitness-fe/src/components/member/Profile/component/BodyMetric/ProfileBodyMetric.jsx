@@ -28,7 +28,7 @@ export default function ProfileBodyMetric() {
 
     return (
         <div>
-            {isLoading ? (<div className="text-center flex flex-col gap-2 items-center text-xl py-20 border font-bold">
+            {isLoading ? (<div className="text-center text-gray-500 flex flex-col gap-2 items-center py-20 border">
                 <div className="w-9 flex h-9 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
                 {"Loading ..."}</div>) : (<div>
                     <h2 className="flex items-center justify-center gap-2 text-center text-[#5a548c] font-bold text-2xl py-4">

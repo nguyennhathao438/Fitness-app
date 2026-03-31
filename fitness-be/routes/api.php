@@ -31,6 +31,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\FoodAiController;
 use App\Http\Controllers\NutritionController;
 use App\Http\Controllers\PaymentController;
+
 Route::post('/login', [AuthenController::class, 'login']);
 Route::post('/register', [MemberController::class, 'register']);
 Route::post('/check-email', [AuthenController::class, 'checkEmail']);
@@ -145,6 +146,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/session', [PTClientController::class, 'getTopPT']);
     Route::put('/cancel_pt', [PTClientController::class, 'cancelPT']);
     Route::put('/change_pt', [PTClientController::class, 'ChangePT']);
+    Route::get('/pt/{ptId}/member-stats', [PTClientController::class, 'statsMembers']);
     // Message
     Route::post('/messages', [MessageController::class, 'store']);
     Route::get('/messages/{userId}', [MessageController::class, 'getMessages']);
@@ -233,12 +235,18 @@ Route::post('/vnpay_payment', [PaymentController::class, 'vnpay_payment']);
 
 
 Route::post('/food/predict', [FoodAiController::class, 'predictFood']);
+
 Route::prefix('calories')->group(function () {
     Route::get('/day/{date}', [NutritionController::class, 'getByDate']);
     Route::post('/add-meal', [NutritionController::class, 'addMeal']);
     Route::get('/history', [NutritionController::class, 'history']);
     Route::post('/add-many-meals', [NutritionController::class, 'addManyMeals']);
-
     Route::delete('/meal/{id}', [NutritionController::class, 'deleteMeal']);
     Route::get('/recent', [NutritionController::class, 'recentMeals']);
+
+    // API thống kê
+    Route::get('/summary', [NutritionController::class, 'summary']);
+    Route::get('/chart', [NutritionController::class, 'chart']);
+    Route::get('/source-stats', [NutritionController::class, 'sourceStats']);
+    Route::get('/top-meals', [NutritionController::class, 'topMeals']);
 });
