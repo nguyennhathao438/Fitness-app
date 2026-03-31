@@ -37,10 +37,21 @@ class PackageAiService
                 "prompt" => $prompt,
                 "stream" => false,
             ]);
-
+            
         $data = $response->json();
+        $sql = $data['response'] ?? null;
 
-        return $data['response'] ?? null;
+        if ($sql) {
+            // Lấy từ đầu đến dấu ; đầu tiên (bao gồm ;)
+            $pos = strpos($sql, ';');
+            if ($pos !== false) {
+                $sql = substr($sql, 0, $pos + 1);
+            }
+            // Xoá tất cả ký tự lạ còn sót lại
+            $sql = trim(preg_replace('/;+\s*<\|endoftext\|>.*$/s', '', $sql));
+        }
+
+        return $sql;
     }
     public function formatResponseWithLLM($question, $rows)
     {

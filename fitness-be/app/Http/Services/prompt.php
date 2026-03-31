@@ -2,121 +2,67 @@
 return [
   "promptPackage" => "
 ### Schema
-training_packages(id, name, description, price, duration_days, is_deleted, package_type_id)
-package_types(id, name)
-services(id, name)
-type_service(package_type_id, service_id)
+training_packages(id,name,description,price,duration_days,is_deleted,package_type_id)
+package_types(id,name)
+services(id,name)
+type_service(package_type_id,service_id)
 
----
+## Yêu cầu
+Chỉ trả về DUY NHẤT một câu SQL hợp lệ.
+Đơn vị tiền tệ là VND.
+Dừng ngay sau dấu ;
+Không sinh thêm bất kỳ nội dung nào sau đó.
+Không markdown.
 
-### Yêu cầu bắt buộc
+Nếu người dùng nói:
+- khoảng, tầm, tài chính, ngân sách, chi phí, tiền
+=> hiểu là họ muốn tìm gói tập phù hợp với NGÂN SÁCH của họ.
+=> KHÔNG dùng BETWEEN hẹp.
+=> ưu tiên:
+   price <= ngân_sách
+   hoặc ORDER BY ABS(price - ngân_sách)
+### Quy tắc dịch vụ
+Người dùng có thể không nói đúng tên dịch vụ trong DB.
+Người dùng có thể không nói,nói tắt, viết tắt, viết hoa, viết thường để chỉ dịch vụ.
+Hãy hiểu theo nghĩa gần nhất.
 
-- Chỉ trả về DUY NHẤT một câu SQL hợp lệ (MySQL).
-- Dừng ngay sau dấu `;`
-- Không sinh thêm bất kỳ nội dung nào khác.
-- Không sử dụng markdown (không dùng ``` hoặc ```sql).
-- Không thêm comment (không dùng -- hoặc /* */).
-- Chỉ SELECT: training_packages.name, training_packages.price
-- Luôn có điều kiện: training_packages.is_deleted = 0
+Khi người dùng hỏi về dịch vụ:
+- phải JOIN type_service và services
+- trường hợp hỏi về pt, huấn luyện viên cá nhân, personal trainer, pt trainer, personal training, huấn luyện viên riêng, huấn luyện viên cá nhân → hiểu là dịch vụ PT
+- dịch vụ trong database có thể ghi hoa hoặc ghi tắt nên phải dựa theo câu nói của người dùng để hiểu ý nghĩa dịch vụ họ muốn.
+- lọc theo dịch vụ phù hợp nhất với ý nghĩa câu hỏi
+- ưu tiên match theo nghĩa, không chỉ match đúng chữ
 
----
+Nếu không chắc 100% dịch vụ nào đúng:
+- chọn dịch vụ gần nghĩa nhất
+- nếu vẫn không khớp, không thêm điều kiện services
 
-### Hiểu câu hỏi
+Nếu người dùng hỏi:
 
-1. Ngân sách
+- có tất cả dịch vụ
+- full dịch vụ
+- đầy đủ dịch vụ
+- toàn bộ dịch vụ
+- tất cả dịch vụ
+- gói full
+- gói đầy đủ
 
-Nếu câu chứa các từ:
-'khoảng', 'tầm', 'ngân sách', 'chi phí', 'tài chính', 'tiền', 'dưới', 'tối đa'
+=> hiểu là package_type_id của package phải chứa toàn bộ services thông qua liên kết type_service
 
-→ hiểu là người dùng có ngân sách
+Nếu người dùng hỏi:
 
-Xử lý:
-- Chuẩn hóa số:
-  'k' = *1000
-  'triệu' = *1000000
-  ví dụ:
-    500k → 500000
-    1 triệu → 1000000
+có 2 dịch vụ
+có 3 dịch vụ
+có nhiều dịch vụ
+có cả PT và dinh dưỡng
+có PT và theo dõi cơ thể
 
-- Áp dụng:
-  training_packages.price <= ngân_sách
-
-- Sắp xếp:
-  ORDER BY ABS(training_packages.price - ngân_sách)
-
-- Không dùng BETWEEN hẹp
-
----
-
-2. Thời gian
-
-Nếu có:
-'tháng', 'năm', 'tuần'
-
-→ chuyển đổi:
-- 1 tháng = 30 ngày
-- 1 tuần = 7 ngày
-- 1 năm = 365 ngày
-
-→ ưu tiên:
-training_packages.duration_days = giá_trị
-
-→ không dùng subquery nếu không cần thiết
-
----
-
-3. Tìm gần đúng
-
-Nếu không có ngân sách rõ ràng:
-→ dùng:
-ORDER BY training_packages.price ASC
-
----
-
-4. Dịch vụ hoặc loại gói (nếu có)
-
-Nếu câu hỏi có đề cập (ví dụ: gym, yoga, PT, tập...):
-→ JOIN:
-training_packages
-JOIN package_types ON training_packages.package_type_id = package_types.id
-JOIN type_service ON package_types.id = type_service.package_type_id
-JOIN services ON type_service.service_id = services.id
-
-→ lọc:
-services.name LIKE '%từ khóa%'
-
-Nếu không có dịch vụ → KHÔNG JOIN
-
----
-
-5. Kết quả
-
-- LIMIT 3
-- Ưu tiên:
-  - gần ngân sách nhất
-  - đúng thời gian nhất
-
----
-
-### Chống lỗi
-
-- Không thêm chữ vào số (ví dụ: 5000 TUNG là sai)
-- Không đặt ABS(...) trong WHERE nếu không có toán tử so sánh
-- ABS chỉ dùng trong ORDER BY
-- Không dùng SQL dư thừa
-- Hạn chế subquery nếu có thể viết trực tiếp
-- Đảm bảo mọi biểu thức số hợp lệ
-
----
-
-### Output
-
-SELECT ...;
-
----
+=> hiểu là package_type_id của package phải chứa các service tương ứng thông qua liên kết type_service
 
 ### Câu hỏi
 {question}
+
+### SQL
 ",
   "promptResponsePackage" => "Bạn là trợ lý phòng gym.
 

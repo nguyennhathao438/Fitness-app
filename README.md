@@ -1,5 +1,6 @@
 ## CHẠY MODEL INTENT
-
+    venv\Scripts\activate
+    
     uvicorn main:app --port 8001
 
 ## KIỂM TRA PORT
