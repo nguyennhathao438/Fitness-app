@@ -6,7 +6,8 @@ use Illuminate\Console\Command;
 use App\Models\Invoice;
 use App\Models\Notification;
 use Carbon\Carbon;
-
+use App\Models\Role;
+use Log;
 class CheckPackageExpiry extends Command
 {
     protected $signature = 'package:check-expiry';
@@ -36,5 +37,35 @@ class CheckPackageExpiry extends Command
         }
 
         $this->info('Package expiry checked');
+
+        //Tước quyền khi hết hạn 
+        $expiredInvoices = Invoice::where('status', 'paid')
+            ->whereDate('valid_until', '<', $today)
+            ->with('member.roles')
+            ->get();
+
+        foreach ($expiredInvoices as $invoice) {
+
+            $member = $invoice->member;
+
+            if (!$member)
+                continue;
+
+            // remove role nâng cao
+            $rolesToRemove = Role::whereIn('name', ['MemberUp', 'MemberVip'])->pluck('id');
+
+            $member->roles()->detach($rolesToRemove);
+
+            // reset thời hạn
+            $member->update([
+                'valid_until' => null
+            ]);
+
+            Log::info("Đã tước quyền do hết hạn", [
+                'member_id' => $member->id
+            ]);
+        }
+
+        $this->info('Package expiry checked + roles updated');
     }
 }
