@@ -24,6 +24,7 @@ return new class extends Migration
         $table->json('data')->nullable();
 
         $table->boolean('is_read')->default(false);
+        $table->boolean('is_deleted')->default(false);
 
         $table->timestamps();
     });

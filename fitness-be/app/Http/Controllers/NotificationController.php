@@ -44,4 +44,27 @@ public function markAllRead()
         'message' => 'Đã đọc tất cả'
     ]);
 }
+public function adminNotifications()
+{
+    $notifications =Notification::where('user_id', auth()->id())
+        ->where('is_deleted', false)
+        ->whereIn('type', ['order', 'pt_assign'])
+        ->latest()
+        ->get();
+    return response()->json([
+        'notifications' => $notifications
+    ]);
+}
+public function deleteNotification($id)
+{
+    $notification = Notification::findOrFail($id);
+
+    $notification->update([
+        'is_deleted' => true
+    ]);
+
+    return response()->json([
+        'message' => 'Đã xóa'
+    ]);
+}
 }

@@ -153,8 +153,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/chatWithPt', [MessageController::class, 'getChatPartners']);
     Route::get('/chatFromPt', [MessageController::class, 'getPTClients']);
     Route::get('/getChatPt', [MessageController::class, 'getChatWithPT']);
-    // Typing event
     Route::post('/messages/typing', [MessageController::class, 'typing']);
+    // Notification
+    Route::get('/admin/notifications', [NotificationController::class, 'adminNotifications']);
+    Route::delete('/admin/notifications/{id}', [NotificationController::class, 'deleteNotification']);
     // member xem lich
     Route::get('/member/my-pt', [MemberController::class, 'myPT']); //ok
 

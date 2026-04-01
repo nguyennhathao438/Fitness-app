@@ -28,6 +28,7 @@ import { getPTChat } from "@/services/member/Message";
 import ProfileMessage from "@/components/member/ProfileMessage";
 
 import { useSelector } from "react-redux";
+import NoPermissionModal from "@/components/utils/NoPermissionModel";
 
 const START_HOUR = 6;
 const END_HOUR = 22;

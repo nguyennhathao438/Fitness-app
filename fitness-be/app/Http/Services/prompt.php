@@ -46,16 +46,11 @@ Nếu người dùng hỏi:
 - tất cả dịch vụ
 - gói full
 - gói đầy đủ
-
-=> hiểu là package_type_id của package phải chứa toàn bộ services thông qua liên kết type_service
-
-Nếu người dùng hỏi:
-
-có 2 dịch vụ
-có 3 dịch vụ
-có nhiều dịch vụ
-có cả PT và dinh dưỡng
-có PT và theo dõi cơ thể
+- có 2 dịch vụ
+- có 3 dịch vụ
+- có nhiều dịch vụ
+- có cả PT và dinh dưỡng
+- có PT và theo dõi cơ thể
 
 => hiểu là package_type_id của package phải chứa các service tương ứng thông qua liên kết type_service
 
