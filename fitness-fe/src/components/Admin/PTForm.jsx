@@ -99,10 +99,10 @@ export default function PTForm({
   useEffect(() => {
     if (mode === "edit" && pt) {
       reset({
-        name: pt.name,
-        phone: pt.phone,
-        email: pt.email,
-        gender: pt.gender,
+        name: pt.name || "",
+        phone: pt.phone || "",
+        email: pt.email || "",
+        gender: pt.gender || undefined,
         birthday: pt.birthday ? pt.birthday.split("T")[0] : "",
       });
       setSelectedRoles(pt.roles?.map((r) => r.id) || []);

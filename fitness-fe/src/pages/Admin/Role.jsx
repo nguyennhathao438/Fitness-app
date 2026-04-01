@@ -42,7 +42,9 @@ export default function RoleAccessPage() {
       )}
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-purple-800">Vai trò & Quyền truy cập</h1>
+        <h1 className="text-3xl font-bold text-purple-800">
+          Vai trò & Quyền truy cập
+        </h1>
         <p className="text-purple-500">Quản lý vai trò và quyền hạn hệ thống</p>
       </div>
 
@@ -86,8 +88,10 @@ export default function RoleAccessPage() {
             <thead className="bg-purple-50 text-gray-600">
               <tr>
                 <th className="px-6 py-3">Tên vai trò</th>
-                <th className="px-6 py-3">Ngày tạo</th>
-                <th className="px-6 py-3">Ngày chỉnh sửa</th>
+                <th className="px-6 py-3 hidden md:table-cell">Ngày tạo</th>
+                <th className="px-6 py-3 hidden md:table-cell">
+                  Ngày chỉnh sửa
+                </th>
                 <th className="px-6 py-3">Người dùng</th>
                 <th className="px-6 py-3">
                   <div className="flex justify-end">Chức năng</div>
@@ -112,10 +116,10 @@ export default function RoleAccessPage() {
                     <td className="px-6 py-4 font-medium text-gray-800">
                       {role.name}
                     </td>
-                    <td className="px-6 py-4 text-gray-600">
+                    <td className="px-6 py-4 text-gray-600 hidden md:table-cell">
                       {formatDateTime(role.created_at)}
                     </td>
-                    <td className="px-6 py-4 text-gray-600">
+                    <td className="px-6 py-4 text-gray-600 hidden md:table-cell">
                       {formatDateTime(role.updated_at)}
                     </td>
                     <td className="px-6 py-4">

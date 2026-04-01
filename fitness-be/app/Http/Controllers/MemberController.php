@@ -18,6 +18,7 @@ use App\Models\PTSchedule;
 use App\Models\Notification;
 use Cloudinary\Cloudinary;
 use App\Models\Role;
+use App\Http\Services\NotificationService;
 class MemberController extends Controller
 {
     /*
@@ -26,10 +27,13 @@ class MemberController extends Controller
         Thông tin cá nhân , lịch sử mua gói , trả về token 
      */
     protected $memberService;
+    protected $notificationService;
 
-    public function __construct(MemberService $memberService)
+    public function __construct(MemberService $memberService, NotificationService $notificationService)
     {
         $this->memberService = $memberService;
+        $this->notificationService = $notificationService;
+
         $this->middleware('permission:user.create')
             ->only(['store']);
 
@@ -112,6 +116,12 @@ class MemberController extends Controller
             $waiting = "paid";
             if ($request->payment_method == 'cash') {
                 $waiting = "pending";
+                $this->notificationService->sendOrderNotification($invoice);
+            } else {
+                // nếu paid và có PT
+                if ($this->notificationService->hasPTService($package)) {
+                    $this->notificationService->sendAssignPTNotification($invoice);
+                }
             }
             Notification::create([
                 'user_id' => $member->id,
@@ -250,8 +260,7 @@ class MemberController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:15',
-            'gender' => 'nullable|in:male,female,other',
+            'phone' => 'nullable|string|required|regex:/^0\d{9}$/|unique:members,phone,' . $memberId,
             'birthday' => 'nullable|date',
             'avatar' => 'nullable|string',
         ]);
@@ -422,13 +431,19 @@ class MemberController extends Controller
             });
 
             $waiting = ($request->payment_method == 'cash');
-            if (!$waiting) {
+            if ($waiting) {
+                $this->notificationService->sendOrderNotification($invoice);
+            } else {
                 Notification::create([
                     'user_id' => $member->id,
                     'type' => $isExtend ? 'extend_package' : 'upgrade_package',
                     'title' => $isExtend ? 'Gia hạn gói tập' : 'Nâng cấp gói tập',
                     'message' => ($isExtend ? 'Bạn đã gia hạn gói ' : 'Bạn đã nâng cấp lên gói ') . $newPackage->name
                 ]);
+                // nếu có PT thì gửi admin
+                if ($this->notificationService->hasPTService($newPackage) && !$this->notificationService->memberHasPT($member->id)) {
+                    $this->notificationService->sendAssignPTNotification($invoice);
+                }
             }
             return response()->json([
                 'success' => true,

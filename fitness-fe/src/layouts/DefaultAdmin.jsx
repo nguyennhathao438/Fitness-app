@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import SideBar from "../components/Admin/SideBar";
 import { Toaster } from "react-hot-toast";
+import HeaderBar from "@/components/Admin/Headerbar";
 
 export default function DefaultAdmin() {
     const [collapsed, setCollapsed] = useState(false);
@@ -27,7 +28,10 @@ export default function DefaultAdmin() {
             <main  className={`transition-all duration-300
             ${collapsed ? "ml-24 w-[calc(100%-6rem)]" : "ml-64 w-[calc(100%-16rem)]"}
             `}>
-                <Outlet />
+                <HeaderBar/>
+                <div className="p-1">
+                    <Outlet />
+                </div>
             </main>
         </div>
         <Toaster position="top-right" />

@@ -1027,13 +1027,10 @@ export default function NutritionManager() {
                       <label className="mb-2 block text-sm text-slate-600">
                         Calories
                       </label>
+
                       <input
-                        type="number"
                         min="0"
                         value={manualForm.calories}
-                        onChange={(e) =>
-                          handleChangeManualForm("calories", e.target.value)
-                        }
                         placeholder="Ví dụ: 350"
                         className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
                       />

@@ -15,7 +15,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('pt:expire')->daily();
         $schedule->command('app:send-schedule-reminder')->everyMinute();
 
-        $schedule->command('package:check-expiry')->everyMinute();
+
+        $schedule->command('package:check-expiry')->daily();
     }
     /**
      * Register the commands for the application.

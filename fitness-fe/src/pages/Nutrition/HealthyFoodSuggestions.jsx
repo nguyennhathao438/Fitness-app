@@ -85,7 +85,7 @@ export default function HealthyFoodSuggestions({
       {
         meal_time: selectedFoodForm.meal_time || null,
         note: selectedFoodForm.note.trim(),
-      }
+      },
     );
 
     if (success) {
@@ -316,7 +316,8 @@ export default function HealthyFoodSuggestions({
                             </h3>
 
                             <p className="mt-1 text-sm text-slate-500">
-                              {food.calories ?? 0} kcal / {food.unitBase || "100g"}
+                              {food.calories ?? 0} kcal /{" "}
+                              {food.unitBase || "100g"}
                             </p>
                           </div>
                         </div>

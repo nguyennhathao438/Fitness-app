@@ -33,9 +33,9 @@ export default function SideBar({ collapsed, setCollapsed }) {
       <div
         className={`p-4 ${!collapsed ? "flex" : "items-center w-max space-y-2"} gap-2`}
       >
-        <div className="max-sm:w-6 h-3 sm:w-9 h-8 bg-purple-700 rounded-lg justify-center">
+        <div className="max-sm:w-8 h-3 sm:w-9 h-8 bg-purple-700 rounded-lg justify-center">
           <StarIcon
-            className={`max-sm:size-3 ml-1 text-white size-4 fill-white md:ml-2.5 mt-1.5 ${collapsed ? "mr-2 " : "inline"}`}
+            className={`max-sm:size-6 ml-1 text-white size-4 fill-white sm:ml-2.5 mt-1.5 ${collapsed ? "ml-2 size-6 pr-2 pt-2" : "inline"}`}
           ></StarIcon>
         </div>
         <h2
@@ -47,7 +47,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
           className="bg-fuchsia-100 p-1 rounded-lg max-sm:hidden h-6 sm:h-8"
           onClick={() => setCollapsed(!collapsed)}
         >
-          <TextAlignJustifyIcon className="max-sm:size-3 text-fuchsia-500 md:size-5 cursor-pointer"></TextAlignJustifyIcon>
+          <TextAlignJustifyIcon className={`max-sm:size-3 text-fuchsia-500 sm:size-5 cursor-pointer ${collapsed ? "ml-1" : ""}`}></TextAlignJustifyIcon>
         </div>
       </div>
       <nav className="mt-4 border-t border-gray-300 px-2">

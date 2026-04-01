@@ -58,6 +58,8 @@ const router = createBrowserRouter([
           </RequireMember>
         ),
       },
+      { path: "forgot-password", element: <ForgotPassword /> },
+      { path: "waiting", element: <WaitingForRegister /> },
       {
         path: "login",
         element: (

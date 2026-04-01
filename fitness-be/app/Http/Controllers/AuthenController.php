@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Member;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Invoice;
+use Carbon\Carbon;
 class AuthenController extends Controller
 {
     public function getMyInfo(Request $request)
@@ -118,6 +119,15 @@ class AuthenController extends Controller
                     ->pluck('id');
             }
             $status = $latestInvoice ? $latestInvoice->status : null;
+        }
+        $activeInvoice = Invoice::where('member_id', $member->id)
+            ->where('status', 'paid')
+            ->where('valid_until', '>', Carbon::now())
+            ->orderBy('id', 'desc')
+            ->with('package')
+            ->first();
+        if ($activeInvoice) {
+            $status = null;
         }
 
         // ===== roles + permissions =====

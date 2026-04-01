@@ -15,7 +15,7 @@ class RoleSeeder extends Seeder
     {
         Role::updateOrCreate(
             ['name' => 'Admin'],
-            ['description' => 'Quả tnrị hệ thống']
+            ['description' => 'Quản trị hệ thống']
         );
 
         Role::updateOrCreate(

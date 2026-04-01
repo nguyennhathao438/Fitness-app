@@ -76,7 +76,8 @@ const getDateRange = (days = 30) => {
 };
 
 const normalizeChartItems = (response) => {
-  const raw = response?.data?.data || response?.data?.chart || response?.data || [];
+  const raw =
+    response?.data?.data || response?.data?.chart || response?.data || [];
   if (!Array.isArray(raw)) return [];
 
   return raw.map((item, index) => ({
@@ -84,18 +85,15 @@ const normalizeChartItems = (response) => {
     label: item.label || item.date || `M${index + 1}`,
     value:
       Number(
-        item.total_calories ??
-          item.calories ??
-          item.total ??
-          item.value ??
-          0
+        item.total_calories ?? item.calories ?? item.total ?? item.value ?? 0,
       ) || 0,
     rawDate: item.date || null,
   }));
 };
 
 const normalizeTopMeals = (response) => {
-  const raw = response?.data?.data || response?.data?.meals || response?.data || [];
+  const raw =
+    response?.data?.data || response?.data?.meals || response?.data || [];
   if (!Array.isArray(raw)) return [];
 
   return raw.map((item, index) => ({
@@ -110,11 +108,7 @@ const normalizeTopMeals = (response) => {
 const normalizeHistoryMeals = (response) => {
   const root = response?.data || {};
   const raw =
-    root?.data ||
-    root?.history ||
-    root?.meals ||
-    response?.data ||
-    [];
+    root?.data || root?.history || root?.meals || response?.data || [];
 
   if (!Array.isArray(raw)) return [];
 
@@ -274,14 +268,20 @@ export default function NutritionStatisticsPage() {
     const fromSummary = Number(summary?.total_calories ?? 0);
     if (fromSummary > 0) return fromSummary;
 
-    return historyMeals.reduce((sum, meal) => sum + Number(meal.calories || 0), 0);
+    return historyMeals.reduce(
+      (sum, meal) => sum + Number(meal.calories || 0),
+      0,
+    );
   }, [summary, historyMeals]);
 
   const totalMeals = useMemo(() => {
     const fromSummary = Number(summary?.total_meals ?? 0);
     if (fromSummary > 0) return fromSummary;
 
-    return historyMeals.filter((meal) => meal.hasRealDetail).length || historyMeals.length;
+    return (
+      historyMeals.filter((meal) => meal.hasRealDetail).length ||
+      historyMeals.length
+    );
   }, [summary, historyMeals]);
 
   const totalDays = useMemo(() => {
@@ -307,7 +307,10 @@ export default function NutritionStatisticsPage() {
   }, [totalCalories, totalMeals]);
 
   const maxChartValue = useMemo(() => {
-    const max = Math.max(...chartItems.map((item) => Number(item.value || 0)), 0);
+    const max = Math.max(
+      ...chartItems.map((item) => Number(item.value || 0)),
+      0,
+    );
     return max <= 0 ? 1 : max;
   }, [chartItems]);
 
@@ -316,7 +319,10 @@ export default function NutritionStatisticsPage() {
     return historyMeals.slice(start, start + TABLE_ITEMS_PER_PAGE);
   }, [historyMeals, currentPage]);
 
-  const totalPages = Math.max(1, Math.ceil(historyMeals.length / TABLE_ITEMS_PER_PAGE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(historyMeals.length / TABLE_ITEMS_PER_PAGE),
+  );
 
   const mealsGroupedByDay = useMemo(() => {
     const grouped = {};
@@ -465,7 +471,8 @@ export default function NutritionStatisticsPage() {
               </h1>
 
               <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 md:text-base">
-                Theo dõi xu hướng calo và lịch sử món ăn trong khoảng thời gian đã chọn.
+                Theo dõi xu hướng calo và lịch sử món ăn trong khoảng thời gian
+                đã chọn.
               </p>
             </div>
 
@@ -507,7 +514,9 @@ export default function NutritionStatisticsPage() {
                 <input
                   type="date"
                   value={dateRange.from}
-                  onChange={(e) => handleChangeCustomDate("from", e.target.value)}
+                  onChange={(e) =>
+                    handleChangeCustomDate("from", e.target.value)
+                  }
                   className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500"
                 />
 
@@ -585,7 +594,6 @@ export default function NutritionStatisticsPage() {
                 <div className="mb-4 flex items-start justify-between gap-3">
                   <div>
                     <h2 className="text-xl font-semibold">Xu hướng calo</h2>
-                   
                   </div>
 
                   <div className="rounded-full border border-purple-200 bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700">
@@ -603,7 +611,9 @@ export default function NutritionStatisticsPage() {
                       {chartItems.map((item, index) => {
                         const height = Math.max(
                           36,
-                          Math.round((Number(item.value || 0) / maxChartValue) * 170)
+                          Math.round(
+                            (Number(item.value || 0) / maxChartValue) * 170,
+                          ),
                         );
 
                         const barClass =
@@ -654,10 +664,6 @@ export default function NutritionStatisticsPage() {
                               </span>
                             </div>
                           </div>
-
-                         
-                        
-            
                         </div>
                       ) : null}
                     </>
@@ -723,7 +729,8 @@ export default function NutritionStatisticsPage() {
 
                               <div className="mt-1 text-xs text-slate-400">
                                 {formatNumber(meal.calories)} kcal
-                                {meal.quantity !== null && meal.quantity !== undefined
+                                {meal.quantity !== null &&
+                                meal.quantity !== undefined
                                   ? ` • ${formatDecimal(meal.quantity)} ${meal.unit || ""}`
                                   : ""}
                               </div>
@@ -760,13 +767,16 @@ export default function NutritionStatisticsPage() {
               {historyMeals.length > TABLE_ITEMS_PER_PAGE ? (
                 <div className="mt-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                   <p className="text-sm text-slate-500">
-                    Trang {currentPage}/{totalPages} • Tổng {historyMeals.length} dòng
+                    Trang {currentPage}/{totalPages} • Tổng{" "}
+                    {historyMeals.length} dòng
                   </p>
 
                   <div className="flex flex-wrap items-center gap-2">
                     <button
                       type="button"
-                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
                       disabled={currentPage === 1}
                       className={`rounded-2xl px-4 py-2 text-sm font-semibold transition ${
                         currentPage === 1
@@ -898,7 +908,8 @@ export default function NutritionStatisticsPage() {
                             <div>
                               Định lượng:{" "}
                               <span className="font-medium text-slate-800">
-                                {meal.quantity !== null && meal.quantity !== undefined
+                                {meal.quantity !== null &&
+                                meal.quantity !== undefined
                                   ? `${formatDecimal(meal.quantity)} ${meal.unit || ""}`
                                   : "--"}
                               </span>
@@ -907,7 +918,9 @@ export default function NutritionStatisticsPage() {
                             <div>
                               Ghi chú:{" "}
                               <span className="font-medium text-slate-800">
-                                {meal.note?.trim() ? meal.note : "Không có ghi chú"}
+                                {meal.note?.trim()
+                                  ? meal.note
+                                  : "Không có ghi chú"}
                               </span>
                             </div>
                           </div>

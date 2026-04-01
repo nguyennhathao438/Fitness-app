@@ -49,7 +49,10 @@ class Member extends Authenticatable
         return $this->hasOne(Invoice::class)
             ->where('status', 'paid')
             ->where('is_deleted', false)
-            ->orderByDesc('valid_until');
+
+            // ->orderByDesc('valid_until');
+            ->whereDate('valid_until', '>=', now())
+            ->latest('created_at');
     }
     public function ptClientsAsPT()
     {

@@ -52,7 +52,7 @@ class RolePermissionSeeder extends Seeder
         );
 
 
-        // ✅ Member
+        //  Member
         $member->permissions()->sync(
             Permission::whereIn('code', [
                 'workout.read',

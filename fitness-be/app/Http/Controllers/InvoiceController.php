@@ -105,7 +105,7 @@ class InvoiceController extends Controller
                 $invoice->status = $request->status;
                 $invoice->save();
 
-                // 🔥 CHỈ XỬ LÝ KHI PAID
+                // CHỈ XỬ LÝ KHI PAID
                 if ($request->status === 'paid') {
                     $this->handleAssignRole(
                         $invoice->member,

@@ -6,6 +6,12 @@ use Carbon\Carbon;
 
 class InvoiceService
 {
+    protected $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
     // lấy danh sách hóa đơn
     public function getInvoices($request)
     {
@@ -23,9 +29,9 @@ class InvoiceService
                 $q->whereHas('member', function ($m) use ($keyword) {
                     $m->where('name', 'like', "%{$keyword}%");
                 })
-                ->orWhereHas('package', function ($p) use ($keyword) {
-                    $p->where('name', 'like', "%{$keyword}%");
-                });
+                    ->orWhereHas('package', function ($p) use ($keyword) {
+                        $p->where('name', 'like', "%{$keyword}%");
+                    });
             });
         }
 
@@ -207,7 +213,7 @@ class InvoiceService
         if ($type === 'yearly') {
             for ($m = 1; $m <= 12; $m++) {
                 $start = Carbon::create($year, $m, 1)->startOfMonth();
-                $end   = Carbon::create($year, $m, 1)->endOfMonth();
+                $end = Carbon::create($year, $m, 1)->endOfMonth();
 
                 $labels[] = 'T' . $m;
 
@@ -227,7 +233,7 @@ class InvoiceService
     // thống kê biểu đồ đường theo tổng tiền đơn hàng
     public function getInvoiceMoney($type = 'yearly', $year = null, $month = null)
     {
-        $year  = $year ?? now()->year;
+        $year = $year ?? now()->year;
         $month = $month ?? now()->month;
 
         $labels = [];
@@ -291,7 +297,8 @@ class InvoiceService
     // update invoice
     public function updateInvoice($request, $invoiceId)
     {
-        $invoice = Invoice::where('id', $invoiceId)
+        $invoice = Invoice::with('package.packageType.services', 'member')
+            ->where('id', $invoiceId)
             ->where('is_deleted', false)
             ->where('status', 'pending')
             ->where('payment_method', 'cash')
@@ -306,10 +313,21 @@ class InvoiceService
         }
 
         try {
+            $oldStatus = $invoice->status;
             $invoice->update([
                 'status' => $request->status
             ]);
+            // Nếu admin duyệt paid
+            if ($oldStatus == 'pending' && $request->status == 'paid') {
 
+                $package = $invoice->package;
+                $memberId = $invoice->member_id;
+                // Nếu package có PT
+                if ($this->notificationService->hasPTService($package) && !$this->notificationService->memberHasPT($memberId)) {
+
+                    $this->notificationService->sendAssignPTNotification($invoice);
+                }
+            }
             return [
                 'success' => true,
                 'status' => 200,

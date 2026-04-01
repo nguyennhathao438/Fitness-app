@@ -21,7 +21,6 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
 
             MemberSeeder::class,
-
             ServiceSeeder::class,
             PackageTypeSeeder::class,
             TrainingPackageSeeder::class,

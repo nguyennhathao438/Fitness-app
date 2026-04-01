@@ -21,6 +21,7 @@ export default function SideBar({ collapsed, setCollapsed }) {
   const hasPermission = (code) => {
     return permissions?.includes(code);
   };
+
   const handleLogout = () => {
     navigate("/");
     dispatch(logout());

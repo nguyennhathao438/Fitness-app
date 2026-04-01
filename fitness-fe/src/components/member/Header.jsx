@@ -89,7 +89,7 @@ export default function Header() {
                   to="/workout"
                   className="text-gray-300 hover:text-white transition-colors font-bold text-md "
                 >
-                  Workout
+                  Bài tập
                 </Link>
               )}
               {isAuthenticated && (
@@ -334,7 +334,7 @@ export default function Header() {
                     className="text-gray-300 hover:text-white hover:bg-gray-800 transition-colors text-sm py-2 px-3 rounded-lg"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Workout
+                    Bài tập
                   </Link>
                 )}
                 {isAuthenticated && (
