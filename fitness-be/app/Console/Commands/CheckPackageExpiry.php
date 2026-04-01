@@ -15,7 +15,7 @@ class CheckPackageExpiry extends Command
 
     public function handle()
     {
-        $today = Carbon::today();
+        $today = now();
 
         $invoices = Invoice::where('status', 'paid')
             ->whereDate('valid_until', '>=', $today)
@@ -43,7 +43,6 @@ class CheckPackageExpiry extends Command
             ->whereDate('valid_until', '<', $today)
             ->with('member.roles')
             ->get();
-
         foreach ($expiredInvoices as $invoice) {
 
             $member = $invoice->member;
@@ -51,7 +50,6 @@ class CheckPackageExpiry extends Command
             if (!$member)
                 continue;
 
-            // remove role nâng cao
             $rolesToRemove = Role::whereIn('name', ['MemberUp', 'MemberVip'])->pluck('id');
 
             $member->roles()->detach($rolesToRemove);
