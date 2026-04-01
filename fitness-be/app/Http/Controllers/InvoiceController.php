@@ -6,7 +6,10 @@ use App\Http\Services\InvoiceService;
 use App\Models\Invoice;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-
+use Log;
+use App\Models\Role;
+use DB;
+use Throwable;
 class InvoiceController extends Controller
 {
     protected $invoiceService;
@@ -93,20 +96,84 @@ class InvoiceController extends Controller
     // chuyển đổi trạng thái đơn hàng
     public function updateInvoice(Request $request, $invoiceId)
     {
-        $request->validate([
-            'status' => 'required|in:paid,reject',
-        ]);
+        try {
+            return DB::transaction(function () use ($request, $invoiceId) {
 
-        $result = $this->invoiceService->updateInvoice($request, $invoiceId);
+                $invoice = Invoice::with(['member', 'package.packageType'])
+                    ->findOrFail($invoiceId);
 
-        return response()->json([
-            'success' => $result['success'],
-            'message' => $result['message'],
-            'invoice' => $result['invoice'] ?? null,
-            'error' => $result['error'] ?? null,
-        ], $result['status']);
+                $invoice->status = $request->status;
+                $invoice->save();
+
+                // 🔥 CHỈ XỬ LÝ KHI PAID
+                if ($request->status === 'paid') {
+                    $this->handleAssignRole(
+                        $invoice->member,
+                        $invoice->package,
+                        $invoice
+                    );
+                }
+
+                return [
+                    'success' => true,
+                    'message' => 'Cập nhật hóa đơn thành công',
+                    'invoice' => $invoice,
+                    'status' => 200
+                ];
+            });
+
+        } catch (Throwable $e) {
+            return [
+                'success' => false,
+                'message' => 'Lỗi cập nhật hóa đơn',
+                'error' => $e->getMessage(),
+                'status' => 500
+            ];
+        }
     }
+    private function handleAssignRole($member, $package, $invoice)
+    {
+        $typeName = strtolower(optional($package->packageType)->name);
 
+        // luôn có role Member
+        $memberRole = Role::where('name', 'Member')->first();
+        if ($memberRole) {
+            $member->roles()->syncWithoutDetaching([$memberRole->id]);
+        }
+
+        // MemberUp
+        if (in_array($typeName, ['nâng cao', 'vip'])) {
+            $upRole = Role::where('name', 'MemberUp')->first();
+            if ($upRole) {
+                $member->roles()->syncWithoutDetaching([$upRole->id]);
+            }
+        }
+
+        // MemberVip
+        if ($typeName === 'vip') {
+            $vipRole = Role::where('name', 'MemberVip')->first();
+            if ($vipRole) {
+                $member->roles()->syncWithoutDetaching([$vipRole->id]);
+            }
+        }
+
+        //  update thời hạn user theo invoice
+        if ($invoice->valid_until) {
+            if (
+                !$member->valid_until ||
+                Carbon::parse($invoice->valid_until)->gt(Carbon::parse($member->valid_until))
+            ) {
+                $member->update([
+                    'valid_until' => $invoice->valid_until
+                ]);
+            }
+        }
+
+        Log::info("Assign role từ invoice", [
+            'member_id' => $member->id,
+            'package_type' => $typeName
+        ]);
+    }
     // Lấy lịch sử mua gói tập của User
     public function getMemberHistory(Request $request)
     {

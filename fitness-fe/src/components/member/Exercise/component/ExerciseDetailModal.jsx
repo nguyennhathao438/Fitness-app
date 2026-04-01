@@ -1,14 +1,19 @@
 import { X } from "lucide-react";
-
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 export default function ExerciseDetailModal({ exercise, onClose }) {
+  const permissions = useSelector((state) => state.auth.permissions);
+  const navigate = useNavigate();
   if (!exercise) return null;
   return (
     <div
       className="
-        fixed inset-0 z-50
+        fixed inset-0 z-[9999]
+        w-screen h-screen
         bg-black/60 backdrop-blur-sm
         flex items-center justify-center
         p-4
+        overflow-y-auto
       "
       onClick={onClose}
     >
@@ -44,12 +49,24 @@ export default function ExerciseDetailModal({ exercise, onClose }) {
           <div className="bg-black flex items-center justify-center p-4">
             <div className="w-full aspect-video">
               {exercise.video ? (
-                <video
-                  className="w-full h-full rounded-xl"
-                  src={exercise.video}
-                  controls
-                  autoPlay
-                />
+                permissions.includes("workout.create") ? (
+                  <video
+                    className="w-full h-full rounded-xl"
+                    src={exercise.video}
+                    controls
+                    autoPlay
+                  />
+                ) : (
+                  <div className="text-center text-white space-y-2">
+                    <p>Chỉ hội viên nâng cao và vip mới được xem video</p>
+                    <button
+                      className="px-4 py-2 bg-yellow-400 text-black rounded-lg font-semibold hover:bg-yellow-300 hover:shadow-lg transition-colors duration-200"
+                      onClick={() => navigate("/upgrade")}
+                    >
+                      Nâng cấp ngay
+                    </button>
+                  </div>
+                )
               ) : (
                 <div className="text-white">Không có video</div>
               )}

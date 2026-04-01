@@ -13,6 +13,7 @@ import {
   getDefaultQuantityByLabel,
   getDefaultUnitByLabel,
 } from "../../services/foodCaloriesMap";
+import UpgradeModal from "../../components/utils/UpgradeModal.jsx";
 import HealthyFoodSuggestions from "../Nutrition/HealthyFoodSuggestions";
 
 /**
@@ -141,7 +142,7 @@ const parseCaloriesDayResponse = (response) => {
     payload?.records,
     root?.meals,
     root?.items,
-    root?.logs
+    root?.logs,
   );
 
   const totalCalories = normalizeNumber(
@@ -154,11 +155,14 @@ const parseCaloriesDayResponse = (response) => {
         (sum, item) =>
           sum +
           normalizeNumber(
-            item?.calories ?? item?.kcal ?? item?.energy ?? item?.total_calories
+            item?.calories ??
+              item?.kcal ??
+              item?.energy ??
+              item?.total_calories,
           ),
-        0
+        0,
       ),
-    0
+    0,
   );
 
   return {
@@ -172,14 +176,14 @@ const parseCaloriesDayResponse = (response) => {
         "Món ăn chưa đặt tên",
       calories: normalizeNumber(
         item?.calories ?? item?.kcal ?? item?.energy ?? item?.total_calories,
-        0
+        0,
       ),
       quantity:
         item?.quantity !== undefined && item?.quantity !== null
           ? item.quantity
           : item?.amount !== undefined && item?.amount !== null
-          ? item.amount
-          : null,
+            ? item.amount
+            : null,
       unit:
         item?.unit ||
         item?.quantity_unit ||
@@ -187,7 +191,7 @@ const parseCaloriesDayResponse = (response) => {
         item?.serving_unit ||
         "",
       meal_time: normalizeTimeValue(
-        item?.meal_time || item?.time || item?.eaten_at || ""
+        item?.meal_time || item?.time || item?.eaten_at || "",
       ),
       source: item?.source || item?.meal_source || "manual",
       notes: item?.notes || item?.note || item?.description || "",
@@ -211,14 +215,14 @@ const parseAiResponse = (response) => {
 
   const confidence = normalizeNumber(
     payload?.confidence ?? payload?.score ?? payload?.probability,
-    0
+    0,
   );
 
   const topPredictionsRaw = pickFirstArray(
     payload?.top_predictions,
     payload?.top5,
     payload?.predictions,
-    root?.top_predictions
+    root?.top_predictions,
   );
 
   const topPredictions = safeArray(topPredictionsRaw).map((item, index) => {
@@ -239,7 +243,7 @@ const parseAiResponse = (response) => {
         `Dự đoán ${index + 1}`,
       confidence: normalizeNumber(
         item?.confidence ?? item?.score ?? item?.probability,
-        0
+        0,
       ),
       id: `pred-${index}`,
     };
@@ -278,6 +282,8 @@ const initialAiMealForm = {
  */
 
 export default function NutritionManager() {
+  const permissions = useSelector((state) => state.auth.permissions);
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const authState = useSelector((state) => state.auth);
   const currentUser = useMemo(() => mapReduxAuthToUser(authState), [authState]);
   const memberId = currentUser?.id || null;
@@ -307,7 +313,7 @@ export default function NutritionManager() {
 
   const isPlanningMode = useMemo(
     () => isFutureDate(selectedDate),
-    [selectedDate]
+    [selectedDate],
   );
 
   const canLoadNutrition = !!memberId;
@@ -370,7 +376,7 @@ export default function NutritionManager() {
   useEffect(() => {
     const totalPages = Math.max(
       1,
-      Math.ceil(dayMeals.length / dayMealsPerPage)
+      Math.ceil(dayMeals.length / dayMealsPerPage),
     );
 
     if (dayMealsPage > totalPages) {
@@ -443,7 +449,7 @@ export default function NutritionManager() {
       toast.success(
         isPlanningMode
           ? "Đã thêm món vào kế hoạch ăn uống."
-          : "Đã thêm món vào nhật ký calo."
+          : "Đã thêm món vào nhật ký calo.",
       );
 
       setManualForm(initialManualForm);
@@ -488,7 +494,7 @@ export default function NutritionManager() {
       toast.success(
         isPlanningMode
           ? "Đã thêm món vào kế hoạch."
-          : "Đã thêm món vào khẩu phần."
+          : "Đã thêm món vào khẩu phần.",
       );
 
       await refreshAllNutritionData();
@@ -565,7 +571,8 @@ export default function NutritionManager() {
       return;
     }
 
-    const mealName = aiMealForm.meal_name?.trim() || aiResult?.predictedLabel || "";
+    const mealName =
+      aiMealForm.meal_name?.trim() || aiResult?.predictedLabel || "";
 
     if (!mealName) {
       toast.error("Vui lòng nhập tên món sau khi AI nhận diện.");
@@ -597,7 +604,7 @@ export default function NutritionManager() {
       toast.success(
         isPlanningMode
           ? "Đã thêm món AI vào kế hoạch."
-          : "Đã thêm món AI vào nhật ký calo."
+          : "Đã thêm món AI vào nhật ký calo.",
       );
 
       setAiImageFile(null);
@@ -649,7 +656,8 @@ export default function NutritionManager() {
               Không tìm thấy thông tin tài khoản hiện tại trong Redux.
             </p>
             <p className="mt-2 text-sm text-slate-600">
-              Hãy kiểm tra lại luồng `App.js getMyInfo() dispatch(login(response.data))`.
+              Hãy kiểm tra lại luồng `App.js getMyInfo()
+              dispatch(login(response.data))`.
             </p>
           </div>
         </div>
@@ -659,18 +667,18 @@ export default function NutritionManager() {
 
   const totalDayMealsPages = Math.max(
     1,
-    Math.ceil(dayMeals.length / dayMealsPerPage)
+    Math.ceil(dayMeals.length / dayMealsPerPage),
   );
   const safeDayMealsPage = Math.min(dayMealsPage, totalDayMealsPages);
 
   const paginatedDayMeals = dayMeals.slice(
     (safeDayMealsPage - 1) * dayMealsPerPage,
-    safeDayMealsPage * dayMealsPerPage
+    safeDayMealsPage * dayMealsPerPage,
   );
 
   const fixedDayMealCards = Array.from(
     { length: dayMealsPerPage },
-    (_, index) => paginatedDayMeals[index] || null
+    (_, index) => paginatedDayMeals[index] || null,
   );
 
   return (
@@ -689,8 +697,9 @@ export default function NutritionManager() {
               </h1>
 
               <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 md:text-base">
-                Theo dõi calo mỗi ngày, thêm món thủ công, nhận diện món ăn bằng AI
-                và lưu toàn bộ dữ liệu theo đúng tài khoản đang đăng nhập từ Redux.
+                Theo dõi calo mỗi ngày, thêm món thủ công, nhận diện món ăn bằng
+                AI và lưu toàn bộ dữ liệu theo đúng tài khoản đang đăng nhập từ
+                Redux.
               </p>
             </div>
 
@@ -762,7 +771,9 @@ export default function NutritionManager() {
             </div>
             <p className="mt-3 text-sm text-slate-600">
               Chế độ hiện tại:{" "}
-              <strong>{isPlanningMode ? "Lên kế hoạch" : "Nhật ký thực tế"}</strong>
+              <strong>
+                {isPlanningMode ? "Lên kế hoạch" : "Nhật ký thực tế"}
+              </strong>
             </p>
           </div>
         </section>
@@ -778,7 +789,9 @@ export default function NutritionManager() {
             >
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
-                  <h2 className="text-xl font-semibold">Danh sách món ăn trong ngày</h2>
+                  <h2 className="text-xl font-semibold">
+                    Danh sách món ăn trong ngày
+                  </h2>
                   <p className="mt-1 text-sm text-slate-500">
                     Hiển thị món ăn theo ngày đã chọn.
                   </p>
@@ -815,7 +828,7 @@ export default function NutritionManager() {
 
                       const quantityText = getDisplayQuantityText(
                         meal.quantity,
-                        meal.unit
+                        meal.unit,
                       );
 
                       return (
@@ -839,7 +852,9 @@ export default function NutritionManager() {
 
                               <div className="flex flex-wrap gap-4 text-sm text-slate-500">
                                 <span>
-                                  Giờ ăn: {normalizeTimeValue(meal.meal_time) || "--:--"}
+                                  Giờ ăn:{" "}
+                                  {normalizeTimeValue(meal.meal_time) ||
+                                    "--:--"}
                                 </span>
                               </div>
 
@@ -862,7 +877,9 @@ export default function NutritionManager() {
                                 disabled={deletingMealId === meal.id}
                                 className="rounded-2xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
                               >
-                                {deletingMealId === meal.id ? "Đang xóa..." : "Xóa món"}
+                                {deletingMealId === meal.id
+                                  ? "Đang xóa..."
+                                  : "Xóa món"}
                               </button>
                             ) : null}
                           </div>
@@ -874,7 +891,8 @@ export default function NutritionManager() {
                   {dayMeals.length > dayMealsPerPage ? (
                     <div className="mt-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                       <p className="text-sm text-slate-500">
-                        Trang {safeDayMealsPage}/{totalDayMealsPages} • Tổng {dayMeals.length} món
+                        Trang {safeDayMealsPage}/{totalDayMealsPages} • Tổng{" "}
+                        {dayMeals.length} món
                       </p>
 
                       <div className="flex flex-wrap items-center gap-2">
@@ -890,7 +908,9 @@ export default function NutritionManager() {
                         <button
                           type="button"
                           onClick={() =>
-                            handleChangeDayMealsPage(Math.max(safeDayMealsPage - 1, 1))
+                            handleChangeDayMealsPage(
+                              Math.max(safeDayMealsPage - 1, 1),
+                            )
                           }
                           disabled={safeDayMealsPage === 1}
                           className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
@@ -902,7 +922,10 @@ export default function NutritionManager() {
                           type="button"
                           onClick={() =>
                             handleChangeDayMealsPage(
-                              Math.min(safeDayMealsPage + 1, totalDayMealsPages)
+                              Math.min(
+                                safeDayMealsPage + 1,
+                                totalDayMealsPages,
+                              ),
                             )
                           }
                           disabled={safeDayMealsPage === totalDayMealsPages}
@@ -913,7 +936,9 @@ export default function NutritionManager() {
 
                         <button
                           type="button"
-                          onClick={() => handleChangeDayMealsPage(totalDayMealsPages)}
+                          onClick={() =>
+                            handleChangeDayMealsPage(totalDayMealsPages)
+                          }
                           disabled={safeDayMealsPage === totalDayMealsPages}
                           className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
                         >
@@ -954,7 +979,13 @@ export default function NutritionManager() {
 
                   <button
                     type="button"
-                    onClick={() => setEntryMode("ai")}
+                    onClick={() => {
+                      if (permissions.includes("nutrition.create")) {
+                        setEntryMode("ai");
+                      } else {
+                        setShowUpgrade(true);
+                      }
+                    }}
                     className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
                       entryMode === "ai"
                         ? "bg-purple-700 text-white"
@@ -971,40 +1002,53 @@ export default function NutritionManager() {
                   <div className="mb-4">
                     <h3 className="text-lg font-semibold">Thêm món thủ công</h3>
                     <p className="mt-1 text-sm text-slate-500">
-                      Nhập trực tiếp tên món, calories, định lượng, giờ ăn và ghi chú.
+                      Nhập trực tiếp tên món, calories, định lượng, giờ ăn và
+                      ghi chú.
                     </p>
                   </div>
 
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="md:col-span-2">
-                      <label className="mb-2 block text-sm text-slate-600">Tên món</label>
+                      <label className="mb-2 block text-sm text-slate-600">
+                        Tên món
+                      </label>
                       <input
                         type="text"
                         value={manualForm.meal_name}
-                        onChange={(e) => handleChangeManualForm("meal_name", e.target.value)}
+                        onChange={(e) =>
+                          handleChangeManualForm("meal_name", e.target.value)
+                        }
                         placeholder="Ví dụ: Ức gà áp chảo"
                         className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
                       />
                     </div>
 
                     <div>
-                      <label className="mb-2 block text-sm text-slate-600">Calories</label>
+                      <label className="mb-2 block text-sm text-slate-600">
+                        Calories
+                      </label>
                       <input
                         type="number"
                         min="0"
                         value={manualForm.calories}
-                        onChange={(e) => handleChangeManualForm("calories", e.target.value)}
+                        onChange={(e) =>
+                          handleChangeManualForm("calories", e.target.value)
+                        }
                         placeholder="Ví dụ: 350"
                         className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
                       />
                     </div>
 
                     <div>
-                      <label className="mb-2 block text-sm text-slate-600">Giờ ăn</label>
+                      <label className="mb-2 block text-sm text-slate-600">
+                        Giờ ăn
+                      </label>
                       <input
                         type="time"
                         value={manualForm.meal_time}
-                        onChange={(e) => handleChangeManualForm("meal_time", e.target.value)}
+                        onChange={(e) =>
+                          handleChangeManualForm("meal_time", e.target.value)
+                        }
                         className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
                       />
                     </div>
@@ -1018,29 +1062,39 @@ export default function NutritionManager() {
                         min="0"
                         step="0.01"
                         value={manualForm.quantity}
-                        onChange={(e) => handleChangeManualForm("quantity", e.target.value)}
+                        onChange={(e) =>
+                          handleChangeManualForm("quantity", e.target.value)
+                        }
                         placeholder="Ví dụ: 150 hoặc 2 hoặc 1"
                         className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
                       />
                     </div>
 
                     <div>
-                      <label className="mb-2 block text-sm text-slate-600">Đơn vị</label>
+                      <label className="mb-2 block text-sm text-slate-600">
+                        Đơn vị
+                      </label>
                       <input
                         type="text"
                         value={manualForm.unit}
-                        onChange={(e) => handleChangeManualForm("unit", e.target.value)}
+                        onChange={(e) =>
+                          handleChangeManualForm("unit", e.target.value)
+                        }
                         placeholder="Ví dụ: gram, phần, quả, chén, ml"
                         className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
                       />
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="mb-2 block text-sm text-slate-600">Ghi chú</label>
+                      <label className="mb-2 block text-sm text-slate-600">
+                        Ghi chú
+                      </label>
                       <textarea
                         rows="4"
                         value={manualForm.notes}
-                        onChange={(e) => handleChangeManualForm("notes", e.target.value)}
+                        onChange={(e) =>
+                          handleChangeManualForm("notes", e.target.value)
+                        }
                         placeholder="Ví dụ: Ít dầu, ăn sau tập, tăng protein..."
                         className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
                       />
@@ -1056,17 +1110,20 @@ export default function NutritionManager() {
                       {submittingManual
                         ? "Đang xử lý..."
                         : isPlanningMode
-                        ? "Thêm vào kế hoạch"
-                        : "Xác nhận thêm món"}
+                          ? "Thêm vào kế hoạch"
+                          : "Xác nhận thêm món"}
                     </button>
                   </div>
                 </div>
               ) : (
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-lg font-semibold">AI nhận diện món ăn từ ảnh</h3>
+                    <h3 className="text-lg font-semibold">
+                      AI nhận diện món ăn từ ảnh
+                    </h3>
                     <p className="mt-1 text-sm text-slate-500">
-                      Upload ảnh món ăn, nhận diện bằng AI rồi thêm vào nhật ký hoặc kế hoạch.
+                      Upload ảnh món ăn, nhận diện bằng AI rồi thêm vào nhật ký
+                      hoặc kế hoạch.
                     </p>
                   </div>
 
@@ -1103,11 +1160,14 @@ export default function NutritionManager() {
 
                   {aiResult ? (
                     <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4">
-                      <h3 className="text-base font-semibold text-blue-700">Kết quả AI</h3>
+                      <h3 className="text-base font-semibold text-blue-700">
+                        Kết quả AI
+                      </h3>
 
                       <div className="mt-3 space-y-2 text-sm text-slate-700">
                         <p>
-                          <strong>Predicted label:</strong> {aiResult.predictedLabel || "--"}
+                          <strong>Predicted label:</strong>{" "}
+                          {aiResult.predictedLabel || "--"}
                         </p>
                         <p>
                           <strong>Confidence:</strong>{" "}
@@ -1126,9 +1186,14 @@ export default function NutritionManager() {
                                 key={item.id}
                                 className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
                               >
-                                <span className="text-slate-800">{item.label}</span>
+                                <span className="text-slate-800">
+                                  {item.label}
+                                </span>
                                 <span className="text-slate-500">
-                                  {(normalizeNumber(item.confidence) * 100).toFixed(2)}%
+                                  {(
+                                    normalizeNumber(item.confidence) * 100
+                                  ).toFixed(2)}
+                                  %
                                 </span>
                               </div>
                             ))
@@ -1149,7 +1214,10 @@ export default function NutritionManager() {
                             type="text"
                             value={aiMealForm.meal_name}
                             onChange={(e) =>
-                              handleChangeAiMealForm("meal_name", e.target.value)
+                              handleChangeAiMealForm(
+                                "meal_name",
+                                e.target.value,
+                              )
                             }
                             className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
                           />
@@ -1179,7 +1247,10 @@ export default function NutritionManager() {
                             type="time"
                             value={aiMealForm.meal_time}
                             onChange={(e) =>
-                              handleChangeAiMealForm("meal_time", e.target.value)
+                              handleChangeAiMealForm(
+                                "meal_time",
+                                e.target.value,
+                              )
                             }
                             className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
                           />
@@ -1241,8 +1312,8 @@ export default function NutritionManager() {
                             {submittingAI
                               ? "Đang thêm..."
                               : isPlanningMode
-                              ? "Thêm món AI vào kế hoạch"
-                              : "Thêm món từ kết quả AI"}
+                                ? "Thêm món AI vào kế hoạch"
+                                : "Thêm món từ kết quả AI"}
                           </button>
                         </div>
                       </div>
@@ -1251,6 +1322,12 @@ export default function NutritionManager() {
                 </div>
               )}
             </div>
+            {showUpgrade && (
+              <UpgradeModal
+                isOpen={showUpgrade}
+                onClose={() => setShowUpgrade(false)}
+              />
+            )}
           </div>
         </section>
       </div>

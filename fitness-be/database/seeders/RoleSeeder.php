@@ -31,5 +31,9 @@ class RoleSeeder extends Seeder
             ['name' => 'Member'],
             ['description' => 'Hội viên']
         );
+        Role::updateOrCreate(
+            ['name' => 'MemberUp'],
+            ['description' => 'Hội viên nâng cao']
+        );
     }
 }

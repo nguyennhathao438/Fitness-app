@@ -22,11 +22,13 @@ class PermissionSeeder extends Seeder
             'message_pt' => ['create', 'read'],
             'message_user' => ['create', 'read'],
             'workout' => ['create', 'read'],
+            'nutrition' => ['create', 'read'],
             'schedule_pt' => ['create', 'read', 'update', 'delete'],
             'schedule_user' => ['create', 'read'],
             'member' => ['read'],
             'exercise' => ['create', 'read', 'update', 'delete'],
             'statistic' => ['read'],
+
 
         ];
 

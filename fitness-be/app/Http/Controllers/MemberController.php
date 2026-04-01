@@ -9,6 +9,7 @@ use App\Models\Member;
 use App\Models\TrainingPackage;
 use App\Models\Invoice;
 use DB;
+use Log;
 use Throwable;
 use App\Models\PasswordOtp;
 use Carbon\Carbon;
@@ -79,10 +80,32 @@ class MemberController extends Controller
                     'valid_until' => now()->addDays($package->duration_days),
                     'status' => $status,
                 ]);
-                $vipRole = Role::where('name', 'Member')->first();
 
-                if ($vipRole) {
-                    $member->roles()->syncWithoutDetaching([$vipRole->id]);
+                $memberRole = Role::where('name', 'Member')->first();
+                Log::info("Thông tin phân quyền", [
+                    'payment_method' => $request->payment_method,
+                    'package_type' => optional($package->packageType)->name,
+                ]);
+                if ($memberRole) {
+                    Log::info("Gán role Member cho user " . $member->id);
+                    $member->roles()->syncWithoutDetaching([$memberRole->id]);
+                }
+                //Kiểm tra loại gói để gán role tương ứng
+                if ($request->payment_method != 'cash' && $package->packageType && ($package->packageType->name === 'Nâng cao' || $package->packageType->name === 'VIP')) {
+                    Log::info("Gán role MemberUp cho user " . $member->id);
+                    $upRole = Role::where('name', 'MemberUp')->first();
+
+                    if ($upRole) {
+                        $member->roles()->syncWithoutDetaching([$upRole->id]);
+                    }
+                }
+                if ($request->payment_method != 'cash' && $package->packageType && $package->packageType->name === 'VIP') {
+                    Log::info("Gán role MemberVip cho user " . $member->id);
+                    $vipRole = Role::where('name', 'MemberVip')->first();
+
+                    if ($vipRole) {
+                        $member->roles()->syncWithoutDetaching([$vipRole->id]);
+                    }
                 }
             });
             $serviceIds = $package->packageType->services->pluck('id');
@@ -98,14 +121,32 @@ class MemberController extends Controller
             ]);
             // Tạo token luôn sau khi đăng ký (tùy chọn)
             $token = $member->createToken('member-token')->plainTextToken;
+            //Lấy role luôn 
+            $roles = [];
+            $permissions = [];
+
+            foreach ($member->roles as $role) {
+
+                $roles[] = $role->name;
+
+                $permissions = array_merge(
+                    $permissions,
+                    $role->permissions->pluck('code')->toArray()
+                );
+            }
+
+            $permissions = array_values(array_unique($permissions));
             return response()->json([
                 'statusInvoice' => $waiting,
                 'message' => 'Đăng ký thành công',
                 'member' => $member,
+                'roles' => $roles,
+                'permissions' => $permissions,
                 'valid_until' => $invoice->valid_until,
                 'token' => $token,
                 'service_ids' => $serviceIds,
             ], 201);
+
         } catch (Throwable $e) {
 
             return response()->json([
@@ -359,6 +400,23 @@ class MemberController extends Controller
                         $member->update([
                             'valid_until' => $invoice->valid_until
                         ]);
+                    }
+                    //Kiểm tra loại gói để gán role tương ứng
+                    if ($request->payment_method != 'cash' && $newPackage->packageType && ($newPackage->packageType->name === 'Nâng cao' || $newPackage->packageType->name === 'VIP')) {
+                        Log::info("Gán role MemberUp cho user " . $member->id);
+                        $upRole = Role::where('name', 'MemberUp')->first();
+
+                        if ($upRole) {
+                            $member->roles()->syncWithoutDetaching([$upRole->id]);
+                        }
+                    }
+                    if ($request->payment_method != 'cash' && $newPackage->packageType && $newPackage->packageType->name === 'VIP') {
+                        Log::info("Gán role MemberVip cho user " . $member->id);
+                        $vipRole = Role::where('name', 'MemberVip')->first();
+
+                        if ($vipRole) {
+                            $member->roles()->syncWithoutDetaching([$vipRole->id]);
+                        }
                     }
                 }
             });

@@ -14,8 +14,9 @@ class RolePermissionSeeder extends Seeder
         $pt = Role::where('name', 'PT')->first();
         $memberVip = Role::where('name', 'MemberVip')->first();
         $member = Role::where('name', 'Member')->first();
+        $memberUp = Role::where('name', 'MemberUp')->first();
 
-        if (!$admin || !$pt || !$memberVip || !$member) {
+        if (!$admin || !$pt || !$memberVip || !$member || !$memberUp) {
             throw new \Exception('Role chưa tồn tại');
         }
 
@@ -55,7 +56,13 @@ class RolePermissionSeeder extends Seeder
         $member->permissions()->sync(
             Permission::whereIn('code', [
                 'workout.read',
+                'nutrition.read',
+            ])->pluck('id')->toArray()
+        );
+        $memberUp->permissions()->sync(
+            Permission::whereIn('code', [
                 'workout.create',
+                'nutrition.create',
             ])->pluck('id')->toArray()
         );
         $memberVip->permissions()->sync(

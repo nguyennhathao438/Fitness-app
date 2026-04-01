@@ -14,13 +14,25 @@ class PackageTypeSeeder extends Seeder
     public function run(): void
     {
         $types = [
-            'Cơ bản' => ['Sử dụng máy tập'],
-            'Nâng cao' => ['Sử dụng máy tập', 'Theo dõi chỉ số cơ thể'],
+            'Cơ bản' => [
+                'Sử dụng máy tập',
+                'Quản lý dinh dưỡng',
+                'Giám sát tập luyện'
+            ],
+            'Nâng cao' => [
+                'Sử dụng máy tập',
+                'Giám sát tập luyện',
+                'Quản lý dinh dưỡng',
+                'Xem video hướng dẫn',
+                'Nhận diện ảnh dinh dưỡng'
+            ],
             'VIP' => [
                 'Sử dụng máy tập',
                 'PT kèm 1-1',
                 'Quản lý dinh dưỡng',
-                'Theo dõi chỉ số cơ thể',
+                'Giám sát tập luyện',
+                'Xem video hướng dẫn',
+                'Nhận diện ảnh dinh dưỡng'
             ],
         ];
 

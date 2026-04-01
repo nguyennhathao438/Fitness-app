@@ -16,7 +16,9 @@ class ServiceSeeder extends Seeder
             ['name' => 'Sử dụng máy tập'],
             ['name' => 'PT kèm 1-1'],
             ['name' => 'Quản lý dinh dưỡng'],
-            ['name' => 'Theo dõi chỉ số cơ thể'],
+            ['name' => 'Giám sát tập luyện'],
+            ['name' => 'Xem video hướng dẫn'],
+            ['name' => 'Nhận diện ảnh dinh dưỡng'],
         ];
 
         Service::insert($services);
