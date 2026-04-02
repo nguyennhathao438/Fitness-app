@@ -45,20 +45,20 @@ export default function HealthyFoodSuggestions({
     setPage((prev) => (prev >= totalPages - 1 ? 0 : prev + 1));
   };
 
-const handleSelectFood = (food) => {
-  if (!food) return;
-  setSelectedFoodId(food.id);
-  onSelectFood?.({
-    ...food,
-    name: food.name || "",
-    calories: food.calories ?? "",
-    defaultQuantity:
-      food.defaultQuantity !== null && food.defaultQuantity !== undefined
-        ? food.defaultQuantity
-        : null,
-    defaultUnit: food.defaultUnit || food.unitBase || "",
-  });
-};
+  const handleSelectFood = (food) => {
+    if (!food) return;
+    setSelectedFoodId(food.id);
+    onSelectFood?.({
+      ...food,
+      name: food.name || "",
+      calories: food.calories ?? "",
+      defaultQuantity:
+        food.defaultQuantity !== null && food.defaultQuantity !== undefined
+          ? food.defaultQuantity
+          : null,
+      defaultUnit: food.defaultUnit || food.unitBase || "",
+    });
+  };
 
   const handleChangeSelectedFoodForm = (field, value) => {
     setSelectedFoodForm((prev) => ({
@@ -127,40 +127,6 @@ const handleSelectFood = (food) => {
         </div>
       ) : (
         <>
-          <div className="mb-5 rounded-3xl border border-blue-100 bg-blue-50/70 p-4 md:p-5">
-            <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-              <div>
-                <h3 className="text-base font-bold text-slate-900 md:text-lg">
-                  Thêm món đã chọn vào khẩu phần
-                </h3>
-                <p className="mt-1 text-sm text-slate-600">
-                  {selectedFood
-                    ? `Đang chọn: ${selectedFoodForm.meal_name || selectedFood.name} • ${
-                        selectedFoodForm.calories || selectedFood.calories || 0
-                      } kcal`
-                    : "Hãy chọn 1 món ở danh sách bên dưới."}
-                </p>
-              </div>
-            </div>
-
-          
-
-            <div className="mt-4 flex justify-end">
-              <button
-                type="button"
-                onClick={handleAddSelectedFood}
-                disabled={!selectedFood}
-                className={`rounded-2xl px-5 py-3 text-sm font-semibold text-white transition ${
-                  selectedFood
-                    ? "bg-purple-700 hover:bg-purple-800"
-                    : "cursor-not-allowed bg-slate-300"
-                }`}
-              >
-                Thêm vào khẩu phần
-              </button>
-            </div>
-          </div>
-
           <div className="relative">
             <button
               type="button"

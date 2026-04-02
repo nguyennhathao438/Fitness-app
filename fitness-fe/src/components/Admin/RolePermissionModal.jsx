@@ -188,15 +188,15 @@ export default function RolePermissionModal({
         </div>
 
         {/* table */}
-        <div className="max-h-[420px] overflow-y-auto px-6 py-4">
-          <table className="w-full border-collapse">
-            <thead>
+        <div className="max-h-[400px] overflow-y-auto px-6">
+          <table className="w-full border-collapse table-fixed">
+            <thead className="sticky top-0 bg-white z-10">
               <tr className="border-b text-gray-600">
-                <th className="py-3 text-left">Quyền hạn</th>
-                <th className="py-3 text-center">Tạo</th>
-                <th className="py-3 text-center">Đọc</th>
-                <th className="py-3 text-center">Chỉnh sửa</th>
-                <th className="py-3 text-center">Xóa</th>
+                <th className="w-2/6 text-left">Quyền hạn</th>
+                <th className="w-1/6 text-center">Tạo</th>
+                <th className="w-1/6 text-center">Đọc</th>
+                <th className="w-1/6 text-center">Chỉnh sửa</th>
+                <th className="w-1/6 text-center">Xóa</th>
               </tr>
             </thead>
 

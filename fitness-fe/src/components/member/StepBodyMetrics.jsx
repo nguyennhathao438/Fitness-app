@@ -14,12 +14,40 @@ export default function StepBodyMetrics({ waiting }) {
     visceral_fat: "",
     body_water: "",
   });
+  const validateForm = () => {
+    if (!form.height || form.height <= 0 || form.height >= 250) {
+      toast.error("Chiều cao phải lớn hơn 0 và nhỏ hơn 250");
+      return false;
+    }
+
+    if (!form.weight || form.weight <= 0 || form.weight >= 300) {
+      toast.error("Cân nặng phải lớn hơn 0 và nhỏ hơn 300");
+      return false;
+    }
+
+    if (form.muscle && form.muscle < 0) {
+      toast.error("Chỉ số cơ không được âm");
+      return false;
+    }
+
+    if (form.body_fat && (form.body_fat < 0 || form.body_fat > 100)) {
+      toast.error("Mỡ cơ thể phải từ 0 đến 100%");
+      return false;
+    }
+
+    if (form.visceral_fat && form.visceral_fat < 0) {
+      toast.error("Mỡ nội tạng không được âm");
+      return false;
+    }
+    return true;
+  };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
+    if (!validateForm()) return;
     setLoading(true);
     try {
       await createBodyMetric(form);
@@ -124,7 +152,7 @@ export default function StepBodyMetrics({ waiting }) {
           type="button"
           onClick={handleSkip}
           className="flex-1 py-3 rounded-full border-2 border-yellow-400 text-yellow-400 
-      hover:bg-yellow-400 hover:scale-105 hover:text-gray-900 hover:font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-yellow-400/30"
+    hover:bg-yellow-400 hover:scale-105 hover:text-gray-900 hover:font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-yellow-400/30"
         >
           Để sau
         </button>

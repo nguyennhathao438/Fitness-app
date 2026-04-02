@@ -50,7 +50,7 @@ export default function BodyMaxIndex() {
 
   const onError = (err) => {
     const firstError = Object.values(err);
-    if (firstError.length > 1){
+    if (firstError.length > 1) {
       toast.error("vui lòng nhập đầy đủ thông tin và đúng định dạng");
       return;
     }

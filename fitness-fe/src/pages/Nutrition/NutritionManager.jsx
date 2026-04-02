@@ -461,21 +461,21 @@ export default function NutritionManager() {
       setSubmittingManual(false);
     }
   };
-const handleSelectSuggestedFood = (food) => {
-  setManualForm({
-    meal_name: food.name || "",
-    calories: food.calories ?? "", 
-    quantity:
-      food.defaultQuantity !== null && food.defaultQuantity !== undefined
-        ? String(food.defaultQuantity)
-        : "",
-    unit: food.defaultUnit || food.unitBase || "",
-    meal_time: "",
-    notes: "",
-  });
+  const handleSelectSuggestedFood = (food) => {
+    setManualForm({
+      meal_name: food.name || "",
+      calories: food.calories ?? "",
+      quantity:
+        food.defaultQuantity !== null && food.defaultQuantity !== undefined
+          ? String(food.defaultQuantity)
+          : "",
+      unit: food.defaultUnit || food.unitBase || "",
+      meal_time: "",
+      notes: "",
+    });
 
-  setEntryMode("manual");
-};
+    setEntryMode("manual");
+  };
   const handleQuickAddSuggestedFood = async (food, extraData = {}) => {
     if (!memberId) {
       toast.error("Không tìm thấy member_id từ Redux.");
@@ -660,25 +660,6 @@ const handleSelectSuggestedFood = (food) => {
     }
   };
 
-  if (!currentUser) {
-    return (
-      <div className="min-h-screen bg-slate-50 p-4 md:p-6">
-        <div className="mx-auto max-w-7xl">
-          <div className="rounded-3xl border border-red-200 bg-white p-6 text-slate-900 shadow-sm">
-            <h1 className="text-2xl font-bold">Nhật ký dinh dưỡng</h1>
-            <p className="mt-3 text-sm text-red-600">
-              Không tìm thấy thông tin tài khoản hiện tại trong Redux.
-            </p>
-            <p className="mt-2 text-sm text-slate-600">
-              Hãy kiểm tra lại luồng `App.js getMyInfo()
-              dispatch(login(response.data))`.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   const totalDayMealsPages = Math.max(
     1,
     Math.ceil(dayMeals.length / dayMealsPerPage),
@@ -712,35 +693,8 @@ const handleSelectSuggestedFood = (food) => {
 
               <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 md:text-base">
                 Theo dõi calo mỗi ngày, thêm món thủ công, nhận diện món ăn bằng
-                AI và lưu toàn bộ dữ liệu theo đúng tài khoản đang đăng nhập từ
-                Redux.
+                AI\
               </p>
-            </div>
-
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-slate-500">
-                Tài khoản hiện tại
-              </p>
-              <div className="mt-3 space-y-2 text-sm text-slate-700">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-slate-500">Tên</span>
-                  <span className="font-medium text-slate-900">
-                    {currentUser.name || "--"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-slate-500">Email</span>
-                  <span className="truncate font-medium text-slate-900">
-                    {currentUser.email || "--"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-slate-500">Member ID</span>
-                  <span className="rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700">
-                    #{currentUser.id}
-                  </span>
-                </div>
-              </div>
             </div>
           </div>
         </section>
@@ -1045,9 +999,10 @@ const handleSelectSuggestedFood = (food) => {
                       <input
                         min="0"
                         value={manualForm.calories}
+                        type="number"
                         onChange={(e) =>
-    handleChangeManualForm("calories", e.target.value)
-  }
+                          handleChangeManualForm("calories", e.target.value)
+                        }
                         placeholder="Ví dụ: 350"
                         className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
                       />
@@ -1150,7 +1105,7 @@ const handleSelectSuggestedFood = (food) => {
                       accept="image/*"
                       capture="environment"
                       onChange={handleChangeAiFile}
-                      className="block w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-600 file:mr-4 file:rounded-xl file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-500"
+                      className="block w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-600 file:mr-4 file:rounded-xl file:border-0 file:bg-purple-800 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-purple-400"
                     />
                   </div>
 
@@ -1345,10 +1300,10 @@ const handleSelectSuggestedFood = (food) => {
           </div>
         </section>
       </div>
-
-<HealthyFoodSuggestions
-  onQuickAddFood={handleQuickAddSuggestedFood}
-  onSelectFood={handleSelectSuggestedFood}
-/>      </div>
+      <HealthyFoodSuggestions
+        onQuickAddFood={handleQuickAddSuggestedFood}
+        onSelectFood={handleSelectSuggestedFood}
+      />{" "}
+    </div>
   );
 }
