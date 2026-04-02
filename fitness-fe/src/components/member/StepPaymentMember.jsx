@@ -41,10 +41,11 @@ export default function StepPaymentMember({
   setData,
   next,
   prev,
-  setWaiting, 
+  setWaiting,
   isUpgrade = false,
   isExtend = false,
   isNewPurchase = false,
+  amount,
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -60,9 +61,9 @@ export default function StepPaymentMember({
       toast.warning("Vui lòng chọn phương thức thanh toán!");
       return;
     }
-    
+
     setLoading(true);
-    
+
     try {
       if (isUpgrade && data.amount !== undefined && data.amount <= 0) {
         let res = await upgradePackage({
@@ -76,23 +77,25 @@ export default function StepPaymentMember({
         if (res.data.waiting && setWaiting) {
           setWaiting(true);
         }
-        
-        next(); 
-        return; 
+
+        next();
+        return;
       }
 
       if (["momo", "vnpay"].includes(data.payment_method)) {
-        
         const paymentDataToSave = {
           ...data,
           isUpgrade,
           isExtend,
-          isNewPurchase
+          isNewPurchase,
         };
-        localStorage.setItem("temp_register_data", JSON.stringify(paymentDataToSave));
+        localStorage.setItem(
+          "temp_register_data",
+          JSON.stringify(paymentDataToSave),
+        );
 
         const bankCode = data.payment_method === "vnpay" ? "NCB" : "";
-        const returnUrl = `${window.location.origin}/upgrade`; 
+        const returnUrl = `${window.location.origin}/upgrade`;
 
         const finalAmountToSend = isUpgrade ? data.amount : undefined;
 
@@ -101,20 +104,19 @@ export default function StepPaymentMember({
           data.package_id,
           bankCode,
           returnUrl,
-          finalAmountToSend 
+          finalAmountToSend,
         );
 
         if (res.data?.payUrl) {
           window.location.href = res.data.payUrl;
-          return; 
-        } 
-        
+          return;
+        }
+
         toast.error("Không lấy được link thanh toán từ cổng điện tử!");
         setLoading(false);
         return;
       }
 
-  
       // 3. THANH TOÁN TIỀN MẶT (CASH)
       let res = await upgradePackage({
         package_id: data.package_id,
@@ -134,9 +136,8 @@ export default function StepPaymentMember({
       if (res.data.waiting && setWaiting) {
         setWaiting(true);
       }
-      
-      next(); 
 
+      next();
     } catch (error) {
       console.error(error);
       let errorMsg = "Có lỗi xảy ra";
@@ -153,7 +154,11 @@ export default function StepPaymentMember({
 
   const getActionTitle = () => {
     if (isExtend) return "Thanh toán Gia hạn";
-    if (isUpgrade) return "Thanh toán Nâng cấp";
+    if (isUpgrade)
+      return (
+        "Gía hiện tại là " +
+        (amount ? amount.toLocaleString() + " VND" : "đang tính toán...")
+      );
     if (isNewPurchase) return "Thanh toán Đăng ký";
     return "Thanh toán Ngay";
   };
@@ -175,33 +180,48 @@ export default function StepPaymentMember({
               className={`cursor-pointer
                   relative p-5 rounded-2xl border-2 transition-all duration-300
                   flex flex-col items-center gap-3 hover:scale-105
-                  ${isSelected 
-                    ? `${method.borderColor} ${method.bgColor}` 
-                    : "border-gray-600 bg-gray-800/50 hover:border-gray-400"}
+                  ${
+                    isSelected
+                      ? `${method.borderColor} ${method.bgColor}`
+                      : "border-gray-600 bg-gray-800/50 hover:border-gray-400"
+                  }
               `}
             >
               {isSelected && (
-                <div className={`absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-r ${method.accentColor} flex items-center justify-center text-white font-bold`}>
+                <div
+                  className={`absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-r ${method.accentColor} flex items-center justify-center text-white font-bold`}
+                >
                   ✓
                 </div>
               )}
 
-              <div className={`w-16 h-16 rounded-xl p-2 flex items-center justify-center ${isSelected ? "bg-white" : "bg-gray-700"}`}>
-                <img src={method.logo} alt={method.name} className="w-full h-full object-contain" />
+              <div
+                className={`w-16 h-16 rounded-xl p-2 flex items-center justify-center ${isSelected ? "bg-white" : "bg-gray-700"}`}
+              >
+                <img
+                  src={method.logo}
+                  alt={method.name}
+                  className="w-full h-full object-contain"
+                />
               </div>
 
-              <span className={`font-semibold ${isSelected ? "text-gray-800" : "text-white"}`}>
+              <span
+                className={`font-semibold ${isSelected ? "text-gray-800" : "text-white"}`}
+              >
                 {method.name}
               </span>
             </button>
-          )
+          );
         })}
       </div>
 
       {data.payment_method && (
         <div className="text-center py-3 bg-yellow-400/10 rounded-xl border border-yellow-400/30">
           <span className="text-yellow-400">
-            Bạn đã chọn: <strong>{paymentMethods.find((m) => m.id === data.payment_method)?.name}</strong>
+            Bạn đã chọn:{" "}
+            <strong>
+              {paymentMethods.find((m) => m.id === data.payment_method)?.name}
+            </strong>
           </span>
         </div>
       )}
@@ -218,12 +238,16 @@ export default function StepPaymentMember({
           onClick={handlePayment}
           disabled={!data.payment_method || loading}
           className={`cursor-pointer flex-1 py-3 rounded-full font-semibold transition-all duration-300 flex items-center justify-center gap-2
-          ${data.payment_method && !loading 
-            ? "bg-yellow-400 text-gray-900 hover:bg-yellow-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-400/30" 
-            : "bg-gray-600 text-gray-400 cursor-not-allowed"}`}
+          ${
+            data.payment_method && !loading
+              ? "bg-yellow-400 text-gray-900 hover:bg-yellow-300 hover:scale-105 hover:shadow-lg hover:shadow-yellow-400/30"
+              : "bg-gray-600 text-gray-400 cursor-not-allowed"
+          }`}
         >
-          {loading && <span className="w-5 h-5 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />}
-          {loading ? "Đang xử lý..." : getActionTitle()}
+          {loading && (
+            <span className="w-5 h-5 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
+          )}
+          {loading ? "Đang xử lý..." : "Thanh toán"}
         </button>
       </div>
     </div>
