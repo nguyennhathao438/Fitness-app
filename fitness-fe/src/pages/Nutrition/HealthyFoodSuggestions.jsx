@@ -5,6 +5,7 @@ const ITEMS_PER_PAGE = 4;
 
 export default function HealthyFoodSuggestions({
   onQuickAddFood,
+  onSelectFood,
   title = "Món ăn gợi ý tốt cho sức khỏe",
   description = "",
 }) {
@@ -44,22 +45,20 @@ export default function HealthyFoodSuggestions({
     setPage((prev) => (prev >= totalPages - 1 ? 0 : prev + 1));
   };
 
-  const handleSelectFood = (food) => {
-    if (!food) return;
-
-    setSelectedFoodId(food.id);
-    setSelectedFoodForm({
-      meal_name: food.name || "",
-      calories: food.calories ?? "",
-      quantity:
-        food.defaultQuantity !== null && food.defaultQuantity !== undefined
-          ? String(food.defaultQuantity)
-          : "",
-      unit: food.defaultUnit || food.unitBase || "",
-      meal_time: "",
-      note: "",
-    });
-  };
+const handleSelectFood = (food) => {
+  if (!food) return;
+  setSelectedFoodId(food.id);
+  onSelectFood?.({
+    ...food,
+    name: food.name || "",
+    calories: food.calories ?? "",
+    defaultQuantity:
+      food.defaultQuantity !== null && food.defaultQuantity !== undefined
+        ? food.defaultQuantity
+        : null,
+    defaultUnit: food.defaultUnit || food.unitBase || "",
+  });
+};
 
   const handleChangeSelectedFoodForm = (field, value) => {
     setSelectedFoodForm((prev) => ({
@@ -144,99 +143,7 @@ export default function HealthyFoodSuggestions({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <div className="md:col-span-2">
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
-                  Tên món
-                </label>
-                <input
-                  type="text"
-                  value={selectedFoodForm.meal_name}
-                  onChange={(e) =>
-                    handleChangeSelectedFoodForm("meal_name", e.target.value)
-                  }
-                  placeholder="Nhập tên món"
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-400"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
-                  Calories
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  value={selectedFoodForm.calories}
-                  onChange={(e) =>
-                    handleChangeSelectedFoodForm("calories", e.target.value)
-                  }
-                  placeholder="Ví dụ: 250"
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-400"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
-                  Giờ ăn
-                </label>
-                <input
-                  type="time"
-                  value={selectedFoodForm.meal_time}
-                  onChange={(e) =>
-                    handleChangeSelectedFoodForm("meal_time", e.target.value)
-                  }
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-400"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
-                  Định lượng / số lượng
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={selectedFoodForm.quantity}
-                  onChange={(e) =>
-                    handleChangeSelectedFoodForm("quantity", e.target.value)
-                  }
-                  placeholder="Ví dụ: 1 hoặc 150"
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-400"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
-                  Đơn vị
-                </label>
-                <input
-                  type="text"
-                  value={selectedFoodForm.unit}
-                  onChange={(e) =>
-                    handleChangeSelectedFoodForm("unit", e.target.value)
-                  }
-                  placeholder="Ví dụ: gram, phần, quả"
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-400"
-                />
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="mb-2 block text-sm font-semibold text-slate-700">
-                  Ghi chú
-                </label>
-                <textarea
-                  rows="4"
-                  value={selectedFoodForm.note}
-                  onChange={(e) =>
-                    handleChangeSelectedFoodForm("note", e.target.value)
-                  }
-                  placeholder="Ví dụ: ăn sau tập, ít cơm, thêm rau..."
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-blue-400"
-                />
-              </div>
-            </div>
+          
 
             <div className="mt-4 flex justify-end">
               <button

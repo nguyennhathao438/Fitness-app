@@ -461,7 +461,21 @@ export default function NutritionManager() {
       setSubmittingManual(false);
     }
   };
+const handleSelectSuggestedFood = (food) => {
+  setManualForm({
+    meal_name: food.name || "",
+    calories: food.calories ?? "", 
+    quantity:
+      food.defaultQuantity !== null && food.defaultQuantity !== undefined
+        ? String(food.defaultQuantity)
+        : "",
+    unit: food.defaultUnit || food.unitBase || "",
+    meal_time: "",
+    notes: "",
+  });
 
+  setEntryMode("manual");
+};
   const handleQuickAddSuggestedFood = async (food, extraData = {}) => {
     if (!memberId) {
       toast.error("Không tìm thấy member_id từ Redux.");
@@ -1031,6 +1045,9 @@ export default function NutritionManager() {
                       <input
                         min="0"
                         value={manualForm.calories}
+                        onChange={(e) =>
+    handleChangeManualForm("calories", e.target.value)
+  }
                         placeholder="Ví dụ: 350"
                         className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
                       />
@@ -1329,7 +1346,9 @@ export default function NutritionManager() {
         </section>
       </div>
 
-      <HealthyFoodSuggestions onQuickAddFood={handleQuickAddSuggestedFood} />
-    </div>
+<HealthyFoodSuggestions
+  onQuickAddFood={handleQuickAddSuggestedFood}
+  onSelectFood={handleSelectSuggestedFood}
+/>      </div>
   );
 }
