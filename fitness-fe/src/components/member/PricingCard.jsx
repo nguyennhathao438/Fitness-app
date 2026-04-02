@@ -2,7 +2,7 @@ import { DollarSign, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux"; 
 
-export default function PricingCard({ package: pkg, isUpgrade = false }) {
+export default function PricingCard({ package: pkg, isUpgrade = false, currentPackage }) {
   const navigate = useNavigate();
   
   const { member } = useSelector((state) => state.auth); 
@@ -16,7 +16,27 @@ export default function PricingCard({ package: pkg, isUpgrade = false }) {
 
   const handleAction = () => {
     if (isUpgrade) {
-      navigate(`/member/payment/${pkg.id}`, { state: { isExtend: false, isNewPurchase: false } }); 
+      
+      let finalAmount = Number(pkg.price) || 0;
+
+      if (currentPackage && currentPackage.days_remaining > 0) {
+        const currentPrice = Number(currentPackage.price) || 0;
+        const durationDays = Number(currentPackage.duration_days) || 1;
+        const daysRemaining = Number(currentPackage.days_remaining) || 0;
+
+        const pricePerDay = currentPrice / durationDays;
+        const remainingValue = pricePerDay * daysRemaining;
+        
+        finalAmount = Math.max(0, finalAmount - remainingValue);
+      }
+
+      navigate(`/member/payment/${pkg.id}`, { 
+        state: { 
+          isExtend: false, 
+          isNewPurchase: false,
+          preCalculatedAmount: Math.round(finalAmount) 
+        } 
+      }); 
       
     } else if (member) {
       navigate(`/member/payment/${pkg.id}`, { state: { isNewPurchase: true } });

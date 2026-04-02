@@ -33,7 +33,19 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Gói tập không tồn tại'], 404);
         }
 
-        $amount = (int)$package->price; 
+        $redirectUrl = $request->input('return_url', "http://localhost:5173/register/" . $packageId);
+
+
+        $amount = $request->has('amount') ? (int)$request->input('amount') : (int)$package->price; 
+        
+        if ($amount <= 0) {
+            $separator = str_contains($redirectUrl, '?') ? '&' : '?';
+            return response()->json([
+                'errorCode' => 0,
+                'message' => 'Thanh toán 0đ, không cần qua cổng MoMo',
+                'payUrl' => $redirectUrl . $separator . 'resultCode=0' 
+            ]);
+        }
         
         // CẤU HÌNH MOMO
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
@@ -46,7 +58,6 @@ class PaymentController extends Controller
         $orderId = time() . ""; 
         $requestId = time() . "";
         
-        $redirectUrl = $request->input('return_url', "http://localhost:5173/register/" . $packageId);
         $ipnUrl = "http://localhost:8000/api/momo-ipn"; 
         $extraData = "";
 
@@ -102,10 +113,22 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Gói tập không tồn tại'], 404);
         }
 
-        //  CẤU HÌNH VNPAY
-        $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        
         $vnp_Returnurl = $request->input('return_url', "http://localhost:5173/register/" . $packageId);
+
+
+        $amountToPay = $request->has('amount') ? (int)$request->input('amount') : (int)$package->price;
+
+        if ($amountToPay <= 0) {
+            $separator = str_contains($vnp_Returnurl, '?') ? '&' : '?';
+            return response()->json([
+                'code' => '00',
+                'message' => 'Thanh toán 0đ, không cần qua cổng VNPay',
+                'payUrl' => $vnp_Returnurl . $separator . 'vnp_ResponseCode=00' 
+            ]);
+        }
+
+        // CẤU HÌNH VNPAY
+        $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         
         $vnp_TmnCode = "MHQW7PB9"; 
         $vnp_HashSecret = "BF1S5L2MGHJR5LLXV1328OY92EGTYMSK"; 
@@ -113,7 +136,7 @@ class PaymentController extends Controller
         $vnp_TxnRef = time() . ""; 
         $vnp_OrderInfo = "Thanh toan goi " . $package->name;
         $vnp_OrderType = "billpayment";
-        $vnp_Amount = (int)$package->price * 100;
+        $vnp_Amount = $amountToPay * 100; 
         $vnp_Locale = "vn";
         $vnp_IpAddr = $request->ip();
 

@@ -292,7 +292,7 @@ export default function UpgradePackagePage() {
                         key={pkg.id}
                         className="shrink-0 w-[calc(50%-12px)] sm:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] min-w-[220px] snap-start"
                       >
-                        <PricingCard package={pkg} isUpgrade={true} />
+                        <PricingCard package={pkg} isUpgrade={true} currentPackage={currentPackage}/>
                       </div>
                     ))}
                   </div>

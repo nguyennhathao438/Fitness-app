@@ -30,16 +30,39 @@ class AdminPackageController extends Controller
         $query = TrainingPackage::with('packageType:id,name')
             ->where('is_deleted', false);
 
-        // Lọc và tìm kiếm giữ nguyên logic cũ
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $searchTerm = $request->search;
+            
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('description', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('price', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('duration_days', 'like', '%' . $searchTerm . '%')
+                  ->orWhereHas('packageType', function ($typeQuery) use ($searchTerm) {
+                      $typeQuery->where('name', 'like', '%' . $searchTerm . '%');
+                  });
+            });
         }
+        
         if ($request->filled('package_type_id')) {
             $query->where('package_type_id', $request->package_type_id);
         }
 
-        // Phân trang 5 bản ghi mỗi trang
-        $packages = $query->orderBy('created_at', 'desc')->paginate(5);
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', (int)$request->min_price);
+        }
+
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', (int)$request->max_price);
+        }
+
+        if ($request->filled('sort_price') && in_array($request->sort_price, ['asc', 'desc'])) {
+            $query->orderBy('price', $request->sort_price);
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+        
+        $packages = $query->paginate(5);
 
         return response()->json([
             'success' => true,
