@@ -8,33 +8,37 @@ import { useState } from "react";
 export default function UpdateBodyMetricModal({ open, onClose, onSuccess }) {
     const [isLoading, setIsLoading] = useState(false)
     const bodyMetricSchema = z.object({
-        height: z.
-            string()
-            .min(1, "Vui lòng nhập chiều cao")
-            .min(2, "Chiều cao phải nhập 3 số (VD: 175)")
-            .max(4, "Chiều cao phải nhập 3 số (VD: 175)"),
-        weight: z.
-            string()
-            .min(1, "Vui lòng nhập cân nặng")
-            .max(4, "Cân nặng không hợp lý"),
-        muscle: z.
-            string()
-            .min(1, "Vui lòng nhập tỷ lệ cơ")
-            .max(4, "Tỷ lệ cơ không hợp lý"),
-        body_fat: z
-            .string()
-            .min(1, "Vui lòng nhập tỷ lệ mỡ cơ thể")
-            .max(4, "Tỷ lệ mỡ cơ thể không hợp lệ"),
-        visceral_fat: z
-            .string()
-            .min(1, "Vui lòng nhập mỡ nội tạng")
-            .max(4, "Giá trị mỡ nội tạng không hợp lệ"),
-        body_water: z
-            .string()
-            .min(1, "Vui lòng nhập tỷ lệ nước trong cơ thể")
-            .max(4, "Tỷ lệ nước trong cơ thể không hợp lệ"),
+        height: z.coerce
+        .number({ required_error: "Vui lòng nhập chiều cao" })
+        .min(100, "Chiều cao > 100cm")
+        .max(250, "Chiều cao < 250cm"),
+
+    weight: z.coerce
+        .number({ required_error: "Vui lòng nhập cân nặng" })
+        .min(30, "Cân nặng > 30kg")
+        .max(300, "Cân nặng < 300 kg"),
+
+    muscle: z.coerce
+        .number({ required_error: "Vui lòng nhập tỷ lệ cơ" })
+        .min(10, "Tỷ lệ cơ > 10%")
+        .max(100, "Tỷ lệ cơ < 100%"),
+
+    body_fat: z.coerce
+        .number({ required_error: "Vui lòng nhập tỷ lệ mỡ" })
+        .min(3, "Tỷ lệ mỡ > 3%")
+        .max(60, "Tỷ lệ mỡ < 60%"),
+
+    visceral_fat: z.coerce
+        .number({ required_error: "Vui lòng nhập mỡ nội tạng" })
+        .min(1, "Mỡ nội tạng > 1")
+        .max(30, "Mỡ nội tạng < 30"),
+
+    body_water: z.coerce
+        .number({ required_error: "Vui lòng nhập nước cơ thể" })
+        .min(20, "Nước cơ thể > 20%")
+        .max(80, "Nước cơ thể < 80%"),
     })
-    const { register, handleSubmit, reset } = useForm({
+    const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: zodResolver(bodyMetricSchema),
     });
 
@@ -66,9 +70,16 @@ export default function UpdateBodyMetricModal({ open, onClose, onSuccess }) {
     };
 
     const onError = (err) => {
-        const firstErr = Object.values(err)[0]
-        if (firstErr)
-            toast.error(firstErr.message)
+        const errors = Object.values(err);
+
+        if (errors.length > 1) {
+            toast.error("Vui lòng nhập đủ thông tin và đảm bảo các giá trị hợp lệ");
+            return;
+        }
+
+        if (errors.length === 1) {
+            toast.error(errors[0].message);
+        }
     };
     return (
         <Modal open={open} border={"border-yellow-400 border-2 border"} onClose={onClose} title={"Cập nhật chỉ số cơ thể"} txtColor={"text-white"} bgColor={"bg-gray-900"}>
@@ -86,8 +97,14 @@ export default function UpdateBodyMetricModal({ open, onClose, onSuccess }) {
                                 {...register("height")}
                                 type="number"
                                 placeholder="VD: 175"
-                                className="w-full p-3 rounded-lg bg-[#6f5fb5] border border-[#8a7ed0] text-white placeholder-[#e9e5ff]"
+                                className={`w-full p-3 rounded-lg bg-[#6f5fb5] border text-white placeholder-[#e9e5ff]
+                                ${errors.height ? "border-red-500" : "border-[#8a7ed0]"}`}
                             />
+                            {errors.height && (
+                                <p className="text-red-400 text-sm">
+                                    {errors.height.message}
+                                </p>
+                            )}
                         </div>
 
                         {/* Cân nặng */}
@@ -99,8 +116,14 @@ export default function UpdateBodyMetricModal({ open, onClose, onSuccess }) {
                                 {...register("weight")}
                                 type="number"
                                 placeholder="VD: 65"
-                                className="w-full p-3 rounded-lg bg-[#6f5fb5] border border-[#8a7ed0] text-white placeholder-[#e9e5ff]"
+                                className={`w-full p-3 rounded-lg bg-[#6f5fb5] border text-white placeholder-[#e9e5ff]
+                                ${errors.weight ? "border-red-500" : "border-[#8a7ed0]"}`}
                             />
+                            {errors.weight && (
+                                <p className="text-red-400 text-sm">
+                                    {errors.weight.message}
+                                </p>
+                            )}
                         </div>
 
                         {/* Tỷ lệ cơ */}
@@ -113,8 +136,14 @@ export default function UpdateBodyMetricModal({ open, onClose, onSuccess }) {
                                 type="number"
                                 step="0.1"
                                 placeholder="VD: 42.5"
-                                className="w-full p-3 rounded-lg bg-[#6f5fb5] border border-[#8a7ed0] text-white placeholder-[#e9e5ff]"
+                                className={`w-full p-3 rounded-lg bg-[#6f5fb5] border text-white placeholder-[#e9e5ff]
+                                ${errors.muscle ? "border-red-500" : "border-[#8a7ed0]"}`}
                             />
+                            {errors.muscle && (
+                                <p className="text-red-400 text-sm">
+                                    {errors.muscle.message}
+                                </p>
+                            )}
                         </div>
 
                         {/* Mỡ cơ thể */}
@@ -127,8 +156,14 @@ export default function UpdateBodyMetricModal({ open, onClose, onSuccess }) {
                                 type="number"
                                 step="0.1"
                                 placeholder="VD: 18.3"
-                                className="w-full p-3 rounded-lg bg-[#6f5fb5] border border-[#8a7ed0] text-white placeholder-[#e9e5ff]"
+                                className={`w-full p-3 rounded-lg bg-[#6f5fb5] border text-white placeholder-[#e9e5ff]
+                                ${errors.body_fat ? "border-red-500" : "border-[#8a7ed0]"}`}
                             />
+                            {errors.body_fat && (
+                                <p className="text-red-400 text-sm">
+                                    {errors.body_fat.message}
+                                </p>
+                            )}
                         </div>
 
                         {/* Mỡ nội tạng */}
@@ -140,8 +175,14 @@ export default function UpdateBodyMetricModal({ open, onClose, onSuccess }) {
                                 {...register("visceral_fat")}
                                 type="number"
                                 placeholder="VD: 8"
-                                className="w-full p-3 rounded-lg bg-[#6f5fb5] border border-[#8a7ed0] text-white placeholder-[#e9e5ff]"
+                                className={`w-full p-3 rounded-lg bg-[#6f5fb5] border text-white placeholder-[#e9e5ff]
+                                ${errors.visceral_fat ? "border-red-500" : "border-[#8a7ed0]"}`}
                             />
+                            {errors.visceral_fat && (
+                                <p className="text-red-400 text-sm">
+                                    {errors.visceral_fat.message}
+                                </p>
+                            )}
                         </div>
 
                         {/* Nước cơ thể */}
@@ -154,8 +195,14 @@ export default function UpdateBodyMetricModal({ open, onClose, onSuccess }) {
                                 type="number"
                                 step="0.1"
                                 placeholder="VD: 55.2"
-                                className="w-full p-3 rounded-lg bg-[#6f5fb5] border border-[#8a7ed0] text-white placeholder-[#e9e5ff]"
+                                className={`w-full p-3 rounded-lg bg-[#6f5fb5] border text-white placeholder-[#e9e5ff]
+                                ${errors.body_water ? "border-red-500" : "border-[#8a7ed0]"}`}
                             />
+                            {errors.body_water && (
+                                <p className="text-red-400 text-sm">
+                                    {errors.body_water.message}
+                                </p>
+                            )}
                         </div>
                     </div>
 

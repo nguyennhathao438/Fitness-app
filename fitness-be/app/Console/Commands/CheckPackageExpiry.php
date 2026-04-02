@@ -6,12 +6,8 @@ use Illuminate\Console\Command;
 use App\Models\Invoice;
 use App\Models\Notification;
 use Carbon\Carbon;
-<<<<<<< HEAD
 use App\Models\Role;
 use Log;
-=======
-
->>>>>>> origin/permissionpage
 class CheckPackageExpiry extends Command
 {
     protected $signature = 'package:check-expiry';
@@ -19,11 +15,7 @@ class CheckPackageExpiry extends Command
 
     public function handle()
     {
-<<<<<<< HEAD
         $today = now();
-=======
-        $today = Carbon::today();
->>>>>>> origin/permissionpage
 
         $invoices = Invoice::where('status', 'paid')
             ->whereDate('valid_until', '>=', $today)

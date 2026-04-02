@@ -11,7 +11,7 @@ export default function BodyMaxIndex() {
 
   // Schema Zod - height và weight là number, kiểm tra range
   const bmiSchema = z.object({
-    height: z
+    height: z.coerce
       .number({
         required_error: "Vui lòng nhập chiều cao",
         invalid_type_error: "Chiều cao phải là số",
@@ -19,7 +19,7 @@ export default function BodyMaxIndex() {
       .min(50, "Chiều cao tối thiểu là 50cm")
       .max(250, "Chiều cao tối đa là 250cm"),
 
-    weight: z
+    weight: z.coerce
       .number({
         required_error: "Vui lòng nhập cân nặng",
         invalid_type_error: "Cân nặng phải là số",
@@ -49,8 +49,12 @@ export default function BodyMaxIndex() {
   };
 
   const onError = (err) => {
-    const firstError = Object.values(err)[0];
-    if (firstError) toast.error(firstError.message);
+    const firstError = Object.values(err);
+    if (firstError.length > 1){
+      toast.error("vui lòng nhập đầy đủ thông tin và đúng định dạng");
+      return;
+    }
+    if (firstError.length === 1) toast.error(firstError[0].message);
   };
 
   return (
@@ -92,7 +96,7 @@ export default function BodyMaxIndex() {
                     Chiều cao (cm)
                   </label>
                   <input
-                    {...register("height", { valueAsNumber: true })}
+                    {...register("height")}
                     type="number"
                     placeholder="Nhập chiều cao"
                     className="border border-gray-300 px-4 py-3 rounded-xl outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition"
@@ -108,7 +112,7 @@ export default function BodyMaxIndex() {
                     Cân nặng (kg)
                   </label>
                   <input
-                    {...register("weight", { valueAsNumber: true })}
+                    {...register("weight")}
                     type="number"
                     placeholder="Nhập cân nặng"
                     className="border border-gray-300 px-4 py-3 rounded-xl outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition"

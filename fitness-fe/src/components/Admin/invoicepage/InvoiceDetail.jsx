@@ -167,9 +167,14 @@ export default function InvoiceDetail({ invoice }) {
                 <span className="text-gray-500">Dịch vụ</span>
                 <span className="font-medium text-right">
                   {invoice.package.package_type.services?.length > 0
-                  ? invoice.package.package_type.services
-                      .map(s => s.name)
-                      .join(", ")
+                  ? invoice.package.package_type.services.length > 4
+                    ? invoice.package.package_type.services
+                        .slice(0, 4)
+                        .map(s => s.name)
+                        .join(", ") + " ..."
+                    : invoice.package.package_type.services
+                        .map(s => s.name)
+                        .join(", ")
                   : "none"}
 
                 </span>
