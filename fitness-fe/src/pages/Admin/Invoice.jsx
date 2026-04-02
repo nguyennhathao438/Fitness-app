@@ -25,6 +25,9 @@ export default function Invoice() {
   const permissions = useSelector((state) => state.auth.permissions);
   const defaultTab = permissions?.includes("statistic.read") ? "statsInvoice" : "invoices";
   const [activeTab, setActiveTab] = useState(defaultTab);
+  function formatCurrency(num) {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
   const fetchStats = () => {
   setLoading(true);
   getInvoice()
@@ -71,7 +74,7 @@ export default function Invoice() {
         />
         <StatHeader
         name="Doanh thu hàng tháng"
-        value={`${revenue.this_month}`}
+        value={formatCurrency(revenue.this_month) + " đ"}
         subValue={
           <span
             className={`flex items-center gap-1 text-sm font-medium ${

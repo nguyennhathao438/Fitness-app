@@ -217,7 +217,7 @@ CÁCH TRẢ LỜI:
 
 =====================
 YÊU CẦU:
-- Không dài dòng
+- trả lời ngắn gọn 2 đến 4 câu
 - Không suy đoán
 - Ưu tiên thực tế, dễ áp dụng cho người Việt
 '

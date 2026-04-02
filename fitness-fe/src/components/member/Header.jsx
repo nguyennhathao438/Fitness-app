@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Menu, X, User, LogOut } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../storages/authSlice.js";
@@ -54,51 +54,87 @@ export default function Header() {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-10">
-              <Link
+              <NavLink
                 to=""
-                className="text-gray-300 font-bold hover:text-white transition-colors text-md"
+                className={({ isActive }) =>
+                  `font-bold text-md transition-colors ${
+                    isActive
+                      ? "text-white border-b-2 border-purple-500 pb-1"
+                      : "text-gray-300 hover:text-fuchsia-200"
+                  }`
+                }
               >
                 Giới thiệu
-              </Link>
+              </NavLink>
 
               {/* LOGIC THAY ĐỔI MENU */}
               {isAuthenticated ? (
-                <Link
+                <NavLink
                   to="/upgrade"
-                  className="text-gray-300 font-bold hover:text-white transition-colors text-md"
+                  className={({ isActive }) =>
+                    `font-bold text-md transition-colors ${
+                      isActive
+                        ? "text-white border-b-2 border-purple-500 pb-1"
+                        : "text-gray-300 hover:text-fuchsia-200"
+                    }`
+                  }
                 >
                   Nâng cấp & Gia hạn
-                </Link>
+                </NavLink>
               ) : (
-                <Link
+                <NavLink
                   to="/pricing-packages"
-                  className="text-gray-300 font-bold hover:text-white transition-colors text-md"
+                  className={({ isActive }) =>
+                    `font-bold text-md transition-colors ${
+                      isActive
+                        ? "text-white border-b-2 border-purple-500 pb-1"
+                        : "text-gray-300 hover:text-fuchsia-200"
+                    }`
+                  }
                 >
                   Đăng ký gói tập
-                </Link>
+                </NavLink>
               )}
 
-              <Link
+              <NavLink
                 to="/bmi"
-                className="text-gray-300 hover:text-white transition-colors font-bold text-md "
+                className={({ isActive }) =>
+                  `font-bold text-md transition-colors ${
+                    isActive
+                      ? "text-white border-b-2 border-purple-500 pb-1"
+                      : "text-gray-300 hover:text-fuchsia-200"
+                  }`
+                }
               >
                 BMI
-              </Link>
+              </NavLink>
               {isAuthenticated && (
-                <Link
+                <NavLink
                   to="/workout"
-                  className="text-gray-300 hover:text-white transition-colors font-bold text-md "
+                  className={({ isActive }) =>
+                    `font-bold text-md transition-colors ${
+                      isActive
+                        ? "text-white border-b-2 border-purple-500 pb-1"
+                        : "text-gray-300 hover:text-fuchsia-200"
+                    }`
+                  }
                 >
                   Bài tập
-                </Link>
+                </NavLink>
               )}
               {isAuthenticated && (
-                <Link
+                <NavLink
                   to="/CaloAI"
-                  className="text-gray-300 hover:text-white transition-colors font-bold text-md "
+                  className={({ isActive }) =>
+                    `font-bold text-md transition-colors ${
+                      isActive
+                        ? "text-white border-b-2 border-purple-500 pb-1"
+                        : "text-gray-300 hover:text-fuchsia-200"
+                    }`
+                  }
                 >
                   Dinh Dưỡng
-                </Link>
+                </NavLink>
               )}
             </nav>
 
