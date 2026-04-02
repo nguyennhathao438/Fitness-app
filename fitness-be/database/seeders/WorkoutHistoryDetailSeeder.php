@@ -118,6 +118,205 @@ class WorkoutHistoryDetailSeeder extends Seeder
                 'created_at' => '2026-03-11 00:00:00',
                 'updated_at' => '2026-03-11 00:00:00'
             ],
+            [
+                'workout_history_id' => 7,
+                'exercise_id' => 3,
+                'set_count' => 4,
+                'rep' => 8,
+                'execution_time' => 0,
+                'estimated_time' => 0,
+                'status' => 'incomplete',
+                'completion_percentage' => 100,
+                'created_at' => '2026-04-02 00:00:00',
+                'updated_at' => '2026-04-02 00:00:00'
+            ],
+            [
+                'workout_history_id' => 7,
+                'exercise_id' => 4,
+                'set_count' => 4,
+                'rep' => 10,
+                'execution_time' => 0,
+                'estimated_time' => 0,
+                'status' => 'completed',
+                'completion_percentage' => 100,
+                'created_at' => '2026-04-02 00:00:00',
+                'updated_at' => '2026-04-02 00:00:00'
+            ],
+            [
+                'workout_history_id' => 8,
+                'exercise_id' => 7,
+                'set_count' => 3,
+                'rep' => 12,
+                'execution_time' => 0,
+                'estimated_time' => 0,
+                'status' => 'completed',
+                'completion_percentage' => 100,
+                'created_at' => '2026-04-01 00:00:00',
+                'updated_at' => '2026-04-01 00:00:00'
+            ],
+            [
+                'workout_history_id' => 8,
+                'exercise_id' => 4,
+                'set_count' => 4,
+                'rep' => 10,
+                'execution_time' => 0,
+                'estimated_time' => 0,
+                'status' => 'completed',
+                'completion_percentage' => 100,
+                'created_at' => '2026-04-01 00:00:00',
+                'updated_at' => '2026-04-01 00:00:00'
+            ],
+            [
+                'workout_history_id' => 9,
+                'exercise_id' => 3,
+                'set_count' => 4,
+                'rep' => 8,
+                'execution_time' => 0,
+                'estimated_time' => 0,
+                'status' => 'completed',
+                'completion_percentage' => 100,
+                'created_at' => '2026-03-31 00:00:00',
+                'updated_at' => '2026-03-31 00:00:00'
+            ],
+            [
+                'workout_history_id' => 10,
+                'exercise_id' => 1,
+                'set_count' => 4,
+                'rep' => 10,
+                'execution_time' => 0,
+                'estimated_time' => 0,
+                'status' => 'completed',
+                'completion_percentage' => 100,
+                'created_at' => '2026-03-30 00:00:00',
+                'updated_at' => '2026-03-30 00:00:00'
+            ],
+            [
+                'workout_history_id' => 10,
+                'exercise_id' => 2,
+                'set_count' => 4,
+                'rep' => 10,
+                'execution_time' => 0,
+                'estimated_time' => 0,
+                'status' => 'completed',
+                'completion_percentage' => 100,
+                'created_at' => '2026-03-30 00:00:00',
+                'updated_at' => '2026-03-30 00:00:00'
+            ],
+            [
+                'workout_history_id' => 10,
+                'exercise_id' => 9,
+                'set_count' => 3,
+                'rep' => 12,
+                'execution_time' => 0,
+                'estimated_time' => 0,
+                'status' => 'completed',
+                'completion_percentage' => 100,
+                'created_at' => '2026-03-30 00:00:00',
+                'updated_at' => '2026-03-30 00:00:00'
+            ],
+
+            // workout_history_id = 11 (Leg day)
+
+            [
+                'workout_history_id' => 11,
+                'exercise_id' => 10,
+                'set_count' => 4,
+                'rep' => 10,
+                'execution_time' => 0,
+                'estimated_time' => 0,
+                'status' => 'completed',
+                'completion_percentage' => 100,
+                'created_at' => '2026-03-28 00:00:00',
+                'updated_at' => '2026-03-28 00:00:00'
+            ],
+            [
+                'workout_history_id' => 11,
+                'exercise_id' => 11,
+                'set_count' => 4,
+                'rep' => 10,
+                'execution_time' => 0,
+                'estimated_time' => 0,
+                'status' => 'completed',
+                'completion_percentage' => 100,
+                'created_at' => '2026-03-28 00:00:00',
+                'updated_at' => '2026-03-28 00:00:00'
+            ],
+
+            // workout_history_id = 12 (Pull day)
+
+            [
+                'workout_history_id' => 12,
+                'exercise_id' => 3,
+                'set_count' => 4,
+                'rep' => 8,
+                'execution_time' => 0,
+                'estimated_time' => 0,
+                'status' => 'completed',
+                'completion_percentage' => 100,
+                'created_at' => '2026-03-27 00:00:00',
+                'updated_at' => '2026-03-27 00:00:00'
+            ],
+            [
+                'workout_history_id' => 12,
+                'exercise_id' => 4,
+                'set_count' => 4,
+                'rep' => 10,
+                'execution_time' => 0,
+                'estimated_time' => 0,
+                'status' => 'completed',
+                'completion_percentage' => 100,
+                'created_at' => '2026-03-27 00:00:00',
+                'updated_at' => '2026-03-27 00:00:00'
+            ],
+            [
+                'workout_history_id' => 12,
+                'exercise_id' => 5,
+                'set_count' => 4,
+                'rep' => 10,
+                'execution_time' => 0,
+                'estimated_time' => 0,
+                'status' => 'completed',
+                'completion_percentage' => 100,
+                'created_at' => '2026-03-27 00:00:00',
+                'updated_at' => '2026-03-27 00:00:00'
+            ],
+            [
+                'workout_history_id' => 13,
+                'exercise_id' => 6,
+                'set_count' => 4,
+                'rep' => 10,
+                'execution_time' => 0,
+                'estimated_time' => 0,
+                'status' => 'incomplete',
+                'completion_percentage' => 100,
+                'created_at' => '2026-04-25 00:00:00',
+                'updated_at' => '2026-04-25 00:00:00'
+            ],
+            [
+                'workout_history_id' => 13,
+                'exercise_id' => 7,
+                'set_count' => 3,
+                'rep' => 12,
+                'execution_time' => 0,
+                'estimated_time' => 0,
+                'status' => 'incomplete',
+                'completion_percentage' => 100,
+                'created_at' => '2026-04-25 00:00:00',
+                'updated_at' => '2026-04-25 00:00:00'
+            ],
+            [
+                'workout_history_id' => 14,
+                'exercise_id' => 12,
+                'set_count' => 3,
+                'rep' => null,
+                'execution_time' => 60,
+                'estimated_time' => 60,
+                'status' => 'completed',
+                'completion_percentage' => 100,
+                'created_at' => '2026-03-24 00:00:00',
+                'updated_at' => '2026-03-24 00:00:00'
+            ],
+
         ]);
     }
 }

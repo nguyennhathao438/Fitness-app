@@ -53,8 +53,9 @@ class NutritionLogSeeder extends Seeder
 
         $rows = [];
         $now = now();
+        $memberIds = [2, 7];
 
-        foreach (range(1, 10) as $memberId) {
+        foreach ($memberIds as $memberId) {
             foreach (CarbonPeriod::create($startDate, $endDate) as $date) {
                 $randomMeals = collect($mealTemplates)->shuffle()->take(rand(2, 4))->values();
 

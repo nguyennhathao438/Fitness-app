@@ -17,12 +17,12 @@ class MemberRoleSeeder extends Seeder
             ['member_id' => 1, 'role_id' => 4],
 
             // USERS (random chia role 2 & 4)
-            ['member_id' => 2, 'role_id' => 2],
+            ['member_id' => 2, 'role_id' => 3],
             ['member_id' => 3, 'role_id' => 4],
             ['member_id' => 4, 'role_id' => 2],
-            ['member_id' => 5, 'role_id' => 4],
+            ['member_id' => 5, 'role_id' => 2],
             ['member_id' => 6, 'role_id' => 2],
-            ['member_id' => 7, 'role_id' => 4],
+            ['member_id' => 7, 'role_id' => 3],
             ['member_id' => 8, 'role_id' => 2],
             ['member_id' => 9, 'role_id' => 4],
             ['member_id' => 10, 'role_id' => 2],
@@ -46,6 +46,9 @@ class MemberRoleSeeder extends Seeder
             ['member_id' => 28, 'role_id' => 4],
             ['member_id' => 29, 'role_id' => 4],
             ['member_id' => 30, 'role_id' => 4],
+            ['member_id' => 31, 'role_id' => 2],
+            ['member_id' => 32, 'role_id' => 4],
         ]);
     }
 }
+

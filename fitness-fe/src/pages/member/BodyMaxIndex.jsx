@@ -3,12 +3,12 @@ import imageBMI from "../../assets/imageBMI.png";
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import { useRef } from "react";
 export default function BodyMaxIndex() {
   const [flagBMI, setFlagBMI] = useState(false)
   const [bmi, setBMI] = useState(null)
-
+  const resultRef = useRef(null);
   // Schema Zod - height và weight là number, kiểm tra range
   const bmiSchema = z.object({
     height: z.number({
@@ -17,7 +17,6 @@ export default function BodyMaxIndex() {
     })
       .min(50, "Chiều cao tối thiểu là 50cm")
       .max(250, "Chiều cao tối đa là 250cm"),
-
     weight: z.number({
       required_error: "Vui lòng nhập cân nặng",
       invalid_type_error: "Cân nặng phải là số"
@@ -25,6 +24,12 @@ export default function BodyMaxIndex() {
       .min(20, "Cân nặng tối thiểu là 20kg")
       .max(300, "Cân nặng tối đa là 300kg"),
   })
+
+  useEffect(() => {
+    if (flagBMI && resultRef.current) {
+      resultRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [flagBMI]);
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(bmiSchema),
@@ -109,7 +114,7 @@ export default function BodyMaxIndex() {
 
       {/* BMI RESULT CARD */}
       {flagBMI && (
-        <div className="mt-10 max-w-6xl mx-auto space-y-6">
+        <div ref={resultRef} className="mt-10 max-w-6xl mx-auto space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             {/* BMI CHART */}
