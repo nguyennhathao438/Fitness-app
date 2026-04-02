@@ -64,8 +64,22 @@ export default function StepPaymentMember({
     setLoading(true);
     
     try {
+      if (isUpgrade && data.amount !== undefined && data.amount <= 0) {
+        let res = await upgradePackage({
+          package_id: data.package_id,
+          payment_method: data.payment_method,
+          is_extend: isExtend,
+        });
 
-      //  THANH TOÁN ONLINE (MOMO, VNPAY)
+        toast.success("Nâng cấp gói thành công!");
+
+        if (res.data.waiting && setWaiting) {
+          setWaiting(true);
+        }
+        
+        next(); 
+        return; 
+      }
 
       if (["momo", "vnpay"].includes(data.payment_method)) {
         
@@ -80,11 +94,14 @@ export default function StepPaymentMember({
         const bankCode = data.payment_method === "vnpay" ? "NCB" : "";
         const returnUrl = `${window.location.origin}/upgrade`; 
 
+        const finalAmountToSend = isUpgrade ? data.amount : undefined;
+
         const res = await createPaymentUrl(
           data.payment_method,
           data.package_id,
           bankCode,
-          returnUrl
+          returnUrl,
+          finalAmountToSend 
         );
 
         if (res.data?.payUrl) {
@@ -98,8 +115,7 @@ export default function StepPaymentMember({
       }
 
   
-      //  THANH TOÁN TIỀN MẶT (CASH)
-
+      // 3. THANH TOÁN TIỀN MẶT (CASH)
       let res = await upgradePackage({
         package_id: data.package_id,
         payment_method: data.payment_method,
@@ -109,12 +125,14 @@ export default function StepPaymentMember({
       let finalMessage = res.data.message;
       if (isNewPurchase) {
         finalMessage = "Đăng ký gói thành công!";
+      } else if (isUpgrade) {
+        finalMessage = "Nâng cấp gói thành công!";
       }
 
       toast.success(finalMessage);
 
-      if (res.data.waiting) {
-        if (setWaiting) setWaiting(true);
+      if (res.data.waiting && setWaiting) {
+        setWaiting(true);
       }
       
       next(); 

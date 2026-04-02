@@ -11,10 +11,14 @@ export default function UpgradePaymentPage() {
 
   const isExtend = location.state?.isExtend || false;
   const isNewPurchase = location.state?.isNewPurchase || false; 
+  const isUpgrade = !isExtend && !isNewPurchase;
+  
+  const preCalculatedAmount = location.state?.preCalculatedAmount;
 
   const [data, setData] = useState({
     payment_method: "",
     package_id: packageId,
+    amount: preCalculatedAmount,
   });
 
   useEffect(() => {
@@ -84,39 +88,31 @@ export default function UpgradePaymentPage() {
       <div className="absolute inset-0 bg-purple-900/70 -z-10" />
 
       <div className="relative z-10 w-full max-w-lg transition-all duration-300">
-        
-        {/* HEADER */}
         <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-white uppercase tracking-wider drop-shadow-md">
                 {pageConfig.title}
             </h2>
         </div>
 
-        {/* BOX CHỨA */}
         <div className="bg-gray-900/80 backdrop-blur-sm border-2 border-yellow-400 rounded-2xl px-6 py-8 shadow-2xl">
-          
-            {/* KHỐI THÔNG BÁO*/}
             <div className={`mb-6 border rounded-xl p-4 flex items-start gap-3 ${pageConfig.alertBg}`}>
                 {pageConfig.alertIcon}
-                
                 <div className="text-sm text-left">
                     <p className={`font-bold mb-1 uppercase text-xs tracking-wide ${pageConfig.alertTitleColor}`}>
                         {pageConfig.alertTitle}
                     </p>
-                    
                     <div className="text-gray-200 leading-relaxed text-sm">
                         {pageConfig.alertContent}
                     </div>
                 </div>
             </div>
 
-            {/* COMPONENT THANH TOÁN */}
             <StepPaymentMember
                 data={data}
                 setData={setData}
                 next={handleSuccess}
                 prev={handleBack}
-                isUpgrade={!isExtend && !isNewPurchase} 
+                isUpgrade={isUpgrade} 
                 isExtend={isExtend}
                 isNewPurchase={isNewPurchase}
             />

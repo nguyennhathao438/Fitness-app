@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Edit, Trash2, Loader2, Eye, X, Search, Filter } from "lucide-react"; 
+import { Edit, Trash2, Loader2, Eye, X, Search, Filter, DollarSign, ArrowUpDown } from "lucide-react"; 
 import { toast } from "react-toastify";
 import { getPackages, deletePackage, updatePackage, getPackageTypes } from "../../../services/admin/Package";
 
@@ -20,6 +20,9 @@ export default function PackageList({ refreshKey, onChanged }) {
   const [filters, setFilters] = useState({
     search: "",
     package_type_id: "",
+    min_price: "", 
+    max_price: "",
+    sort_price: "",
     page: 1 
   });
 
@@ -60,8 +63,6 @@ export default function PackageList({ refreshKey, onChanged }) {
     }
   };
 
-  // LOGIC PHÂN TRANG  ...
-
   const renderPageNumbers = () => {
     const { currentPage, lastPage } = pagination;
     let pageRange = [];
@@ -80,18 +81,13 @@ export default function PackageList({ refreshKey, onChanged }) {
 
     return pageRange.map((page, index) => {
       if (page === "...") {
-        return (
-          <span key={`ellipsis-${index}`} className="px-2 text-gray-400 font-bold tracking-widest">
-            ...
-          </span>
-        );
+        return <span key={`ellipsis-${index}`} className="px-2 text-gray-400 font-bold tracking-widest">...</span>;
       }
-
       return (
         <button
           key={`page-${page}`}
           onClick={() => goToPage(page)}
-          className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold transition-all border ${
+          className={`cursor-pointer w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold transition-all border ${
             currentPage === page
               ? "bg-purple-600 text-white border-purple-600 shadow-md scale-110"
               : "bg-white text-gray-500 border-gray-200 hover:border-purple-300 hover:text-purple-600"
@@ -124,34 +120,75 @@ export default function PackageList({ refreshKey, onChanged }) {
   return (
     <div className="space-y-4">
       {/* --- THANH TÌM KIẾM & LỌC --- */}
-      <div className="bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex flex-wrap items-center justify-between gap-3">
-        <div className="relative w-full sm:w-80">
+      <div className="bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        
+        {/* Tìm kiếm */}
+        <div className="relative w-full lg:w-80">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input 
-            type="text" name="search" placeholder="Search packages..."
+            type="text" name="search" placeholder="Tìm kiếm gói tập..."
             className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 text-sm transition-all"
             value={filters.search} onChange={handleFilterChange}
           />
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 bg-gray-50 border border-gray-100 rounded-xl px-3 py-2">
-            <Filter size={14} className="text-gray-400" />
+        {/* Các bộ lọc */}
+        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+          
+          {/* Lọc Loại gói */}
+          <div className="flex flex-1 sm:flex-none items-center gap-2 bg-gray-50 border border-gray-100 rounded-xl px-3 py-2">
+            <Filter size={14} className="text-gray-400 shrink-0" />
             <select 
               name="package_type_id"
-              className="bg-transparent text-sm outline-none cursor-pointer min-w-[140px]"
+              className="bg-transparent text-sm outline-none cursor-pointer w-full sm:w-auto"
               value={filters.package_type_id} onChange={handleFilterChange}
             >
-              <option value="">All Types</option>
+              <option value="">Tất cả loại gói</option>
               {types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
+
+          {/* NHẬP GIÁ ĐẦU - GIÁ CUỐI */}
+          <div className="flex flex-1 sm:flex-none items-center gap-2 bg-gray-50 border border-gray-100 rounded-xl px-3 py-2">
+            <DollarSign size={14} className="text-gray-400 shrink-0" />
+            <input 
+              type="number" 
+              name="min_price" 
+              placeholder="Giá từ..."
+              className="bg-transparent text-sm outline-none w-full sm:w-20"
+              value={filters.min_price} 
+              onChange={handleFilterChange}
+            />
+            <span className="text-gray-300">-</span>
+            <input 
+              type="number" 
+              name="max_price" 
+              placeholder="Đến..."
+              className="bg-transparent text-sm outline-none w-full sm:w-20"
+              value={filters.max_price} 
+              onChange={handleFilterChange}
+            />
+          </div>
+
+          {/* Sắp xếp giá */}
+          <div className="flex flex-1 sm:flex-none items-center gap-2 bg-gray-50 border border-gray-100 rounded-xl px-3 py-2">
+            <ArrowUpDown size={14} className="text-gray-400 shrink-0" />
+            <select 
+              name="sort_price"
+              className="bg-transparent text-sm outline-none cursor-pointer w-full sm:w-auto"
+              value={filters.sort_price} onChange={handleFilterChange}
+            >
+              <option value="">Sắp xếp</option>
+              <option value="asc">Giá: Thấp đến Cao</option>
+              <option value="desc">Giá: Cao đến Thấp</option>
+            </select>
+          </div>
+
         </div>
       </div>
 
       {/* --- BẢNG DANH SÁCH --- */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-        
         <div className="overflow-x-auto w-full custom-scrollbar">
           <table className="w-full min-w-[800px] text-left border-collapse">
             <thead className="bg-gray-50 text-xs uppercase font-semibold text-gray-600 whitespace-nowrap">
@@ -203,7 +240,7 @@ export default function PackageList({ refreshKey, onChanged }) {
             <button
               disabled={pagination.currentPage === 1}
               onClick={() => goToPage(pagination.currentPage - 1)}
-              className="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-purple-600 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors"
+              className="cursor-pointer px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-purple-600 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors"
             >
               Prev
             </button>
@@ -215,7 +252,7 @@ export default function PackageList({ refreshKey, onChanged }) {
             <button
               disabled={pagination.currentPage === pagination.lastPage}
               onClick={() => goToPage(pagination.currentPage + 1)}
-              className="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-purple-600 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors"
+              className="cursor-pointer px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-purple-600 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors"
             >
               Next
             </button>
@@ -223,7 +260,6 @@ export default function PackageList({ refreshKey, onChanged }) {
         )}
       </div>
 
-      {/* --- CÁC DIALOG BÊN DƯỚI GIỮ NGUYÊN --- */}
       <Dialog open={openEdit} onClose={() => setOpenEdit(false)}>
         <PackageForm 
           key={editData ? `edit-pkg-${editData.id}` : 'add-pkg'} 
@@ -242,7 +278,7 @@ export default function PackageList({ refreshKey, onChanged }) {
                     <h2 className="text-lg font-bold text-white uppercase tracking-wide">Chi tiết gói tập</h2>
                     <p className="text-purple-200 text-xs mt-0.5">Thông tin đầy đủ về gói dịch vụ</p>
                 </div>
-                <button onClick={() => setOpenView(false)} className="text-white/70 hover:text-white transition-colors">
+                <button onClick={() => setOpenView(false)} className="cursor-pointer text-white/70 hover:text-white transition-colors">
                     <X size={20} />
                 </button>
             </div>
@@ -285,7 +321,7 @@ export default function PackageList({ refreshKey, onChanged }) {
             </div>
 
             <div className="bg-gray-50 px-6 py-4 flex justify-end border-t border-gray-100">
-                <button onClick={() => setOpenView(false)} className="px-6 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-all shadow-sm">Đóng</button>
+                <button onClick={() => setOpenView(false)} className="cursor-pointer px-6 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-all shadow-sm">Đóng</button>
             </div>
           </div>
         )}

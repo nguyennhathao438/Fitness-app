@@ -1,6 +1,6 @@
 import api from "../../api"; 
 
-export const createPaymentUrl = (paymentMethod, packageId, bankCode = '', returnUrl = '') => {
+export const createPaymentUrl = (paymentMethod, packageId, bankCode = '', returnUrl = '', amount = null) => {
   let endpoint = '';
 
   if (paymentMethod === 'momo') {
@@ -17,6 +17,10 @@ export const createPaymentUrl = (paymentMethod, packageId, bankCode = '', return
 
   if (returnUrl) {
     payload.return_url = returnUrl;
+  }
+
+  if (amount !== null && amount !== undefined) {
+    payload.amount = amount;
   }
 
   return api.post(endpoint, payload);
