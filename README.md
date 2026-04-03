@@ -51,7 +51,7 @@
     2. Màn hình Admin Dashboard (Trang chủ Quản trị)
     ![Dashboard Admin](./fitness-fe/src/assets/AdminDashboard.png)
     3. Màn hình Chế độ tập luyện & Dinh dưỡng (Góc nhìn Hội viên)
-    | ![Nutrition](./fitness-fe/src/assets/nutrition.png) | !![exercies](./fitness-fe/src/assets/exercise.png)
+    | ![Nutrition](./fitness-fe/src/assets/nutrition.png) | ![exercies](./fitness-fe/src/assets/exercise.png)
     4. Màn hình Chatbot AI && thông tin người dùng
     ![Chatbot](./fitness-fe/src/assets/myinfo.png)
     5. Màn hình Chọn gói tập
