@@ -64,7 +64,6 @@ export default function MuscleGroup() {
             is_main: data?.muscleNameMain
         }
         try {
-            console.log("hoàng anh huy")
             if (titleForm === "Thêm nhóm cơ") {
                 await createMuscleGroup(dataObject)
                 toast.success("Thêm nhóm cơ thành công")

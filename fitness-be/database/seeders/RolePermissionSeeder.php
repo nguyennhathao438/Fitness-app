@@ -24,12 +24,12 @@ class RolePermissionSeeder extends Seeder
             throw new \Exception('Permission chưa seed');
         }
 
-        // ✅ ADMIN = tất cả
+        // ADMIN = tất cả
         $admin->permissions()->sync(
             Permission::pluck('id')->toArray()
         );
 
-        // ✅ PT
+        // PT
         $pt->permissions()->sync(
             Permission::whereIn('code', [
 

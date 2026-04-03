@@ -18,14 +18,14 @@ class InvoiceSeeder extends Seeder
         Invoice::insert([
             [
                 'member_id' => $members[1]->id,
-                'package_id' => $packages[0]->id,
-                'total_price' => $packages[0]->price,
-                'payment_method' => 'momo',
+                'package_id' => $packages[10]->id,
+                'total_price' => $packages[10]->price,
+                'payment_method' => 'cash',
                 'status' => 'paid',
-                'valid_until' => Carbon::now()->addDays(30),
+                'valid_until' => Carbon::now()->addDays(365),
                 'is_deleted' => false,
-                'created_at' => Carbon::now()->subDays(12),
-                'updated_at' => Carbon::now()->subDays(12),
+                'created_at' => Carbon::now()->subDays(6),
+                'updated_at' => Carbon::now()->subDays(6),
             ],
             [
                 'member_id' => $members[2]->id,
@@ -116,15 +116,15 @@ class InvoiceSeeder extends Seeder
                 'updated_at' => Carbon::now()->subDays(3),
             ],
             [
-                'member_id' => $members[1]->id,
-                'package_id' => $packages[14]->id,
-                'total_price' => $packages[14]->price,
-                'payment_method' => 'momo',
+                'member_id' => $members[31]->id,
+                'package_id' => $packages[1]->id,
+                'total_price' => $packages[1]->price,
+                'payment_method' => 'cash',
                 'status' => 'paid',
-                'valid_until' => Carbon::now()->addDays(45),
+                'valid_until' => Carbon::now()->addDays(90),
                 'is_deleted' => false,
-                'created_at' => Carbon::now()->subDay(),
-                'updated_at' => Carbon::now()->subDay(),
+                'created_at' => Carbon::now()->subDays(10),
+                'updated_at' => Carbon::now()->subDays(10),
             ],
         ]);
     }

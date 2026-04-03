@@ -64,6 +64,78 @@ class WorkoutHistorySeeder extends Seeder
                 'created_at' => '2026-03-07 00:00:00',
                 'updated_at' => '2026-03-07 00:00:00'
             ],
+            [
+                'member_id' => 2,
+                'total_time' => 760,
+                'date' => '2026-04-02',
+                'day_of_week' => 5,
+                'completion_percentage' => 100,
+                'created_at' => '2026-04-02 00:00:00',
+                'updated_at' => '2026-04-02 00:00:00'
+            ],
+            [
+                'member_id' => 2,
+                'total_time' => 890,
+                'date' => '2026-04-01',
+                'day_of_week' => 4,
+                'completion_percentage' => 100,
+                'created_at' => '2026-04-01 00:00:00',
+                'updated_at' => '2026-04-01 00:00:00'
+            ],
+            [
+                'member_id' => 2,
+                'total_time' => 882,
+                'date' => '2026-03-31',
+                'day_of_week' => 3,
+                'completion_percentage' => 0,
+                'created_at' => '2026-03-31 00:00:00',
+                'updated_at' => '2026-03-31 00:00:00'
+            ],
+            [
+                'member_id' => 2,
+                'total_time' => 880,
+                'date' => '2026-03-30',
+                'day_of_week' => 2,
+                'completion_percentage' => 0,
+                'created_at' => '2026-03-30 00:00:00',
+                'updated_at' => '2026-03-30 00:00:00'
+            ],
+            [
+                'member_id' => 2,
+                'total_time' => 450,
+                'date' => '2026-03-28',
+                'day_of_week' => 7,
+                'completion_percentage' => 0,
+                'created_at' => '2026-03-28 00:00:00',
+                'updated_at' => '2026-03-28 00:00:00'
+            ],
+            [
+                'member_id' => 2,
+                'total_time' => 670,
+                'date' => '2026-03-27',
+                'day_of_week' => 6,
+                'completion_percentage' => 0,
+                'created_at' => '2026-03-27 00:00:00',
+                'updated_at' => '2026-03-27 00:00:00'
+            ],
+            [
+                'member_id' => 2,
+                'total_time' => 650,
+                'date' => '2026-04-25',
+                'day_of_week' => 4,
+                'completion_percentage' => 0,
+                'created_at' => '2026-04-25 00:00:00',
+                'updated_at' => '2026-04-25 00:00:00'
+            ],
+            [
+                'member_id' => 2,
+                'total_time' => 470,
+                'date' => '2026-03-24',
+                'day_of_week' => 3,
+                'completion_percentage' => 0,
+                'created_at' => '2026-03-24 00:00:00',
+                'updated_at' => '2026-03-24 00:00:00'
+            ],
         ]);
     }
 }

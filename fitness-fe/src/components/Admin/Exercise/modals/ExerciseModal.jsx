@@ -12,13 +12,15 @@ export default function ExerciseModal({ open, onClose, title, item, onSuccess })
 
     const [videoPreview, setVideoPreview] = useState("");
     const exerciseSchema = z.object({
-        name: z.string().min(2),
+        name: z.string().min(2, "Vui lòng nhập tên bài tập"),
         muscle: z.array(z.coerce.number()).min(1, "Vui lòng chọn ít nhất 1 nhóm cơ"),
-        description: z.string().min(5),
+        description: z.string().min(5, "Vui lòng nhập mô tả"),
         rep_base: z.coerce.number().min(0).optional(),
         set_base: z.coerce.number().min(0).optional(),
         time_action: z.coerce.number().min(0).optional(),
-        video: z.string().url().optional().or(z.literal("")),
+        video: z.string().optional().refine(val => val && val.length > 0, {
+            message: "Vui lòng upload video"
+        })
     });
 
     const { muscleList } = useExercise();
@@ -27,6 +29,7 @@ export default function ExerciseModal({ open, onClose, title, item, onSuccess })
         resolver: zodResolver(exerciseSchema),
         defaultValues: {
             muscle: [],
+            video: ""
         },
     });
 
@@ -263,6 +266,7 @@ export default function ExerciseModal({ open, onClose, title, item, onSuccess })
                                 }
                             }}
                         />
+                        <p className="text-red-500 text-sm">{errors.video?.message}</p>
 
                         {/* Preview video nếu có */}
                         {videoPreview && (

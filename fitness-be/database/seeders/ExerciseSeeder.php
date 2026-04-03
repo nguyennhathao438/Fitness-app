@@ -130,6 +130,26 @@ class ExerciseSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            [
+                'name' => 'Ab Roller',
+                'rep_base' => 10,
+                'set_base' => 4,
+                'description' => 'Quỳ gối, siết bụng, lăn con lăn ra trước giữ lưng thẳng rồi dùng cơ bụng kéo về.',
+                'video' => 'https://res.cloudinary.com/dcmko66fp/video/upload/v1775146663/zhpcxxrcyhcedcryvf5p.mp4',
+                'time_action' => null,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'name' => 'Leg Press',
+                'rep_base' => 12,
+                'set_base' => 3,
+                'description' => 'Ngồi vào máy, đặt chân lên bàn đạp, hạ tạ xuống bằng cách gập gối rồi dùng lực chân đẩy lên lại nhưng không khóa khớp gối.',
+                'video' => 'https://res.cloudinary.com/dcmko66fp/video/upload/v1775147000/bcfisxspiuunxqorqo7e.mp4',
+                'time_action' => null,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ]);
     }
 }

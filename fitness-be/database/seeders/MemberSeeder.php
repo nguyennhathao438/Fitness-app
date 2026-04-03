@@ -33,11 +33,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'male',
                 'birthday' => '1998-02-10',
                 'created_at' => Carbon::create(2026, 1, 1)
-                ->addDays(rand(0, 364))
-                ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Trần Thị B',
@@ -47,11 +47,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'female',
                 'birthday' => '1999-05-12',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Lê Văn C',
@@ -61,11 +61,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'male',
                 'birthday' => '1997-07-20',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Phạm Thị D',
@@ -75,11 +75,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'female',
                 'birthday' => '2000-03-08',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Hoàng Văn E',
@@ -89,11 +89,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'male',
                 'birthday' => '1996-11-15',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Vũ Thị F',
@@ -103,11 +103,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'female',
                 'birthday' => '1995-09-01',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Đặng Văn G',
@@ -117,11 +117,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'male',
                 'birthday' => '1998-12-22',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Bùi Thị H',
@@ -131,11 +131,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'female',
                 'birthday' => '2001-06-18',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Phan Văn I',
@@ -145,11 +145,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'male',
                 'birthday' => '1997-04-25',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Mai Thị K',
@@ -159,11 +159,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'female',
                 'birthday' => '1999-08-09',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Ngô Văn L',
@@ -173,11 +173,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'male',
                 'birthday' => '1996-10-30',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Tạ Thị M',
@@ -187,11 +187,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'female',
                 'birthday' => '2002-01-14',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Đinh Văn N',
@@ -201,11 +201,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'male',
                 'birthday' => '1995-02-02',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Lý Thị O',
@@ -215,11 +215,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'female',
                 'birthday' => '1998-05-05',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Hồ Văn P',
@@ -229,11 +229,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'male',
                 'birthday' => '1997-09-19',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Tào Thị L',
@@ -243,11 +243,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'male',
                 'birthday' => '1997-02-19',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Xung Văn P',
@@ -257,11 +257,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'other',
                 'birthday' => '1992-09-19',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Xung Văn H',
@@ -271,11 +271,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'male',
                 'birthday' => '1982-09-19',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Phan Tầm T',
@@ -285,11 +285,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'female',
                 'birthday' => '2002-09-09',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Hùng Tú A',
@@ -299,11 +299,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'male',
                 'birthday' => '1995-09-19',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Mai Tú Y',
@@ -313,11 +313,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'female',
                 'birthday' => '1998-09-19',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Lâm Ngọc C',
@@ -327,11 +327,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'female',
                 'birthday' => '1997-10-19',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Hàn Lý K',
@@ -341,11 +341,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'male',
                 'birthday' => '2005-09-19',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Mạc Lý U',
@@ -355,11 +355,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'male',
                 'birthday' => '2009-09-19',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Hàn Thần K',
@@ -369,11 +369,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'male',
                 'birthday' => '2005-11-19',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Nguyễn Mai K',
@@ -383,11 +383,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'other',
                 'birthday' => '2002-09-19',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Sang Nhị T',
@@ -397,11 +397,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'other',
                 'birthday' => '1985-09-19',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Bàn Mai Văn K',
@@ -411,11 +411,11 @@ class MemberSeeder extends Seeder
                 'gender' => 'female',
                 'birthday' => '2007-09-19',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
             [
                 'name' => 'Hồ Lý P',
@@ -425,11 +425,39 @@ class MemberSeeder extends Seeder
                 'gender' => 'female',
                 'birthday' => '1988-09-19',
                 'created_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
                 'updated_at' => Carbon::create(2026, 1, 1)
-    ->addDays(rand(0, 364))
-    ->addSeconds(rand(0, 86400)),
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
+            ],
+             [
+                'name' => 'Mr Five',
+                'email' => 'mr5@gym.com',
+                'password' => Hash::make('123456'),
+                'phone' => '0968135708',
+                'gender' => 'male',
+                'birthday' => '1997-07-20',
+                'created_at' => Carbon::create(2026, 1, 1)
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
+                'updated_at' => Carbon::create(2026, 1, 1)
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
+            ],
+            [
+                'name' => 'Mai Văn Y',
+                'email' => 'MY1@gym.com',
+                'password' => Hash::make('123456'),
+                'phone' => '0900000029',
+                'gender' => 'female',
+                'birthday' => '1988-09-19',
+                'created_at' => Carbon::create(2026, 1, 1)
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
+                'updated_at' => Carbon::create(2026, 1, 1)
+                    ->addDays(rand(0, 364))
+                    ->addSeconds(rand(0, 86400)),
             ],
         ]);
     }
