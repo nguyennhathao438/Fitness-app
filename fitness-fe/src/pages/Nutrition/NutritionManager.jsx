@@ -707,7 +707,7 @@ export default function NutritionManager() {
             </label>
             <input
               type="date"
-              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500"
+              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-purple-500"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
             />
@@ -767,7 +767,7 @@ export default function NutritionManager() {
 
                 <button
                   onClick={refreshDayData}
-                  className="rounded-2xl border border-purple-200 bg-purple-100 px-4 py-2 text-sm font-medium text-purple-700 transition hover:bg-blue-100"
+                  className="rounded-2xl border border-purple-200 bg-purple-100 px-4 py-2 text-sm font-medium text-purple-700 transition hover:bg-purple-100"
                 >
                   Tải lại
                 </button>
@@ -802,7 +802,7 @@ export default function NutritionManager() {
                       return (
                         <div
                           key={meal.id}
-                          className="min-h-[140px] rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-blue-300"
+                          className="min-h-[140px] rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-purple-300"
                         >
                           <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                             <div className="space-y-2">
@@ -987,7 +987,7 @@ export default function NutritionManager() {
                           handleChangeManualForm("meal_name", e.target.value)
                         }
                         placeholder="Ví dụ: Ức gà áp chảo"
-                        className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
+                        className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-purple-500"
                       />
                     </div>
 
@@ -1004,7 +1004,7 @@ export default function NutritionManager() {
                           handleChangeManualForm("calories", e.target.value)
                         }
                         placeholder="Ví dụ: 350"
-                        className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
+                        className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-purple-500"
                       />
                     </div>
 
@@ -1018,7 +1018,7 @@ export default function NutritionManager() {
                         onChange={(e) =>
                           handleChangeManualForm("meal_time", e.target.value)
                         }
-                        className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
+                        className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-purple-500"
                       />
                     </div>
 
@@ -1035,7 +1035,7 @@ export default function NutritionManager() {
                           handleChangeManualForm("quantity", e.target.value)
                         }
                         placeholder="Ví dụ: 150 hoặc 2 hoặc 1"
-                        className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
+                        className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-purple-500"
                       />
                     </div>
 
@@ -1050,7 +1050,7 @@ export default function NutritionManager() {
                           handleChangeManualForm("unit", e.target.value)
                         }
                         placeholder="Ví dụ: gram, phần, quả, chén, ml"
-                        className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
+                        className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-purple-500"
                       />
                     </div>
 
@@ -1065,7 +1065,7 @@ export default function NutritionManager() {
                           handleChangeManualForm("notes", e.target.value)
                         }
                         placeholder="Ví dụ: Ít dầu, ăn sau tập, tăng protein..."
-                        className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
+                        className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-purple-500"
                       />
                     </div>
                   </div>
@@ -1128,8 +1128,8 @@ export default function NutritionManager() {
                   </button>
 
                   {aiResult ? (
-                    <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4">
-                      <h3 className="text-base font-semibold text-blue-700">
+                    <div className="rounded-2xl border border-purple-200 bg-purple-50 p-4">
+                      <h3 className="text-base font-semibold text-purple-700">
                         Kết quả AI
                       </h3>
 
@@ -1188,7 +1188,7 @@ export default function NutritionManager() {
                                 e.target.value,
                               )
                             }
-                            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
+                            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-purple-500"
                           />
                         </div>
 
@@ -1204,7 +1204,7 @@ export default function NutritionManager() {
                               handleChangeAiMealForm("calories", e.target.value)
                             }
                             placeholder="Nhập calories để lưu"
-                            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
+                            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-purple-500"
                           />
                         </div>
 
@@ -1221,7 +1221,7 @@ export default function NutritionManager() {
                                 e.target.value,
                               )
                             }
-                            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
+                            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-purple-500"
                           />
                         </div>
 
@@ -1238,7 +1238,7 @@ export default function NutritionManager() {
                               handleChangeAiMealForm("quantity", e.target.value)
                             }
                             placeholder="Ví dụ: 150 hoặc 2 hoặc 1"
-                            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
+                            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-purple-500"
                           />
                         </div>
 
@@ -1253,7 +1253,7 @@ export default function NutritionManager() {
                               handleChangeAiMealForm("unit", e.target.value)
                             }
                             placeholder="Ví dụ: gram, phần, quả, chén, ml"
-                            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
+                            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-purple-500"
                           />
                         </div>
 
@@ -1268,7 +1268,7 @@ export default function NutritionManager() {
                               handleChangeAiMealForm("notes", e.target.value)
                             }
                             placeholder="Ví dụ: AI nhận diện từ ảnh sau bữa trưa"
-                            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500"
+                            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-purple-500"
                           />
                         </div>
 
@@ -1276,7 +1276,7 @@ export default function NutritionManager() {
                           <button
                             onClick={handleAddAiMeal}
                             disabled={submittingAI}
-                            className="w-full rounded-2xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="w-full rounded-2xl bg-purple-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-purple-500 disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             {submittingAI
                               ? "Đang thêm..."

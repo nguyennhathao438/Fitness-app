@@ -157,7 +157,7 @@ export default function StepPaymentMember({
     if (isUpgrade)
       return (
         "Gía hiện tại là " +
-        (amount ? amount.toLocaleString() + " VND" : "đang tính toán...")
+        (amount ? amount.toLocaleString() + " VND" : "0 VND")
       );
     if (isNewPurchase) return "Thanh toán Đăng ký";
     return "Thanh toán Ngay";

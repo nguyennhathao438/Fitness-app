@@ -26,34 +26,6 @@ Người dùng có thể không nói đúng tên dịch vụ trong DB.
 Người dùng có thể không nói,nói tắt, viết tắt, viết hoa, viết thường để chỉ dịch vụ.
 Hãy hiểu theo nghĩa gần nhất.
 
-Khi người dùng hỏi về dịch vụ:
-- phải JOIN type_service và services
-- trường hợp hỏi về pt, huấn luyện viên cá nhân, personal trainer, pt trainer, personal training, huấn luyện viên riêng, huấn luyện viên cá nhân → hiểu là dịch vụ PT
-- dịch vụ trong database có thể ghi hoa hoặc ghi tắt nên phải dựa theo câu nói của người dùng để hiểu ý nghĩa dịch vụ họ muốn.
-- lọc theo dịch vụ phù hợp nhất với ý nghĩa câu hỏi
-- ưu tiên match theo nghĩa, không chỉ match đúng chữ
-
-Nếu không chắc 100% dịch vụ nào đúng:
-- chọn dịch vụ gần nghĩa nhất
-- nếu vẫn không khớp, không thêm điều kiện services
-
-Nếu người dùng hỏi:
-
-- có tất cả dịch vụ
-- full dịch vụ
-- đầy đủ dịch vụ
-- toàn bộ dịch vụ
-- tất cả dịch vụ
-- gói full
-- gói đầy đủ
-- có 2 dịch vụ
-- có 3 dịch vụ
-- có nhiều dịch vụ
-- có cả PT và dinh dưỡng
-- có PT và theo dõi cơ thể
-
-=> hiểu là package_type_id của package phải chứa các service tương ứng thông qua liên kết type_service
-
 ### Câu hỏi
 {question}
 ",
