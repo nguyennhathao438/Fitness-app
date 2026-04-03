@@ -46,16 +46,21 @@
 
     👁️ model CNN: Hỗ trợ tính năng nhận diện hình ảnh thông minh phục vụ cho các luồng nghiệp vụ của ứng dụng.
 ## SCREEN
-    1. Màn hình đăng nhập
+1. Màn hình đăng nhập
     ![login](./fitness-fe/src/assets/login.png)
-    2. Màn hình Admin Dashboard (Trang chủ Quản trị)
+    
+2. Màn hình Admin Dashboard (Trang chủ Quản trị)
     ![Dashboard Admin](./fitness-fe/src/assets/AdminDashboard.png)
-    3. Màn hình Chế độ tập luyện & Dinh dưỡng (Góc nhìn Hội viên)
-    | ![Nutrition](./fitness-fe/src/assets/nutrition.png) | ![exercies](./fitness-fe/src/assets/exercise.png)
-    4. Màn hình Chatbot AI && thông tin người dùng
+    
+3. Màn hình Chế độ tập luyện & Dinh dưỡng (Góc nhìn Hội viên)
+    | ![Nutrition](./fitness-fe/src/assets/nutrition.png) | ![exercises](./fitness-fe/src/assets/exercise.png) |
+    
+4. Màn hình Chatbot AI && thông tin người dùng
     ![Chatbot](./fitness-fe/src/assets/myinfo.png)
-    5. Màn hình Chọn gói tập
+    
+5. Màn hình Chọn gói tập
     ![Package](./fitness-fe/src/assets/choosepackage.png)
-    6. Màn hình Trang chủ PT (Quản lý tiến độ học viên)
+    
+6. Màn hình Trang chủ PT (Quản lý tiến độ học viên)
     ![PT Page](./fitness-fe/src/assets/ptpage.png)
 
